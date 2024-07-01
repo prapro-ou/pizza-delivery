@@ -10,7 +10,7 @@ export class TitleScene extends Scene {
     }
 
     init() {
-        this.tapEventListener.addListener(this.didTapStartFromBeginning.bind(this));
+        this.tapEventListener.addListener(this.onTap.bind(this));
         this.startFromBeginningButtonRange = null
     }
 
@@ -27,16 +27,21 @@ export class TitleScene extends Scene {
     }
 
     destroy() {
-        this.tapEventListener.removeListener(this.didTapStartFromBeginning.bind(this));
+        this.tapEventListener.clearListeners();
     }
 
-    // 「最初から始める」をクリックした時の処理
-    didTapStartFromBeginning(event) {
+    // 画面内のどこかがタップされた
+    onTap(event) {
         const x = event.offsetX;
         const y = event.offsetY;
-        let r = this.startFromBeginningButtonRange;
+        const r = this.startFromBeginningButtonRange;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-            this.changeScene?.(scenes.arasuji);
+            this.didTapStartFromBeginning();
         }
+    }
+
+    // 「最初から始める」をタップした時の処理
+    didTapStartFromBeginning() {
+        this.changeScene?.(scenes.arasuji);
     }
 }

@@ -27,7 +27,7 @@ export class TitleScene extends Scene {
     }
 
     destroy() {
-        this.tapEventListener.removeListener(this.didTapStartFromBeginning.bind(this));
+        this.tapEventListener.clearListeners();
     }
 
     // 「最初から始める」をクリックした時の処理

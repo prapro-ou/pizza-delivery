@@ -2,4 +2,5 @@
 export const scenes = {
     title: "scene-title",
     arasuji: "scene-arasuji",
+    slotSelection: "scene-slotSelection"
 }

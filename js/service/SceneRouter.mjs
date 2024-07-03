@@ -1,16 +1,17 @@
 import { scenes } from "../enum/scenes.mjs";
 import { Renderer } from "../adapter/Renderer.mjs";
-import { TapEventListener } from '../adapter/TapEventListener.mjs';
+import { TapEventListener } from "../adapter/TapEventListener.mjs";
 
 import { TitleScene } from "../scene/TitleScene.mjs";
 import { ArasujiScene } from "../scene/ArasujiScene.mjs";
+import { ConfigScene } from "../scene/ConfigScene.mjs";
 
 // シーンの生成と画面遷移を行うクラス
 export class SceneRouter {
     constructor(canvas) {
         this.currentScene = null;
         this.tapEventListener = new TapEventListener(canvas);
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         this.renderer = new Renderer(ctx, canvas.width, canvas.height);
     }
 
@@ -18,7 +19,7 @@ export class SceneRouter {
     changeScene(newScene) {
         if (this.currentScene) {
             this.currentScene.destroy();
-            this.renderer.clear()
+            this.renderer.clear();
         }
         switch (newScene) {
             case scenes.title:
@@ -29,6 +30,12 @@ export class SceneRouter {
 
             case scenes.arasuji:
                 this.currentScene = new ArasujiScene();
+                this.currentScene.changeScene = this.changeScene.bind(this);
+                this.currentScene.init();
+                break;
+
+            case scenes.config:
+                this.currentScene = new ConfigScene(this.tapEventListener);
                 this.currentScene.changeScene = this.changeScene.bind(this);
                 this.currentScene.init();
                 break;

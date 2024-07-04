@@ -3,11 +3,11 @@ import { scenes } from "./special/sceneSettings.mjs";
 
 //セーブデータ選択画面
 export class SlotSelectionScene extends Scene {
-    init(){
+    sceneWillAppear(){
         this.slotButtonAreas = [];
     }
 
-    update(deltaTime){}
+    updateStates(deltaTime){}
 
     render(ctx) {
         const max_x = ctx.canvas.width;
@@ -31,7 +31,7 @@ export class SlotSelectionScene extends Scene {
         ctx.fillText("最初から始める", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    destroy() {}
+    sceneWillDisappear() {}
 
     didTap(x, y){
         let r = this.slotButtonAreas[0];

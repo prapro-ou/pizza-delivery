@@ -2,11 +2,11 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
 export class ArasujiScene extends Scene {
-    init() {
+    sceneWillAppear() {
         // 初期化処理が必要な場合に実装
     }
 
-    update(deltaTime) {
+    updateStates(deltaTime) {
         // 更新処理が必要な場合に実装
     }
 
@@ -26,7 +26,7 @@ export class ArasujiScene extends Scene {
         }
     }
 
-    destroy() {
+    sceneWillDisappear() {
         // 必要に応じてクリーンアップ
     }
 }

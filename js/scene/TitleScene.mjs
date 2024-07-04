@@ -2,9 +2,9 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
 export class TitleScene extends Scene {
-    init() {}
+    sceneWillAppear() {}
 
-    update(deltaTime) {}
+    updateStates(deltaTime) {}
 
     render(ctx) {
         const max_x = ctx.canvas.width;
@@ -48,7 +48,7 @@ export class TitleScene extends Scene {
         ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    destroy() {}
+    sceneWillDisappear() {}
 
     didTap(x, y) {
         let r = this.startFromBeginningButtonArea;

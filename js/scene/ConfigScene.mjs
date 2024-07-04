@@ -3,13 +3,13 @@ import { scenes } from "./special/sceneSettings.mjs";
 
 // 設定画面
 export class ConfigScene extends Scene {
-    init() {
+    sceneWillAppear() {
         this.backButtonArea = null;
         this.volumeButtonArea = null;
         this.seButtonArea = null;
     }
 
-    update(deltaTime) {}
+    updateStates(deltaTime) {}
 
     render(ctx) {
         const max_x = ctx.canvas.width;
@@ -56,7 +56,7 @@ export class ConfigScene extends Scene {
         ctx.fillText("SE on/off", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    destroy() {}
+    sceneWillDisappear() {}
 
     // 画面内のどこかがタップされた
     didTap(x, y) {

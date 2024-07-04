@@ -8,7 +8,7 @@ function gameLoop(timestamp) {
     const deltaTime = timestamp - lastTimestamp;
     lastTimestamp = timestamp;
 
-    sceneManager.update(deltaTime);
+    sceneManager.updateStates(deltaTime);
     sceneManager.render();
 
     requestAnimationFrame(gameLoop);

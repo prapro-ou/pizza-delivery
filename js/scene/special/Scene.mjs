@@ -5,23 +5,24 @@ export class Scene {
         this.sharedData = sharedData;
     }
 
-    init() {
-        console.error("init() is not implemented.");
+    // シーンの状態を更新する
+    updateStates(deltaTime) {
+        console.error("シーンに updateStates(deltaTime) が実装されていません。");
     }
 
-    update(deltaTime) {
-        console.error("update(deltaTime) is not implemented.");
-    }
-
+    // シーンをキャンバスに描画する
+    // ctx は canvas.getContext('2d')で得られたオブジェクト
     render(ctx) {
-        console.error("render(ctx) is not implemented.");
+        console.error("シーンに render(ctx) が実装されていません。");
     }
 
-    destroy() {
-        console.error("destroy() is not implemented.");
-    }
+    // シーン出現時に行いたい処理がある場合は、このメソッドをオーバーライドする
+    sceneWillAppear() {}
 
-    didTap(x, y) {
-        // タップ処理が必要なシーンでオーバーライドする
-    }
+    // シーンが閉じる時に行いたい処理がある場合は、このメソッドをオーバーライドする
+    sceneWillDisappear() {}
+
+    // キャンバス内がタップされた時の処理を書く場合は、このメソッドをオーバーライドする
+    // x, y は タップされた場所のCanvas内の座標
+    didTap(x, y) {}
 }

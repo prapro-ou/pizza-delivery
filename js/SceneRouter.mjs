@@ -48,19 +48,19 @@ export class SceneRouter {
     // 画面遷移の処理
     changeScene(newScene, data = {}) {
         if (this.currentScene) {
-            this.currentScene.destroy();
+            this.currentScene.sceneWillDisappear();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
 
         this.sharedData = { ...this.sharedData, ...data };
         this.currentScene = makeScene(newScene, this, this.sharedData)
-        this.currentScene.init();
+        this.currentScene.sceneWillAppear();
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される
-    update(deltaTime) {
+    updateStates(deltaTime) {
         if (this.currentScene) {
-            this.currentScene.update(deltaTime, this.mouse);
+            this.currentScene.updateStates(deltaTime, this.mouse);
         }
     }
 

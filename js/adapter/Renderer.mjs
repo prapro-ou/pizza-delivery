@@ -17,6 +17,14 @@ export class Renderer {
         this.ctx.fillRect(x, y, width, height);
     }
 
+    // 円を描画する
+    fillCircle(color, x, y, radius) {
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+        this.ctx.fill();
+    }
+
     // テキストを描画する
     fillText(text, x, y, color, alignment, font) {
         this.ctx.fillStyle = color;

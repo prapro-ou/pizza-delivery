@@ -1,5 +1,5 @@
-import { Scene } from './Scene.mjs';
-import { scenes } from '../enum/scenes.mjs';
+import { Scene } from "./Scene.mjs";
+import { scenes } from "../enum/scenes.mjs";
 
 // タイトル画面
 export class TitleScene extends Scene {
@@ -11,11 +11,10 @@ export class TitleScene extends Scene {
 
     init() {
         this.tapEventListener.addListener(this.onTap.bind(this));
-        this.startFromBeginningButtonRange = null
+        this.startFromBeginningButtonRange = null;
     }
 
-    update(deltaTime) {
-    }
+    update(deltaTime) {}
 
     render(renderer) {
         const { max_x, max_y } = renderer;
@@ -27,6 +26,9 @@ export class TitleScene extends Scene {
         r = { x: max_x/2-100, y: max_y/2+25, w: 200, h: 50 };
         renderer.drawButton("続きから始める", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
         this.continueButtonRange = r;
+        r = { x: max_x/2-100, y: max_y/2+125, w: 200, h: 50 };
+        renderer.drawButton("設定画面", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
+        this.configButtonRange = r;
     }
 
     destroy() {
@@ -37,13 +39,18 @@ export class TitleScene extends Scene {
     onTap(event) {
         const x = event.offsetX;
         const y = event.offsetY;
+
         let r = this.startFromBeginningButtonRange;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.didTapStartFromBeginning();
         }
         r = this.continueButtonRange;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
             this.didTapContinue();
+        }
+        r = this.configButtonRange;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.didTapConfig();
         }
     }
 
@@ -55,5 +62,10 @@ export class TitleScene extends Scene {
     // 「続きから始める」をタップした時の処理
     didTapContinue(){
         this.changeScene?.(scenes.slotSelection)
+    }
+
+    didTapConfig() {
+        console.log("didTapConfig");
+        this.changeScene?.(scenes.configScene);
     }
 }

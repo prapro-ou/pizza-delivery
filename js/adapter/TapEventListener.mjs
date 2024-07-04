@@ -13,7 +13,7 @@ export class TapEventListener {
 
     // 登録したイベントを全て解除
     clearListeners() {
-        this.listeners.forEach(listener => this.canvas.removeEventListener('click', listener));
+        this.listeners.forEach((listener) => this.canvas.removeEventListener("click", listener));
         this.listeners.clear();
     }
 }

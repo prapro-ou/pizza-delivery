@@ -1,71 +1,63 @@
-import { Scene } from "./Scene.mjs";
-import { scenes } from "../enum/scenes.mjs";
+import { Scene } from './special/Scene.mjs';
+import { scenes } from "./special/sceneSettings.mjs";
 
-// タイトル画面
 export class TitleScene extends Scene {
-    constructor(tapEventListener) {
-        super();
-        this.changeScene = null;
-        this.tapEventListener = tapEventListener;
+    updateStates(deltaTime) {}
+
+    render(ctx) {
+        const max_x = ctx.canvas.width;
+        const max_y = ctx.canvas.height;
+
+        ctx.fillStyle = "silver";
+        ctx.fillRect(0, 0, max_x, max_y);
+        ctx.fillStyle = "black";
+        ctx.font = "50px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("タイトル画面", 50, 50);
+
+        let r = { x: max_x / 2 - 100, y: max_y / 2 - 75, w: 200, h: 50 };
+        this.startFromBeginningButtonArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("最初から始める", r.x + r.w / 2, r.y + r.h / 2);
+
+        r = { x: max_x / 2 - 100, y: max_y / 2 + 25, w: 200, h: 50 };
+        this.continueButtonArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("続きから始める", r.x + r.w / 2, r.y + r.h / 2);
+
+        r = { x: max_x / 2 - 100, y: max_y / 2 + 125, w: 200, h: 50 };
+        this.configButtonArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    init() {
-        this.tapEventListener.addListener(this.onTap.bind(this));
-        this.startFromBeginningButtonRange = null;
-    }
-
-    update(deltaTime) {}
-
-    render(renderer) {
-        const { max_x, max_y } = renderer;
-        renderer.fillRect("silver", 0, 0, max_x, max_y);
-        renderer.fillText("タイトル画面", 50, 50, "black", "left", "50px Arial");
-        let r = { x: max_x/2-100, y: max_y/2-75, w: 200, h: 50 };
-        renderer.drawButton("最初から始める", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
-        this.startFromBeginningButtonRange = r;
-        r = { x: max_x/2-100, y: max_y/2+25, w: 200, h: 50 };
-        renderer.drawButton("続きから始める", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
-        this.continueButtonRange = r;
-        r = { x: max_x/2-100, y: max_y/2+125, w: 200, h: 50 };
-        renderer.drawButton("設定画面", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
-        this.configButtonRange = r;
-    }
-
-    destroy() {
-        this.tapEventListener.clearListeners();
-    }
-
-    // 画面内のどこかがタップされた
-    onTap(event) {
-        const x = event.offsetX;
-        const y = event.offsetY;
-
-        let r = this.startFromBeginningButtonRange;
+    didTap(x, y) {
+        let r = this.startFromBeginningButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapStartFromBeginning();
+            this.sceneRouter.changeScene(scenes.arasuji);
         }
-        r = this.continueButtonRange;
+        r = this.continueButtonArea;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-            this.didTapContinue();
+            this.sceneRouter.changeScene(scenes.slotSelection);
         }
-        r = this.configButtonRange;
+        r = this.configButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapConfig();
+            this.sceneRouter.changeScene(scenes.config);
         }
-    }
-
-    // 「最初から始める」をタップした時の処理
-    didTapStartFromBeginning() {
-        this.changeScene?.(scenes.arasuji);
-    }
-
-    // 「続きから始める」をタップした時の処理
-    didTapContinue(){
-        this.changeScene?.(scenes.slotSelection)
-    }
-
-    didTapConfig() {
-        console.log("didTapConfig");
-        this.changeScene?.(scenes.configScene);
     }
 }

@@ -20,10 +20,13 @@ export class TitleScene extends Scene {
         const { max_x, max_y } = renderer;
         renderer.fillRect("silver", 0, 0, max_x, max_y);
         renderer.fillText("タイトル画面", 50, 50, "black", "left", "50px Arial");
-        let r = { x: max_x / 2 - 100, y: max_y / 2 - 25, w: 200, h: 50 };
+        let r = { x: max_x/2-100, y: max_y/2-75, w: 200, h: 50 };
         renderer.drawButton("最初から始める", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
         this.startFromBeginningButtonRange = r;
-        r = { x: max_x / 2 - 100, y: max_y / 2 + 50, w: 200, h: 50 };
+        r = { x: max_x/2-100, y: max_y/2+25, w: 200, h: 50 };
+        renderer.drawButton("続きから始める", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
+        this.continueButtonRange = r;
+        r = { x: max_x/2-100, y: max_y/2+125, w: 200, h: 50 };
         renderer.drawButton("設定画面", r.x, r.y, r.w, r.h, "white", "blue", "20px Arial");
         this.configButtonRange = r;
     }
@@ -36,9 +39,14 @@ export class TitleScene extends Scene {
     onTap(event) {
         const x = event.offsetX;
         const y = event.offsetY;
+
         let r = this.startFromBeginningButtonRange;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.didTapStartFromBeginning();
+        }
+        r = this.continueButtonRange;
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
+            this.didTapContinue();
         }
         r = this.configButtonRange;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
@@ -49,6 +57,11 @@ export class TitleScene extends Scene {
     // 「最初から始める」をタップした時の処理
     didTapStartFromBeginning() {
         this.changeScene?.(scenes.arasuji);
+    }
+
+    // 「続きから始める」をタップした時の処理
+    didTapContinue(){
+        this.changeScene?.(scenes.slotSelection)
     }
 
     didTapConfig() {

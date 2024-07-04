@@ -2,8 +2,6 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
 export class TitleScene extends Scene {
-    sceneWillAppear() {}
-
     updateStates(deltaTime) {}
 
     render(ctx) {
@@ -47,8 +45,6 @@ export class TitleScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
     }
-
-    sceneWillDisappear() {}
 
     didTap(x, y) {
         let r = this.startFromBeginningButtonArea;

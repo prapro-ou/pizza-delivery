@@ -2,10 +2,6 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
 export class ArasujiScene extends Scene {
-    sceneWillAppear() {
-        // 初期化処理が必要な場合に実装
-    }
-
     updateStates(deltaTime) {
         // 更新処理が必要な場合に実装
     }
@@ -24,9 +20,5 @@ export class ArasujiScene extends Scene {
         if (this.sharedData.fromTitle) {
             ctx.fillText("タイトル画面から来ました", 50, 100);
         }
-    }
-
-    sceneWillDisappear() {
-        // 必要に応じてクリーンアップ
     }
 }

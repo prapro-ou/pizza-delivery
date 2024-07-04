@@ -31,8 +31,6 @@ export class SlotSelectionScene extends Scene {
         ctx.fillText("最初から始める", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    sceneWillDisappear() {}
-
     didTap(x, y){
         let r = this.slotButtonAreas[0];
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {

@@ -56,8 +56,6 @@ export class ConfigScene extends Scene {
         ctx.fillText("SE on/off", r.x + r.w / 2, r.y + r.h / 2);
     }
 
-    sceneWillDisappear() {}
-
     // 画面内のどこかがタップされた
     didTap(x, y) {
         let r = this.backButtonArea;

@@ -1,5 +1,5 @@
-import { SceneRouter } from "./service/SceneRouter.mjs";
-import { scenes } from './enum/scenes.mjs';
+import { SceneRouter } from "./SceneRouter.mjs";
+import { scenes } from "./scene/special/sceneSettings.mjs";
 
 const canvas = document.getElementById('screen');
 const sceneManager = new SceneRouter(canvas);

@@ -1,25 +1,32 @@
-import { Scene } from './Scene.mjs';
-import { scenes } from '../enum/scenes.mjs';
+import { Scene } from './special/Scene.mjs';
+import { scenes } from "./special/sceneSettings.mjs";
 
-// あらすじ画面
 export class ArasujiScene extends Scene {
-    constructor() {
-        super();
-        this.changeScene = null;
-    }
-
     init() {
+        // 初期化処理が必要な場合に実装
     }
 
     update(deltaTime) {
+        // 更新処理が必要な場合に実装
     }
 
-    render(renderer) {
-        const { max_x, max_y } = renderer;
-        renderer.fillRect("lightblue", 0, 0, max_x, max_y);
-        renderer.fillText("あらすじ画面", 50, 50, "black", "left", "50px Arial");
+    render(ctx) {
+        const max_x = ctx.canvas.width;
+        const max_y = ctx.canvas.height;
+
+        ctx.fillStyle = "lightblue";
+        ctx.fillRect(0, 0, max_x, max_y);
+        ctx.fillStyle = "black";
+        ctx.font = "50px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("あらすじ画面", 50, 50);
+
+        if (this.sharedData.fromTitle) {
+            ctx.fillText("タイトル画面から来ました", 50, 100);
+        }
     }
 
     destroy() {
+        // 必要に応じてクリーンアップ
     }
 }

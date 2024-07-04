@@ -4,6 +4,7 @@ import { TapEventListener } from '../adapter/TapEventListener.mjs';
 
 import { TitleScene } from "../scene/TitleScene.mjs";
 import { ArasujiScene } from "../scene/ArasujiScene.mjs";
+import { SlotSelectionScene } from "../scene/SlotSelectionScene.mjs";
 
 // シーンの生成と画面遷移を行うクラス
 export class SceneRouter {
@@ -29,6 +30,12 @@ export class SceneRouter {
 
             case scenes.arasuji:
                 this.currentScene = new ArasujiScene();
+                this.currentScene.changeScene = this.changeScene.bind(this);
+                this.currentScene.init();
+                break;
+
+            case scenes.slotSelection:
+                this.currentScene = new SlotSelectionScene(this.tapEventListener);
                 this.currentScene.changeScene = this.changeScene.bind(this);
                 this.currentScene.init();
                 break;

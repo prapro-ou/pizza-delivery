@@ -2,6 +2,10 @@
  * 全てのシーンの親クラス
  */
 export class Scene {
+    /**
+     * @param {Object} sceneRouter - 画面遷移に使用するオブジェクト。
+     * @param {Object} sharedData - 全てのシーンの間で共有されるデータの連想配列。
+     */
     constructor(sceneRouter, sharedData) {
         /**
          * 画面遷移に使用する。 \
@@ -20,15 +24,15 @@ export class Scene {
     /**
      * シーンの状態を更新する。
      * @param {number} deltaTime - 前のフレームからの経過時間[ms]
-     * @param {Object} mouse - マウスの状態 (使用しない場合は引数定義省略可)
+     * @param {Object} [mouse] - マウスの状態
+     * @param {number} mouse.x - 現在のマウスのX座標
+     * @param {number} mouse.y - 現在のマウスのY座標
+     * @param {boolean} mouse.isDown - マウスの左クリックが押されているかどうか
+     * @param {number} mouse.startX - マウスの左クリックが押され始めたX座標
+     * @param {number} mouse.startY - マウスの左クリックが押され始めたY座標
      */
     updateStates(deltaTime, mouse) {
-        // mouse.x      いまマウスがあるX座標
-        // mouse.y      いまマウスがあるY座標
-        // mouse.isDown マウスの左クリックが押されているか
-        // mouse.startX マウスの左クリックが押され始めたX座標
-        // mouse.startY マウスの左クリックが押され始めたY座標
-        console.error("シーンに updateStates(deltaTime) が実装されていません。");
+        console.error("シーンに updateStates(deltaTime, mouse) が実装されていません。");
     }
 
     /**

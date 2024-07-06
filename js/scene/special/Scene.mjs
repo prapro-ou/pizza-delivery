@@ -30,9 +30,10 @@ export class Scene {
      * @param {boolean} mouse.isDown - マウスの左クリックが押されているかどうか
      * @param {number} mouse.startX - マウスの左クリックが押され始めたX座標
      * @param {number} mouse.startY - マウスの左クリックが押され始めたY座標
+     * @param {Set} pressedKeys - 現在キーボードで押されているキーの集合（例: {"ArrowRight", "d", " "}）
      */
-    updateStates(deltaTime, mouse) {
-        console.error("シーンに updateStates(deltaTime, mouse) が実装されていません。");
+    updateStates(deltaTime, mouse, pressedKeys) {
+        console.error("シーンに updateStates(deltaTime, mouse, pressedKeys) が実装されていません。");
     }
 
     /**

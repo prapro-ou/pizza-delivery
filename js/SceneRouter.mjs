@@ -43,6 +43,15 @@ export class SceneRouter {
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
         }.bind(this));
+
+        // キーに関する情報を追跡する
+        this.pressedKeys = new Set();
+        document.addEventListener("keydown", function(e) {
+            this.pressedKeys.add(e.key)
+        }.bind(this));
+        document.addEventListener("keyup", function(e) {
+            this.pressedKeys.delete(e.key)
+        }.bind(this));
     }
 
     // 画面遷移の処理
@@ -60,7 +69,7 @@ export class SceneRouter {
     // 内部状態などの更新処理。フレームごとに呼び出される
     updateStates(deltaTime) {
         if (this.currentScene) {
-            this.currentScene.updateStates(deltaTime, this.mouse);
+            this.currentScene.updateStates(deltaTime, this.mouse, this.pressedKeys);
         }
     }
 

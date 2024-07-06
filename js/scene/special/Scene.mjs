@@ -1,28 +1,62 @@
-// 全てのシーンの親クラスとなるクラス
+/**
+ * 全てのシーンの親クラス
+ */
 export class Scene {
+    /**
+     * @param {Object} sceneRouter - 画面遷移に使用するオブジェクト。
+     * @param {Object} sharedData - 全てのシーンの間で共有されるデータの連想配列。
+     */
     constructor(sceneRouter, sharedData) {
+        /**
+         * 画面遷移に使用する。 \
+         * 例: this.sceneRouter.changeScene(scenes.arasuji); \
+         * 引数はsceneSettings.mjsで定義している連想配列(列挙型の代用)scenes
+         */
         this.sceneRouter = sceneRouter;
+
+        /**
+         * 全てのシーンの間で共有されるデータの連想配列。 \
+         * 例: this.sharedData.name = "太郎";
+         */
         this.sharedData = sharedData;
     }
 
-    // シーンの状態を更新する
-    updateStates(deltaTime) {
-        console.error("シーンに updateStates(deltaTime) が実装されていません。");
+    /**
+     * シーンの状態を更新する。
+     * @param {number} deltaTime - 前のフレームからの経過時間[ms]
+     * @param {Object} [mouse] - マウスの状態
+     * @param {number} mouse.x - 現在のマウスのX座標
+     * @param {number} mouse.y - 現在のマウスのY座標
+     * @param {boolean} mouse.isDown - マウスの左クリックが押されているかどうか
+     * @param {number} mouse.startX - マウスの左クリックが押され始めたX座標
+     * @param {number} mouse.startY - マウスの左クリックが押され始めたY座標
+     */
+    updateStates(deltaTime, mouse) {
+        console.error("シーンに updateStates(deltaTime, mouse) が実装されていません。");
     }
 
-    // シーンをキャンバスに描画する
-    // ctx は canvas.getContext('2d')で得られたオブジェクト
+    /**
+     * シーンをキャンバスに描画する。
+     * @param {CanvasRenderingContext2D} ctx - canvas.getContext('2d')で得られたオブジェクト
+     */
     render(ctx) {
         console.error("シーンに render(ctx) が実装されていません。");
     }
 
-    // シーン出現時に行いたい処理がある場合は、このメソッドをオーバーライドする
+    /**
+     * シーン出現時に行いたい処理がある場合、このメソッドをオーバーライドする。
+     */
     sceneWillAppear() {}
 
-    // シーンが閉じる時に行いたい処理がある場合は、このメソッドをオーバーライドする
+    /**
+     * シーンが閉じる時に行いたい処理がある場合、このメソッドをオーバーライドする。
+     */
     sceneWillDisappear() {}
 
-    // キャンバス内がタップされた時の処理を書く場合は、このメソッドをオーバーライドする
-    // x, y は タップされた場所のCanvas内の座標
+    /**
+     * キャンバス内がタップされた時の処理を書く場合、このメソッドをオーバーライドする。
+     * @param {number} x - タップされた場所のCanvas内のx座標
+     * @param {number} y - タップされた場所のCanvas内のy座標
+     */
     didTap(x, y) {}
 }

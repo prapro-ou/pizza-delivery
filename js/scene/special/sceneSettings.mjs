@@ -27,6 +27,6 @@ export function makeScene(scene, sceneRouter, sharedData) {
             return new ConfigScene(sceneRouter, sharedData);
 
         default:
-            console.error(`sceneManeger.makeSceneに未定義のシーンが渡されました：${scene}`)
+            console.error(`makeSceneに未定義のシーンが渡されました：${scene}`)
     }
 }

@@ -12,23 +12,33 @@ class Player {
         this.dSpeed = 60; // px/s
         this.image = new Image();
         this.image.src = '../../../resource/image/rider.png';
+        this.theta = 0;
     }
 
-    draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
+    draw(max_x, max_y, ctx, pixelSize, cameraDistance, roadPoint) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
-        const centerX = x - this.image.width;
-        const centerY = y - this.image.height;
         const scaleFactor = 1.5;
+        const centerX = x - this.image.width * scaleFactor / 2;
+        const centerY = y - this.image.height * scaleFactor / 2;
+        const i = roadPoint.findIndex((e) => e.d >= this.d);
 
         if (this.image.complete) {
+            ctx.save();
             ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(this.image, centerX, centerY, this.image.width * scaleFactor, this.image.height * scaleFactor);
-        } else {
-            this.image.onload = () => {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(this.image, centerX, centerY, this.image.width * scaleFactor, this.image.height * scaleFactor);
-            };
+            ctx.translate(
+                centerX + this.image.width * scaleFactor / 2,
+                centerY + this.image.height * scaleFactor / 2
+            );
+            ctx.rotate(this.theta);
+            ctx.drawImage(
+                this.image,
+                -this.image.width * scaleFactor / 2,
+                -this.image.height * scaleFactor / 2,
+                this.image.width * scaleFactor,
+                this.image.height * scaleFactor
+            );
+            ctx.restore();
         }
     }
 
@@ -46,6 +56,9 @@ class Player {
         if (downPressed) {
             this.d -= this.dControlSpeed * deltaTime / 1000
         }
+        const currentXSpeed = ((rightPressed - leftPressed) * this.xControlSpeed);
+        const currentDSpeed = ((upPressed - downPressed) * this.dControlSpeed) + this.dSpeed;
+        this.theta = Math.atan(currentXSpeed / currentDSpeed);
     }
 }
 
@@ -68,6 +81,7 @@ export class DriveScene extends Scene {
         const downPressed = pressedKeys.has("ArrowDown");
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         this.cameraDistance = this.player.d - 10;
+        
     }
 
     render(ctx) {
@@ -78,10 +92,8 @@ export class DriveScene extends Scene {
         ctx.fillRect(0, 0, max_x, max_y);
 
         this.drawRoad(max_x, max_y, ctx);
-
         this.drawObstacle(max_x, max_y, ctx);
-
-        this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
+        this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance, this.stage.roadPoint);
 
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
@@ -101,23 +113,30 @@ export class DriveScene extends Scene {
 
 
     drawRoad(max_x, max_y, ctx) {
+        const whiteLineSpacing = 10;
         let i = 0;
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             while (this.stage.roadPoint[i+1].d < d) { i += 1; }
             const r = (d - this.stage.roadPoint[i].d) / (this.stage.roadPoint[i+1].d - this.stage.roadPoint[i].d);
             const center = this.stage.roadPoint[i+1].x * r + this.stage.roadPoint[i].x * (1-r);
-            const roadLeft = Math.round(center - this.stage.roadWidth / 2);
-            const roadRight = Math.round(center + this.stage.roadWidth / 2);
-            for (let x = 0; x < max_x / this.pixelSize + 1; x++) {
-                if (x >= roadLeft && x <= roadRight) {
-                    ctx.fillStyle = "gray";
-                } else if (x == roadLeft - 1 || x == roadRight + 1) {
-                    ctx.fillStyle = "black";
-                } else {
-                    ctx.fillStyle = "green";
-                }
-                ctx.fillRect(x * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            const left = center - this.stage.roadWidth / 2;
+            const right = center + this.stage.roadWidth / 2;
+            // 道路の外側
+            ctx.fillStyle = "green";
+            ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
+            // 道路の内側
+            ctx.fillStyle = "gray";
+            ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize);
+            // 白線
+            if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
+                ctx.fillStyle = "white";
+                const roadCenter = Math.round(center * 3) / 3;
+                ctx.fillRect(roadCenter * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
             }
+            // 道路の境界
+            ctx.fillStyle = "black";
+            ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
         }
     }
 

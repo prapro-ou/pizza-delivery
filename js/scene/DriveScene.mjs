@@ -7,7 +7,9 @@ class Player {
     constructor(x) {
         this.x = x;
         this.d = 0;
-        this.speed = 60; // px/s
+        this.xControlSpeed = 30; // px/s
+        this.dControlSpeed = 30; // px/s
+        this.dSpeed = 60; // px/s
         this.image = new Image();
         this.image.src = '../../../resource/image/rider.png';
     }
@@ -30,8 +32,20 @@ class Player {
         }
     }
 
-    updatePosition(deltaTime) {
-        this.d += this.speed * deltaTime / 1000
+    updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed) {
+        this.d += this.dSpeed * deltaTime / 1000
+        if (leftPressed) {
+            this.x -= this.xControlSpeed * deltaTime / 1000
+        }
+        if (rightPressed) {
+            this.x += this.xControlSpeed * deltaTime / 1000
+        }
+        if (upPressed) {
+            this.d += this.dControlSpeed * deltaTime / 1000
+        }
+        if (downPressed) {
+            this.d -= this.dControlSpeed * deltaTime / 1000
+        }
     }
 }
 
@@ -47,8 +61,12 @@ export class DriveScene extends Scene {
         this.player = new Player(playerX);
     }
 
-    updateStates(deltaTime) {
-        this.player.updatePosition(deltaTime);
+    updateStates(deltaTime, mouse, pressedKeys) {
+        const leftPressed = pressedKeys.has("ArrowLeft");
+        const rightPressed = pressedKeys.has("ArrowRight");
+        const upPressed = pressedKeys.has("ArrowUp");
+        const downPressed = pressedKeys.has("ArrowDown");
+        this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         this.cameraDistance = this.player.d - 10;
     }
 

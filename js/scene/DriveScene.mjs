@@ -9,6 +9,8 @@ export class DriveScene extends Scene {
         this.stage = stage1
         this.totalDistance = 0
         this.pixelSize = 8
+        this.mudImage = new Image();
+        this.mudImage.src = '../../../resource/image/mud.png';
     }
 
     updateStates(deltaTime) {}
@@ -21,6 +23,8 @@ export class DriveScene extends Scene {
         ctx.fillRect(0, 0, max_x, max_y);
 
         this.drawRoad(max_x, max_y, ctx);
+
+        this.drawObstacle(max_x, max_y, ctx);
 
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
@@ -41,7 +45,7 @@ export class DriveScene extends Scene {
 
     drawRoad(max_x, max_y, ctx) {
         let i = 0;
-        for (let d = this.totalDistance; d <= Math.ceil(max_y / this.pixelSize); d++) {
+        for (let d = this.totalDistance; d <= this.totalDistance + Math.ceil(max_y / this.pixelSize); d++) {
             while (this.stage.roadPoint[i+1].d < d) { i += 1; }
             const r = (d - this.stage.roadPoint[i].d) / (this.stage.roadPoint[i+1].d - this.stage.roadPoint[i].d);
             const center = this.stage.roadPoint[i+1].x * r + this.stage.roadPoint[i].x * (1-r);
@@ -55,8 +59,26 @@ export class DriveScene extends Scene {
                 } else {
                     ctx.fillStyle = "green";
                 }
-                ctx.fillRect(x * this.pixelSize, max_y - (d * this.pixelSize), this.pixelSize, this.pixelSize);
+                ctx.fillRect(x * this.pixelSize, max_y - ((d - this.totalDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
             }
         }
     }
+
+    drawObstacle(max_x, max_y, ctx) {
+        this.stage.obstacles.forEach(obstacle => {
+            const y = max_y - (obstacle.d - this.totalDistance) * this.pixelSize;
+            const x = obstacle.x * this.pixelSize;
+            const centerX = x - (this.mudImage.width / 2);
+            const centerY = y - (this.mudImage.height / 2);
+
+            if (this.mudImage.complete) {
+                ctx.drawImage(this.mudImage, centerX, centerY);
+            } else {
+                this.mudImage.onload = () => {
+                    ctx.drawImage(this.mudImage, centerX, centerY);
+                };
+            }
+        });
+    }
 }
+

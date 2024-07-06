@@ -20,6 +20,9 @@ export class PizzaCollectionScene extends Scene {
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
+
+        //ピザと材料の画像を配置する枠の位置
+        //計算で出した値を使うように修正すべきかも
         const pizzaFrame = [{x:25, y:100}, {x:25, y:200}, {x:25, y:300}, {x:25, y:400},
                             {x:425, y:100}, {x:425, y:200}, {x:425, y:300}, {x:425, y:400} ]
 
@@ -30,7 +33,7 @@ export class PizzaCollectionScene extends Scene {
         ctx.textAlign = "left";
         ctx.fillText(`ピザコレクション画面${this.page}`, 50, 50);
 
-        //ピザの画像とレシピを表示
+        //ピザの画像とレシピを表示する矩形を配置
         for(let i = 0; i <= 7; i++){
             ctx.fillStyle = "gray";
             ctx.fillRect(pizzaFrame[i].x, pizzaFrame[i].y, 350, 90);
@@ -57,6 +60,8 @@ export class PizzaCollectionScene extends Scene {
         // 1ページ目
         if(this.page === 1){
 
+            //ピザの画像を配置  
+            //現在はmargherita.pngを仮置き
             for(let i = 0; i <= 7; i++){
             
                 if(this.pizzaExampleImage1.complete) {
@@ -64,6 +69,8 @@ export class PizzaCollectionScene extends Scene {
                     ctx.drawImage(this.pizzaExampleImage1, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
                 }
             }
+
+            //材料の画像を配置
 
 
             // 次のページに遷移するボタン
@@ -81,6 +88,8 @@ export class PizzaCollectionScene extends Scene {
         //2ページ目
         if(this.page === 2){
 
+            //ピザの画像を配置
+            //現在はmarinara.pngを仮置き
             for(let i = 0; i <= 7; i++){
             
                 if(this.pizzaExampleImage2.complete) {
@@ -88,6 +97,8 @@ export class PizzaCollectionScene extends Scene {
                     ctx.drawImage(this.pizzaExampleImage2, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
                 }
             }
+
+            //材料の画像を配置
             
             // 前のページに遷移するボタン
             r = { x: 0, y: max_y - 100, w: 50, h: 50 }

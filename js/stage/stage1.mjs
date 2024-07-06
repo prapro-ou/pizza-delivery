@@ -3,6 +3,7 @@ import { obstacleType } from "./enum.mjs";
 export const stage1 =
 {
     roadPoint: [
+        {d: -50, x: 50},
         {d: 0, x: 50},
         {d: 150, x: 50},
         {d: 250, x: 64},

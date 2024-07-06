@@ -9,7 +9,10 @@ export class PizzaCollectionScene extends Scene {
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
 
-        
+        this.pizzaExampleImage1 = new Image();
+        this.pizzaExampleImage2 = new Image();
+        this.pizzaExampleImage1.src = "../../resources/image/margherita.png";
+        this.pizzaExampleImage2.src = "../../resources/image/marinara.png";
     }
 
     updateStates(deltaTime) {}
@@ -17,6 +20,8 @@ export class PizzaCollectionScene extends Scene {
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
+        const pizzaFrame = [{x:25, y:100}, {x:25, y:200}, {x:25, y:300}, {x:25, y:400},
+                            {x:425, y:100}, {x:425, y:200}, {x:425, y:300}, {x:425, y:400} ]
 
         ctx.fillStyle = "pink";
         ctx.fillRect(0, 0, max_x, max_y);
@@ -25,9 +30,20 @@ export class PizzaCollectionScene extends Scene {
         ctx.textAlign = "left";
         ctx.fillText(`ピザコレクション画面${this.page}`, 50, 50);
 
+        //ピザの画像とレシピを表示
+        for(let i = 0; i <= 7; i++){
+            ctx.fillStyle = "gray";
+            ctx.fillRect(pizzaFrame[i].x, pizzaFrame[i].y, 350, 90);
+        
+            // if(this.pizzaExampleImage1.complete) {
+            //     ctx.imageSmoothingEnabled = false;
+            //     ctx.drawImage(this.pizzaExampleImage1, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
+            // }
+        }
+        
 
         // タイトルに戻るボタン
-        let r = { x: max_x - 200, y: max_y - 100, w: 200, h: 50 };
+        let r = { x: max_x / 2 - 100, y: max_y - 100, w: 200, h: 50 };
         this.backButtonArea = r;
         ctx.fillStyle = "blue";
         ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -38,13 +54,20 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
 
 
-
         // 1ページ目
         if(this.page === 1){
 
+            for(let i = 0; i <= 7; i++){
+            
+                if(this.pizzaExampleImage1.complete) {
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.drawImage(this.pizzaExampleImage1, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
+                }
+            }
+
 
             // 次のページに遷移するボタン
-            r = { x: max_x - 50, y: max_y - 200, w: 50, h: 50 }
+            r = { x: max_x - 50, y: max_y - 100, w: 50, h: 50 }
             this.nextPageButtonArea = r;
             ctx.fillStyle = "blue";
             ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -56,11 +79,18 @@ export class PizzaCollectionScene extends Scene {
         }
 
         //2ページ目
-        if(this.page === 2)
+        if(this.page === 2){
+
+            for(let i = 0; i <= 7; i++){
+            
+                if(this.pizzaExampleImage2.complete) {
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.drawImage(this.pizzaExampleImage2, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
+                }
+            }
             
             // 前のページに遷移するボタン
-            {
-            r = { x: 0, y: max_y - 200, w: 50, h: 50 }
+            r = { x: 0, y: max_y - 100, w: 50, h: 50 }
             this.previousPageButtonArea = r;
             ctx.fillStyle = "blue";
             ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -97,13 +127,13 @@ export class PizzaCollectionScene extends Scene {
 
     // 「→」がタップされた
     didTapNextPage(){
-        this.page += 1;
+        this.page = 2;
 
     }
 
     // 「←」がタップされた．
     didTapPrePage(){
-        this.page += -1;
+        this.page = 1;
     }
 
 }

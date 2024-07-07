@@ -31,8 +31,7 @@ export class DriveScene extends Scene {
         const upPressed = pressedKeys.has("ArrowUp");
         const downPressed = pressedKeys.has("ArrowDown");
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
-        this.cameraDistance = this.player.d - 10;
-        if (!this.player.inCollision) {
+        if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
             this.checkCollision();
         }
     }
@@ -40,6 +39,8 @@ export class DriveScene extends Scene {
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
+
+        this.cameraDistance = Math.min(this.player.d - 10, this.stage.goalDistance - max_y / this.pixelSize - 1);
 
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
@@ -102,6 +103,7 @@ export class DriveScene extends Scene {
 
     drawRoad(max_x, max_y, ctx) {
         const whiteLineSpacing = 10;
+        let goalSquareSize = 1.7;
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             const { center, left, right } = this.roadX(d);
             // 道路の外側
@@ -118,8 +120,24 @@ export class DriveScene extends Scene {
             }
             // 道路の境界
             ctx.fillStyle = "black";
-            ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            ctx.fillRect((left - 1) * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
             ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            // ゴール線
+            const gd = Math.round(d) - (this.stage.goalDistance - 4)
+            if (gd >= 0 && gd < 3) {
+                goalSquareSize = (right - left) / Math.floor((right - left) / goalSquareSize);
+                let i = 0;
+                for (let x = left; x < right; x += goalSquareSize) {
+                    i += 1;
+                    ctx.fillStyle = ((i + gd) % 2 == 0) ? "black" : "white";
+                    ctx.fillRect(
+                        x * this.pixelSize,
+                        max_y - ((d - this.cameraDistance) * this.pixelSize),
+                        goalSquareSize * this.pixelSize,
+                        this.pixelSize
+                    );
+                }
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-import { obstacleType } from "./enum.mjs";
+import { obstacleType } from "../gameObject/obstacleSettings.mjs";
 
 export const stage1 =
 {

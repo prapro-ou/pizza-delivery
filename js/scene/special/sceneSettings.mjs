@@ -2,6 +2,7 @@ import { TitleScene } from "../TitleScene.mjs";
 import { ArasujiScene } from "../ArasujiScene.mjs";
 import { SlotSelectionScene } from "../SlotSelectionScene.mjs";
 import { ConfigScene } from "../ConfigScene.mjs";
+import { RuleScene } from "../RuleScene.mjs";
 import { StageSelectionScene } from "../StageSelectionScene.mjs";
 
 // すべてのシーンの列挙した連想配列
@@ -10,6 +11,7 @@ export const scenes = {
     arasuji: "scene-arasuji",
     slotSelection: "scene-slotSelection",
     config: "scene-config",
+    rule: "scene-rule",
     stageSelection: "scene-stageSelection"
 }
 
@@ -27,6 +29,9 @@ export function makeScene(scene, sceneRouter, sharedData) {
 
         case scenes.config:
             return new ConfigScene(sceneRouter, sharedData);
+
+        case scenes.rule:
+            return new RuleScene(sceneRouter, sharedData);
 
         case scenes.stageSelection:
             return new StageSelectionScene(sceneRouter, sharedData);

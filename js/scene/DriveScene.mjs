@@ -15,6 +15,7 @@ export class DriveScene extends Scene {
         const playerX = this.stage.roadPoint.find((e) => e.d == 0).x;
         this.player = new Player(playerX);
         this.collectedIngredients = [];
+        this.goalFlg = false;
 
         // this.stage.obstacles をクラスに変換
         this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
@@ -33,6 +34,12 @@ export class DriveScene extends Scene {
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
             this.checkCollision();
+        }
+        if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
+            this.goalFlg = true;
+            setTimeout(() => {
+                this.transitToNextScene()
+            }, 1000);
         }
     }
 
@@ -61,10 +68,21 @@ export class DriveScene extends Scene {
         ctx.fillText("タイム", 50, 100);
 
         this.drawCollectedIngredients(max_x, max_y, ctx);
-        // ctx.fillStyle = "black";
-        // ctx.font = "20px Arial";
-        // ctx.textAlign = "left";
-        // ctx.fillText("拾った食材", max_x - 120, max_y - 30);
+    }
+
+    transitToNextScene() {
+        const occurrences = {};
+        for (let i = 0; i < this.collectedIngredients.length; i++) {
+            const ingredient = this.collectedIngredients[i];
+            if (occurrences[ingredient]) {
+                occurrences[ingredient]++;
+            } else {
+                occurrences[ingredient] = 1;
+            }
+        }
+        this.sharedData.collectedIngredients = occurrences;
+        console.log(occurrences);
+        console.log("次の画面に遷移します。");
     }
 
     checkCollision() {

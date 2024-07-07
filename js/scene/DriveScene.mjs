@@ -16,13 +16,12 @@ class Player {
         this.inCollision = false;
     }
 
-    draw(max_x, max_y, ctx, pixelSize, cameraDistance, roadPoint) {
+    draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
         const scaleFactor = 1.5;
         const centerX = x - this.image.width * scaleFactor / 2;
         const centerY = y - this.image.height * scaleFactor / 2;
-        const i = roadPoint.findIndex((e) => e.d >= this.d);
 
         if (this.image.complete) {
             ctx.save();
@@ -64,16 +63,74 @@ class Player {
     }
 }
 
+// 障害物の親クラス
+class Obstacle {
+    constructor(x, d) {
+        this.type = null;
+        this.x = x;
+        this.d = d;
+        this.image = null;
+    }
+}
+
+function makeObstacle(type, x, d) {
+    switch (type) {
+        case obstacleType.mud:
+            return new Mud(x, d);
+        default:
+            console.error(`makeObstacleに未定義のtypeが渡されました：${type}`)
+    }
+}
+
+class Mud extends Obstacle {
+    constructor(x, d) {
+        super(x, d);
+        this.type = obstacleType.mud;
+        this.image = new Image();
+        this.image.src = '../../../resource/image/mud.png';
+    }
+
+    draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
+        const y = max_y - (this.d - cameraDistance) * pixelSize;
+        const x = this.x * pixelSize;
+        const scaleFactor = 1.5;
+
+        if (this.image.complete) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                this.image,
+                x - this.image.width * scaleFactor / 2,
+                y - this.image.height * scaleFactor / 2,
+                this.image.width * scaleFactor,
+                this.image.height * scaleFactor,
+            );
+        }
+    }
+
+    checkCollision(x, d) {
+        return (this.x - x)**2 + (this.d - d)**2 <= 3**2;
+    }
+
+    handleCollision(player, roadX) {
+        player.inCollision = true;
+        setTimeout(() => {
+            player.inCollision = false;
+            player.x = roadX.center;
+        }, 1000);
+    }
+}
+
 export class DriveScene extends Scene {
     sceneWillAppear() {
         this.elapsedTime = 0.0
         this.stage = stage1
         this.cameraDistance = -10
         this.pixelSize = 8
-        this.mudImage = new Image();
-        this.mudImage.src = '../../../resource/image/mud.png';
         const playerX = this.stage.roadPoint.find((e) => e.d == 0).x;
         this.player = new Player(playerX);
+
+        // this.stage.obstacles をクラスに変換
+        this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d))
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -97,7 +154,7 @@ export class DriveScene extends Scene {
 
         this.drawRoad(max_x, max_y, ctx);
         this.drawObstacle(max_x, max_y, ctx);
-        this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance, this.stage.roadPoint);
+        this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
@@ -123,6 +180,12 @@ export class DriveScene extends Scene {
                 this.player.inCollision = false
                 this.player.x = center;
             }, 1000);
+        }
+        for (let i = 0; i < this.stage.obstacles.length; i++) {
+            const obstacle = this.stage.obstacles[i];
+            if (obstacle.checkCollision(this.player.x, this.player.d)) {
+                obstacle.handleCollision(this.player, this.roadX(this.player.d));
+            }
         }
     }
 
@@ -160,21 +223,8 @@ export class DriveScene extends Scene {
     }
 
     drawObstacle(max_x, max_y, ctx) {
-        this.stage.obstacles.forEach(obstacle => {
-            const y = max_y - (obstacle.d - this.cameraDistance) * this.pixelSize;
-            const x = obstacle.x * this.pixelSize;
-            const centerX = x - (this.mudImage.width / 2);
-            const centerY = y - (this.mudImage.height / 2);
-
-            if (this.mudImage.complete) {
-                ctx.drawImage(this.mudImage, centerX, centerY);
-            } else {
-                this.mudImage.onload = () => {
-                    ctx.drawImage(this.mudImage, centerX, centerY);
-                };
-            }
-        });
+        for (let i = 0; i < this.stage.obstacles.length; i++) {
+            this.stage.obstacles[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
+        }
     }
-
-
 }

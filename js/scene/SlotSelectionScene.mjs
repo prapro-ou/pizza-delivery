@@ -28,18 +28,17 @@ export class SlotSelectionScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("最初から始める", r.x + r.w / 2, r.y + r.h / 2);
+        ctx.fillText("セーブデータ１", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     didTap(x, y){
         let r = this.slotButtonAreas[0];
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-            this.didTapStartFromBeginning();
+            this.didTapSlot(1);
         }
     }
 
-    didTapStartFromBeginning() {
-        console.log("save1");
+    didTapSlot(slot_index) {
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 }
-

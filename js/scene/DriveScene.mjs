@@ -13,6 +13,7 @@ class Player {
         this.image = new Image();
         this.image.src = '../../../resource/image/rider.png';
         this.theta = 0;
+        this.inCollision = false;
     }
 
     draw(max_x, max_y, ctx, pixelSize, cameraDistance, roadPoint) {
@@ -43,6 +44,7 @@ class Player {
     }
 
     updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed) {
+        if (this.inCollision) return;
         this.d += this.dSpeed * deltaTime / 1000
         if (leftPressed) {
             this.x -= this.xControlSpeed * deltaTime / 1000
@@ -81,7 +83,9 @@ export class DriveScene extends Scene {
         const downPressed = pressedKeys.has("ArrowDown");
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         this.cameraDistance = this.player.d - 10;
-        
+        if (!this.player.inCollision) {
+            this.checkCollision();
+        }
     }
 
     render(ctx) {
@@ -111,16 +115,31 @@ export class DriveScene extends Scene {
         ctx.fillText("拾った食材", max_x - 120, max_y - 30);
     }
 
+    checkCollision() {
+        const { center, left, right } = this.roadX(this.player.d);
+        if (this.player.x < left || this.player.x > right) {
+            this.player.inCollision = true
+            setTimeout(() => {
+                this.player.inCollision = false
+                this.player.x = center;
+            }, 1000);
+        }
+    }
+
+    roadX(d) {
+        let i = 0;
+        while (this.stage.roadPoint[i+1].d < d) { i += 1; }
+        const r = (d - this.stage.roadPoint[i].d) / (this.stage.roadPoint[i+1].d - this.stage.roadPoint[i].d);
+        const center = this.stage.roadPoint[i+1].x * r + this.stage.roadPoint[i].x * (1-r);
+        const left = center - this.stage.roadWidth / 2;
+        const right = center + this.stage.roadWidth / 2;
+        return { center: center, left: left, right: right };
+    }
 
     drawRoad(max_x, max_y, ctx) {
         const whiteLineSpacing = 10;
-        let i = 0;
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
-            while (this.stage.roadPoint[i+1].d < d) { i += 1; }
-            const r = (d - this.stage.roadPoint[i].d) / (this.stage.roadPoint[i+1].d - this.stage.roadPoint[i].d);
-            const center = this.stage.roadPoint[i+1].x * r + this.stage.roadPoint[i].x * (1-r);
-            const left = center - this.stage.roadWidth / 2;
-            const right = center + this.stage.roadWidth / 2;
+            const { center, left, right } = this.roadX(d);
             // 道路の外側
             ctx.fillStyle = "green";
             ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);

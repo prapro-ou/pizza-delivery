@@ -18,8 +18,7 @@ export class EndingCollectionScene extends Scene {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
 
-        //ピザと材料の画像を配置する枠の位置
-        //計算で出した値を使うように修正すべきかも
+        //エンディングのテキストを配置する枠の位置
         const endingFrame = [{x:50, y:100}, {x:50, y:250},  {x:50, y:400}, 
                              {x:450, y:100}, {x:450, y:250}, {x:450, y:400} ]
 

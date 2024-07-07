@@ -29,7 +29,7 @@ export class Ingredient {
     }
 
     checkCollision(x, d) {
-        return (this.x - x)**2 + (this.d - d)**2 <= 3**2;
+        return !this.disappeared && (this.x - x)**2 + (this.d - d)**2 <= 3**2;
     }
 
     disappear() {

@@ -4,7 +4,7 @@ import { stage1 } from '../stage/stage1.mjs';
 import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
 import { Player } from '../gameObject/Player.mjs';
 import { Ingredient } from '../gameObject/Ingredient.mjs';
-import { randomIngredientType } from '../gameObject/ingredients.mjs';
+import { randomIngredientType, imageForIngredient } from '../gameObject/ingredients.mjs';
 
 export class DriveScene extends Scene {
     sceneWillAppear() {
@@ -57,12 +57,13 @@ export class DriveScene extends Scene {
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("タイム", max_x - 120, 50);
+        ctx.fillText("タイム", 50, 100);
 
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("拾った食材", max_x - 120, max_y - 30);
+        this.drawCollectedIngredients(max_x, max_y, ctx);
+        // ctx.fillStyle = "black";
+        // ctx.font = "20px Arial";
+        // ctx.textAlign = "left";
+        // ctx.fillText("拾った食材", max_x - 120, max_y - 30);
     }
 
     checkCollision() {
@@ -131,6 +132,29 @@ export class DriveScene extends Scene {
     drawIngredients(max_x, max_y, ctx) {
         for (let i = 0; i < this.stage.ingredients.length; i++) {
             this.stage.ingredients[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
+        }
+    }
+
+    drawCollectedIngredients(max_x, max_y, ctx) {
+        const areaWidth = 40;
+        ctx.fillStyle = "gainsboro";
+        ctx.fillRect(max_x - areaWidth, 0, max_y, 8 * (this.collectedIngredients.length != 0) + 30 * this.collectedIngredients.length);
+        for (let i = 0; i < this.collectedIngredients.length; i++) {
+            const type = this.collectedIngredients[i];
+            const image = imageForIngredient(type);
+            const x = max_x - 20;
+            const y = 20 + 30 * i;
+            const scaleFactor = 2;
+            if (image.complete) {
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(
+                    image,
+                    x - image.width * scaleFactor / 2,
+                    y - image.height * scaleFactor / 2,
+                    image.width * scaleFactor,
+                    image.height * scaleFactor,
+                );
+            }
         }
     }
 }

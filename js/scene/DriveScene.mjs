@@ -3,6 +3,8 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { stage1 } from '../stage/stage1.mjs';
 import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
 import { Player } from '../gameObject/Player.mjs';
+import { Ingredient } from '../gameObject/Ingredient.mjs';
+import { randomIngredientType } from '../gameObject/ingredients.mjs';
 
 export class DriveScene extends Scene {
     sceneWillAppear() {
@@ -12,9 +14,15 @@ export class DriveScene extends Scene {
         this.pixelSize = 8
         const playerX = this.stage.roadPoint.find((e) => e.d == 0).x;
         this.player = new Player(playerX);
+        this.collectedIngredients = [];
 
         // this.stage.obstacles をクラスに変換
-        this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d))
+        this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
+        // this.stage.ingredients をクラスに変換
+        this.stage.ingredients = this.stage.ingredients.map((e) => {
+            const type = randomIngredientType();
+            return new Ingredient(type, e.x, e.d);
+        });
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -38,6 +46,7 @@ export class DriveScene extends Scene {
 
         this.drawRoad(max_x, max_y, ctx);
         this.drawObstacle(max_x, max_y, ctx);
+        this.drawIngredients(max_x, max_y, ctx);
         this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
         ctx.fillStyle = "black";
@@ -69,6 +78,13 @@ export class DriveScene extends Scene {
             const obstacle = this.stage.obstacles[i];
             if (obstacle.checkCollision(this.player.x, this.player.d)) {
                 obstacle.handleCollision(this.player, this.roadX(this.player.d));
+            }
+        }
+        for (let i = 0; i < this.stage.ingredients.length; i++) {
+            const ingredient = this.stage.ingredients[i];
+            if (ingredient.checkCollision(this.player.x, this.player.d)) {
+                this.collectedIngredients.push(ingredient.type);
+                ingredient.disappear();
             }
         }
     }
@@ -109,6 +125,12 @@ export class DriveScene extends Scene {
     drawObstacle(max_x, max_y, ctx) {
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             this.stage.obstacles[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
+        }
+    }
+
+    drawIngredients(max_x, max_y, ctx) {
+        for (let i = 0; i < this.stage.ingredients.length; i++) {
+            this.stage.ingredients[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
         }
     }
 }

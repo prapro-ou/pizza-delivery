@@ -20,6 +20,16 @@ export const stage1 =
         {type: obstacleType.mud, d: 248, x: 78},
         {type: obstacleType.mud, d: 111, x: 37},
     ],
+    ingredients: [
+        {d: 86, x: 52},
+        {d: 181, x: 48},
+        {d: 226, x: 76},
+        {d: 353, x: 43},
+        {d: 486, x: 41},
+        {d: 671, x: 41},
+        {d: 807, x: 65},
+        {d: 940, x: 36},
+    ],
     roadWidth: 40,
     goalDistance: 1000,
 };

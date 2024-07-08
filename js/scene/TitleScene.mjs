@@ -45,7 +45,7 @@ export class TitleScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
 
-        //エンディングコレクションだとはみ出るためエンディングにしたが，ニュアンスが伝わりにくいかも...
+        
         r = { x: max_x / 2 + 100 , y: max_y / 2 + 225, w: 200, h: 50 };
         this.endingCollectionButtonArea = r;
         ctx.fillStyle = "blue";

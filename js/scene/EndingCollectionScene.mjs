@@ -33,11 +33,6 @@ export class EndingCollectionScene extends Scene {
         for(let i = 0; i <= 5; i++){
             ctx.fillStyle = "white";
             ctx.fillRect(endingFrame[i].x, endingFrame[i].y, 275, 125);
-        
-            // if(this.pizzaExampleImage1.complete) {
-            //     ctx.imageSmoothingEnabled = false;
-            //     ctx.drawImage(this.pizzaExampleImage1, pizzaFrame[i].x, pizzaFrame[i].y, 90, 90);
-            // }
         }
         
 

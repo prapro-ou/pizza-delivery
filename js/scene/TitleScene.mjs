@@ -54,7 +54,7 @@ export class TitleScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("エンディング", r.x + r.w / 2, r.y + r.h / 2);
+        ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     didTap(x, y) {

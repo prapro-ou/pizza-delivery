@@ -16,6 +16,7 @@ export class DriveScene extends Scene {
         this.player = new Player(playerX);
         this.collectedIngredients = [];
         this.goalFlg = false;
+        this.elapsedTime = 0.0;
 
         // this.stage.obstacles をクラスに変換
         this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
@@ -31,6 +32,9 @@ export class DriveScene extends Scene {
         const rightPressed = pressedKeys.has("ArrowRight");
         const upPressed = pressedKeys.has("ArrowUp");
         const downPressed = pressedKeys.has("ArrowDown");
+        if (!this.goalFlg) { 
+            this.elapsedTime += deltaTime / 1000;
+        }
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
             this.checkCollision();
@@ -62,11 +66,7 @@ export class DriveScene extends Scene {
         ctx.textAlign = "left";
         ctx.fillText("STAGE 1", 50, 50);
 
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("タイム", 50, 100);
-
+        this.drawTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
     }
 
@@ -192,5 +192,17 @@ export class DriveScene extends Scene {
                 );
             }
         }
+    }
+
+    drawTime(ctx) {
+        ctx.fillStyle = "black";
+        ctx.font = "25px Arial";
+        ctx.textAlign = "left";
+        const minutes = Math.floor(this.elapsedTime / 60);
+        const seconds = Math.floor(this.elapsedTime % 60);
+        const commaSeconds = Math.floor((this.elapsedTime % 1) * 100);
+        const secondsString = `${seconds}`.padStart(2, '0');
+        const commaSecondsString = `${commaSeconds}`.padStart(2, '0');
+        ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
     }
 }

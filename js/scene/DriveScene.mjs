@@ -25,6 +25,8 @@ export class DriveScene extends Scene {
             const type = randomIngredientType();
             return new Ingredient(type, e.x, e.d);
         });
+        // ここに動く障害物を追加して管理する
+        this.stage.cars = [];
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -45,6 +47,7 @@ export class DriveScene extends Scene {
                 this.transitToNextScene()
             }, 1000);
         }
+        this.moveCars(deltaTime)
     }
 
     render(ctx) {
@@ -52,12 +55,14 @@ export class DriveScene extends Scene {
         const max_y = ctx.canvas.height;
 
         this.cameraDistance = Math.min(this.player.d - 10, this.stage.goalDistance - max_y / this.pixelSize - 1);
+        this.putCars(max_y);
 
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
 
         this.drawRoad(max_x, max_y, ctx);
         this.drawObstacle(max_x, max_y, ctx);
+        this.drawCars(max_x, max_y, ctx);
         this.drawIngredients(max_x, max_y, ctx);
         this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
@@ -110,6 +115,7 @@ export class DriveScene extends Scene {
     }
 
     roadX(d) {
+        if (d > this.stage.goalDistance) d = this.stage.goalDistance;
         let i = 0;
         while (this.stage.roadPoint[i+1].d < d) { i += 1; }
         const r = (d - this.stage.roadPoint[i].d) / (this.stage.roadPoint[i+1].d - this.stage.roadPoint[i].d);
@@ -117,6 +123,22 @@ export class DriveScene extends Scene {
         const left = center - this.stage.roadWidth / 2;
         const right = center + this.stage.roadWidth / 2;
         return { center: center, left: left, right: right };
+    }
+
+    putCars(max_y) {
+        const d = this.cameraDistance + max_y / this.pixelSize + 10;
+        const x = Math.random() * this.stage.roadWidth + this.roadX(d).left;
+        if (this.stage.cars.length < 2) {
+            this.stage.cars.push(makeObstacle(obstacleType.car, x, d));
+        }
+
+        this.stage.cars = this.stage.cars.filter((car) => car.d >= this.cameraDistance - 10);
+    }
+
+    moveCars(deltaTime) {
+        for (let i = 0 ; i < this.stage.cars.length; i++) {
+            this.stage.cars[i].updatePosition(deltaTime, this.roadX.bind(this))
+        }
     }
 
     drawRoad(max_x, max_y, ctx) {
@@ -162,6 +184,12 @@ export class DriveScene extends Scene {
     drawObstacle(max_x, max_y, ctx) {
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             this.stage.obstacles[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
+        }
+    }
+
+    drawCars(max_x, max_y, ctx) {
+        for (let i = 0; i < this.stage.cars.length; i++) {
+            this.stage.cars[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
         }
     }
 

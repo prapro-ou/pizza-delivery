@@ -8,23 +8,7 @@ export class Mud extends Obstacle {
         this.type = obstacleType.mud;
         this.image = new Image();
         this.image.src = '../../../resource/image/mud.png';
-    }
-
-    draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
-        const y = max_y - (this.d - cameraDistance) * pixelSize;
-        const x = this.x * pixelSize;
-        const scaleFactor = 1.5;
-
-        if (this.image.complete) {
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(
-                this.image,
-                x - this.image.width * scaleFactor / 2,
-                y - this.image.height * scaleFactor / 2,
-                this.image.width * scaleFactor,
-                this.image.height * scaleFactor,
-            );
-        }
+        this.scaleFactor = 1.5;
     }
 
     checkCollision(x, d) {

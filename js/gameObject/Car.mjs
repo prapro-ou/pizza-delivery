@@ -7,7 +7,7 @@ export class Car extends Obstacle {
         this.dSpeed = 20 + Math.random() * 20
         this.type = obstacleType.car;
         this.image = new Image();
-        this.image.src = '../../../resource/image/car_red.png';
+        this.image.src = 'resource/image/car_red.png';
     }
 
     updatePosition(deltaTime, roadX) {

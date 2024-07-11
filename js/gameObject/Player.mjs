@@ -7,7 +7,7 @@ export class Player {
         this.dControlSpeed = 30; // px/s
         this.dSpeed = 60; // px/s
         this.image = new Image();
-        this.image.src = '../../resource/image/rider.png';
+        this.image.src = 'resource/image/rider.png';
         this.theta = 0;
         this.inCollision = false;
     }

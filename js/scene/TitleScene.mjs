@@ -44,6 +44,17 @@ export class TitleScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
+
+        
+        r = { x: max_x / 2 + 100 , y: max_y / 2 + 225, w: 200, h: 50 };
+        this.endingCollectionButtonArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     didTap(x, y) {
@@ -58,6 +69,10 @@ export class TitleScene extends Scene {
         r = this.configButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.sceneRouter.changeScene(scenes.config);
+        }
+        r = this.endingCollectionButtonArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.changeScene(scenes.endingCollection);
         }
     }
 }

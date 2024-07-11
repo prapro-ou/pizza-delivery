@@ -15,5 +15,5 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-sceneManager.changeScene(scenes.title);
+sceneManager.changeScene(scenes.drive);
 requestAnimationFrame(gameLoop);

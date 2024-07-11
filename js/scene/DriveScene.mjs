@@ -105,6 +105,12 @@ export class DriveScene extends Scene {
                 obstacle.handleCollision(this.player, this.roadX(this.player.d));
             }
         }
+        for (let i = 0; i < this.stage.cars.length; i++) {
+            const car = this.stage.cars[i];
+            if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                car.handleCollision(this.player, this.roadX(this.player.d));
+            }
+        }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
             const ingredient = this.stage.ingredients[i];
             if (ingredient.checkCollision(this.player.x, this.player.d)) {

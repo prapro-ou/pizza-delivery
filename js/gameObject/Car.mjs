@@ -15,4 +15,17 @@ export class Car extends Obstacle {
         this.x += roadX(new_d).center - roadX(this.d).center;
         this.d = new_d;
     }
+
+    checkCollision(x, d, pixelSize) {
+        return Math.abs(this.x - x) <= this.image.width / (2 * pixelSize) && Math.abs(this.d - d) <= this.image.height / (2 * pixelSize);
+    }
+
+    handleCollision(player, roadX) {
+        player.inCollision = true;
+        setTimeout(() => {
+            player.inCollision = false;
+            player.x = roadX.center;
+        }, 1000);
+    }
 }
+

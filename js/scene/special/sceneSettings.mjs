@@ -2,6 +2,7 @@ import { TitleScene } from "../TitleScene.mjs";
 import { ArasujiScene } from "../ArasujiScene.mjs";
 import { SlotSelectionScene } from "../SlotSelectionScene.mjs";
 import { ConfigScene } from "../ConfigScene.mjs";
+import { PizzaCollectionScene } from "../PizzaCollectionScene.mjs";
 import { EndingCollectionScene} from "../EndingCollectionScene.mjs";
 import { RuleScene } from "../RuleScene.mjs";
 import { StageSelectionScene } from "../StageSelectionScene.mjs";
@@ -12,6 +13,7 @@ export const scenes = {
     arasuji: "scene-arasuji",
     slotSelection: "scene-slotSelection",
     config: "scene-config",
+    pizzaCollection: "scene-pizzaCollection",
     endingCollection: "secen-endingCollection",
     rule: "scene-rule",
     stageSelection: "scene-stageSelection"
@@ -40,6 +42,10 @@ export function makeScene(scene, sceneRouter, sharedData) {
 
         case scenes.stageSelection:
             return new StageSelectionScene(sceneRouter, sharedData);
+
+        case scenes.pizzaCollection:
+            return new PizzaCollectionScene(sceneRouter, sharedData);
+
 
         default:
             console.error(`makeSceneに未定義のシーンが渡されました：${scene}`)

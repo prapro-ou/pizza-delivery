@@ -48,7 +48,7 @@ export class TitleScene extends Scene {
         
         r = { x: max_x / 2 - 250, y: max_y / 2 + 225, w: 200, h: 50 };
         this.PizzaCollectionArea = r;
-        this.configButtonArea = r;
+
         ctx.fillStyle = "blue";
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.fillStyle = "white";
@@ -74,7 +74,7 @@ export class TitleScene extends Scene {
             this.sceneRouter.changeScene(scenes.arasuji);
         }
         r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
             this.sceneRouter.changeScene(scenes.slotSelection);
         }
         r = this.configButtonArea;

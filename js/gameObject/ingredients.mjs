@@ -17,15 +17,15 @@ export function imageForIngredient(type) {
 
     switch (type) {
         case ingredientType.basil:
-            image.src = 'resource/image/ingredients/basil.png';
+            image.src = 'resource/image/ingredient/basil.png';
             break;
 
         case ingredientType.cheese:
-            image.src = 'resource/image/ingredients/cheese.png';
+            image.src = 'resource/image/ingredient/cheese.png';
             break;
 
         case ingredientType.tomato:
-            image.src = 'resource/image/ingredients/tomato.png';
+            image.src = 'resource/image/ingredient/tomato.png';
             break;
 
         default:

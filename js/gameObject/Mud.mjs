@@ -7,7 +7,7 @@ export class Mud extends Obstacle {
         super(x, d);
         this.type = obstacleType.mud;
         this.image = new Image();
-        this.image.src = '../../../resource/image/mud.png';
+        this.image.src = '../../resource/image/mud.png';
         this.scaleFactor = 1.5;
     }
 

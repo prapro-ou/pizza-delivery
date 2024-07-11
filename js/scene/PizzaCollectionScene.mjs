@@ -25,16 +25,16 @@ export class PizzaCollectionScene extends Scene {
             squid: new Image(),
         };
         
-        this.pizzaImages.margherita.src = "../../resources/image/margherita.png";
-        this.pizzaImages.marinara.src = "../../resources/image/marinara.png";
-        this.pizzaImages.seafood.src = "../../resources/image/seafood.png"
+        this.pizzaImages.margherita.src = "resource/image/pizza/margherita.png";
+        this.pizzaImages.marinara.src = "resource/image/pizza/marinara.png";
+        this.pizzaImages.seafood.src = "resource/image/pizza/seafood.png"
 
-        this.ingredientImages.cheese.src = "../../resources/image/cheese.png";
-        this.ingredientImages.basil.src = "../../resources/image/basil.png";
-        this.ingredientImages.octopus.src = "../../resources/image/octopus.png";
-        this.ingredientImages.tomato.src = "../../resources/image/tomato.png";
-        this.ingredientImages.onion.src = "../../resources/image/onion.png";
-        this.ingredientImages.squid.src = "../../resources/image/squid.png";
+        this.ingredientImages.cheese.src = "resource/image/ingredient/cheese.png";
+        this.ingredientImages.basil.src = "resource/image/ingredient/basil.png";
+        this.ingredientImages.octopus.src = "resource/image/ingredient/octopus.png";
+        this.ingredientImages.tomato.src = "resource/image/ingredient/tomato.png";
+        this.ingredientImages.onion.src = "resource/image/ingredient/onion.png";
+        this.ingredientImages.squid.src = "resource/image/ingredient/squid.png";
 
 
         this.imagesLoaded = 0;

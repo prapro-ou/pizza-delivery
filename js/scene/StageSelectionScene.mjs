@@ -43,6 +43,6 @@ export class StageSelectionScene extends Scene {
     }
 
     didTapStage(stage_index) {
-        console.log(`stage ${stage_index+1}`);
+        this.sceneRouter.changeScene(scenes.drive);
     }
 }

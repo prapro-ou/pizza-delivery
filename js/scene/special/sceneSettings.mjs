@@ -12,7 +12,7 @@ export const scenes = {
     arasuji: "scene-arasuji",
     slotSelection: "scene-slotSelection",
     config: "scene-config",
-    endingCollection: "secen-endingCollection"
+    endingCollection: "secen-endingCollection",
     rule: "scene-rule",
     stageSelection: "scene-stageSelection"
 }

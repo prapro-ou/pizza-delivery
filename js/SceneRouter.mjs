@@ -1,4 +1,30 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
+import { convertToKey, parseJSONData } from "./dataObject/cookieKeysSettings.mjs";
+
+// Cookie操作をするためのクラス
+class CookieHandler {
+    // Cookieに保存する関数
+    save(cookieKey, value) {
+        const key = convertToKey(cookieKey);
+        let jsonData = JSON.stringify(value);
+        jsonData = encodeURIComponent(jsonData);
+        document.cookie = `${key}=${jsonData}; path=/;`;
+    }
+
+    // Cookieから読み込む関数
+    load(cookieKey) {
+        const cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            const [key, value] = cookieArray[i].trim().split('=');
+            if (key == convertToKey(cookieKey)) {
+                const jsonData = decodeURIComponent(value);
+                const data = JSON.parse(jsonData);
+                return parseJSONData(cookieKey, data);
+            }
+        }
+        return null;
+    }
+}
 
 // シーンの生成と画面遷移を行うクラス
 export class SceneRouter {
@@ -52,6 +78,8 @@ export class SceneRouter {
         document.addEventListener("keyup", function(e) {
             this.pressedKeys.delete(e.key)
         }.bind(this));
+
+        this.cookieHandler = new CookieHandler();
     }
 
     // 画面遷移の処理
@@ -64,6 +92,16 @@ export class SceneRouter {
         this.sharedData = { ...this.sharedData, ...data };
         this.currentScene = makeScene(newScene, this, this.sharedData)
         this.currentScene.sceneWillAppear();
+    }
+
+    // Cookieに読み込み
+    save(cookieKey, value) {
+        this.cookieHandler.save(cookieKey, value)
+    }
+
+    // Cookieから読み込み
+    load(cookieKey) {
+        return this.cookieHandler.load(cookieKey);
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される

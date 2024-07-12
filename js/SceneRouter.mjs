@@ -39,9 +39,8 @@ export class SceneRouter {
         // Canvas内がクリックされたら didTap を呼び出す
         this.canvas.addEventListener("click", function(e) {
             if (this.currentScene && this.currentScene.didTap) {
-                const x = e.offsetX;
-                const y = e.offsetY;
-                this.currentScene.didTap(x, y);
+                const pos = this.getCanvasMousePosition(e);
+                this.currentScene.didTap(pos.x, pos.y);
             }
         }.bind(this));
 
@@ -65,9 +64,9 @@ export class SceneRouter {
             this.mouse.isDown = false;
         }.bind(this));
         this.canvas.addEventListener("mousemove", function(e) {
-            let rect = e.target.getBoundingClientRect();
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
+            const pos = this.getCanvasMousePosition(e)
+            this.mouse.x = pos.x;
+            this.mouse.y = pos.y;
         }.bind(this));
 
         // キーに関する情報を追跡する
@@ -116,5 +115,17 @@ export class SceneRouter {
         if (this.currentScene) {
             this.currentScene.render(this.ctx);
         }
+    }
+
+    // マウスの位置を計算する
+    getCanvasMousePosition(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+
+        return { x, y };
     }
 }

@@ -22,9 +22,12 @@ requestAnimationFrame(gameLoop);
 
 // import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
 // import { pizzas } from "./gameObject/pizzas.mjs";
+// import { endings } from "./gameObject/endings.mjs";
 // import { Slot } from "./dataObject/Slot.mjs";
 // import { StageResult } from "./dataObject/stageResult.mjs";
 // import { UserConfig } from "./dataObject/UserConfig.mjs";
+// import { PizzaInfo } from "./dataObject/PizzaInfo.mjs";
+// import { EndingInfo } from "./dataObject/endingInfo.mjs";
 
 // // Cookie入出力の動作確認用
 // function testCookie() {
@@ -35,16 +38,37 @@ requestAnimationFrame(gameLoop);
 //     slot2.appendStageResult(new StageResult(1, 50, pizzas.seafood))
 //     let slots = [slot1, slot2];
 
-
 //     sceneRouter.save(cookieKeys.slots, slots);
 //     const loadedSlotList = sceneRouter.load(cookieKeys.slots);
 //     console.log(loadedSlotList);
+
 
 //     let userConfig = new UserConfig(50, 60);
 
 //     sceneRouter.save(cookieKeys.userConfig, userConfig);
 //     const loadedUserConfig = sceneRouter.load(cookieKeys.userConfig);
 //     console.log(loadedUserConfig);
+
+
+//     let pizzaInfo = new PizzaInfo();
+//     pizzaInfo.unlock(pizzas.margherita);
+//     pizzaInfo.unlock(pizzas.margherita);
+//     pizzaInfo.unlock(pizzas.seafood);
+
+//     sceneRouter.save(cookieKeys.pizzaInfo, pizzaInfo);
+//     const loadedPizzaInfo = sceneRouter.load(cookieKeys.pizzaInfo);
+//     console.log(loadedPizzaInfo);
+
+
+//     let endingInfo = new EndingInfo();
+//     endingInfo.unlock(endings.イタリア人ぶち切れエンド);
+//     endingInfo.unlock(endings.ピザ生地職人エンド)
+//     endingInfo.unlock(endings.入院エンド);
+//     endingInfo.unlock(endings.入院エンド);
+
+//     sceneRouter.save(cookieKeys.endingInfo, endingInfo);
+//     const loadedEndingInfo = sceneRouter.load(cookieKeys.endingInfo);
+//     console.log(loadedEndingInfo);
 // }
 
 // testCookie();

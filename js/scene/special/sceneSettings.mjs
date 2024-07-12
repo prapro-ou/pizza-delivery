@@ -7,6 +7,7 @@ import { EndingCollectionScene} from "../EndingCollectionScene.mjs";
 import { RuleScene } from "../RuleScene.mjs";
 import { StageSelectionScene } from "../StageSelectionScene.mjs";
 import { DriveScene } from "../DriveScene.mjs";
+import { ScoreResultScene } from "../ScoreResultScene.mjs";
 
 // すべてのシーンの列挙した連想配列
 export const scenes = {
@@ -15,10 +16,11 @@ export const scenes = {
     slotSelection: "scene-slotSelection",
     config: "scene-config",
     pizzaCollection: "scene-pizzaCollection",
-    endingCollection: "secen-endingCollection",
+    endingCollection: "scene-endingCollection",
     rule: "scene-rule",
     stageSelection: "scene-stageSelection",
     drive: "scene-drive",
+    scoreResult: "score-result",
 }
 
 // シーンを生成する方法を記述した関数
@@ -50,6 +52,9 @@ export function makeScene(scene, sceneRouter, sharedData) {
 
         case scenes.pizzaCollection:
             return new PizzaCollectionScene(sceneRouter, sharedData);
+        
+        case scenes.scoreResult:
+            return new ScoreResultScene(sceneRouter, sharedData);
 
 
         default:

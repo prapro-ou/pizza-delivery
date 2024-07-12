@@ -15,5 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-sceneManager.changeScene(scenes.title);
+
+// 遷移元が未実装のため、初期画面をスコアリザルト画面に設定
+sceneManager.changeScene(scenes.scoreResult);
 requestAnimationFrame(gameLoop);

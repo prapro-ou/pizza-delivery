@@ -15,19 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-
-import { ingredientType } from "./gameObject/ingredients.mjs";
-sceneRouter.sharedData.collectedIngredients = [
-    ingredientType.basil,
-    ingredientType.basil,
-    ingredientType.tomato,
-    ingredientType.tomato,
-    ingredientType.squid,
-    ingredientType.cheese,
-    ingredientType.onion,
-    ingredientType.octopus,
-]
-sceneRouter.changeScene(scenes.cooking);
+sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 

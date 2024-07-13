@@ -173,8 +173,7 @@ export class DriveScene extends Scene {
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
                 ctx.fillStyle = "white";
-                const roadCenter = Math.round(center * 3) / 3;
-                ctx.fillRect(roadCenter * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+                ctx.fillRect(center * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
             }
             // 道路の境界
             ctx.fillStyle = "black";

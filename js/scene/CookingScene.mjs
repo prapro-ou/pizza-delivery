@@ -7,8 +7,9 @@ export class CookingScene extends Scene {
         this.collectedIngredients = this.sharedData.collectedIngredients;
         for (let ingredient in this.collectedIngredients) {
             console.log(`${ingredient} が ${this.collectedIngredients[ingredient]} 個`);
-        this.selectedIngredients = [];
         }
+        this.selectedIngredients = [];
+        this.errorShowing = false;
     }
 
     updateStates(deltaTime) {}
@@ -27,8 +28,14 @@ export class CookingScene extends Scene {
         ctx.font = "50px Arial";
         // ctx.fillText("→", maxX / 2, maxY / 2 + );
 
+        this.drawCollectedIngredients(ctx, 100, 120, 200, maxY - 230);
 
-        this.drawCollectedIngredients(ctx, 100, 157, 200, maxY - 230);
+        if (this.errorShowing) {
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "red"
+            ctx.fillText("選択できるのは4つまでです", 200, maxY - 80);
+        }
     }
 
     drawCollectedIngredients(ctx, x, y, width, height) {
@@ -51,6 +58,10 @@ export class CookingScene extends Scene {
                     width: image.width * scaleFactor,
                     height: image.height * scaleFactor,
                 };
+                if (this.selectedIngredients.includes(place)) {
+                    ctx.fillStyle = 'yellow';
+                    ctx.fillRect(pos.x - 3, pos.y - 3, pos.width + 6, pos.height + 6);
+                }
                 this.ingredientPositions.push(pos);
                 if (image.complete) {
                     ctx.imageSmoothingEnabled = false;
@@ -71,13 +82,14 @@ export class CookingScene extends Scene {
             ) {
                 if (this.selectedIngredients.includes(i)) {
                     this.selectedIngredients = this.selectedIngredients.filter((e) => e != i);
-                } else {
+                    this.errorShowing = false;
+                } else if (this.selectedIngredients.length < 4) {
                     this.selectedIngredients.push(i);
+                } else {
+                    this.errorShowing = true;
                 }
-                console.log(this.selectedIngredients);
                 break;
             }
         }
-    }s
-
+    }
 }

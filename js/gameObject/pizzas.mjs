@@ -7,6 +7,13 @@ export const pizzas = {
     seafood: "pizza.seafood",
 }
 
+// ピザの表示名
+export const pizzaName = {
+    [pizzas.margherita]: "マルゲリータ",
+    [pizzas.marinara]: "マリナーラ",
+    [pizzas.seafood]: "シーフードピザ",
+}
+
 // ピザを作るのに必要な素材の表
 export const recipe = {
     [pizzas.marinara]: [ingredientType.tomato, ingredientType.onion, ingredientType.basil],

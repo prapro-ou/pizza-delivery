@@ -1,7 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
-import { getPizza, imageForPizza } from '../gameObject/pizzas.mjs';
+import { getPizza, imageForPizza, pizzaName } from '../gameObject/pizzas.mjs';
 
 export class CookingScene extends Scene {
     sceneWillAppear() {
@@ -38,7 +38,7 @@ export class CookingScene extends Scene {
         ctx.fillStyle = "black";
         ctx.fillText("→", maxX / 2, maxY / 2 );
 
-        this.drawPizza(ctx, 490, 120, 230, 230);
+        this.drawPizza(ctx, 495, 120, 220, 250);
         this.drawSelectedIngredients(ctx, 490, 400, 230, 120);
     }
 
@@ -76,9 +76,15 @@ export class CookingScene extends Scene {
 
     drawPizza(ctx, x, y, width, height) {
         if (!this.pizza) return;
-        const image = imageForPizza(this.pizza)
+        const name = pizzaName[this.pizza];
+        const image = imageForPizza(this.pizza);
         if (image.complete) {
-            ctx.drawImage(image, x, y, width, height);
+            ctx.drawImage(image, x, y + height - width, width, width);
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "black";
+            ctx.fillText(`${name}`, x + width / 2, y + 20);
+
         }
     }
 

@@ -19,6 +19,10 @@ export const stage1 =
         {type: obstacleType.mud, d: 507, x: 27},
         {type: obstacleType.mud, d: 248, x: 78},
         {type: obstacleType.mud, d: 111, x: 37},
+        {type: obstacleType.speedingBoard, d: 100, x: 58},
+        {type: obstacleType.speedingBoard, d: 392, x: 61},
+        {type: obstacleType.speedingBoard, d: 587, x: 51},
+        {type: obstacleType.speedingBoard, d: 744, x: 56},
     ],
     ingredients: [
         {d: 86, x: 52},

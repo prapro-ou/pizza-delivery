@@ -44,7 +44,7 @@ export class DriveScene extends Scene {
         }
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
-            this.checkCollision();
+            this.checkCollision(deltaTime);
         }
         if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
             this.goalFlg = true;
@@ -101,7 +101,7 @@ export class DriveScene extends Scene {
         console.log("次の画面に遷移します。");
     }
 
-    checkCollision() {
+    checkCollision(deltaTime) {
         const { center, left, right } = this.roadX(this.player.d);
         if (this.player.x < left || this.player.x > right) {
             this.player.inCollision = true
@@ -112,8 +112,8 @@ export class DriveScene extends Scene {
         }
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
-            if (obstacle.checkCollision(this.player.x, this.player.d)) {
-                obstacle.handleCollision(this.player, this.roadX(this.player.d));
+            if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                obstacle.handleCollision(this.player, this.roadX(this.player.d), deltaTime);
             }
         }
         for (let i = 0; i < this.stage.cars.length; i++) {

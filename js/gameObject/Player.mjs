@@ -3,9 +3,11 @@ export class Player {
     constructor(x) {
         this.x = x;
         this.d = 0;
-        this.xControlSpeed = 30; // px/s
+        this.xControlSpeed = 20; // px/s
         this.dControlSpeed = 30; // px/s
-        this.dSpeed = 60; // px/s
+        this.dSpeed = 50; // px/s
+        this.dBoostedSpeed = 0; // 加速板でブーストされた速度
+        this.dBoostedSpeedDecay = 60; // 加速板でブーストされた速度の減衰速度 px/s^2
         this.image = new Image();
         this.image.src = 'resource/image/rider.png';
         this.theta = 0;
@@ -40,7 +42,8 @@ export class Player {
 
     updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed) {
         if (this.inCollision) return;
-        this.d += this.dSpeed * deltaTime / 1000
+        this.d += (this.dSpeed + this.dBoostedSpeed) * deltaTime / 1000
+        this.dBoostedSpeed = Math.max(0, this.dBoostedSpeed - this.dBoostedSpeedDecay * deltaTime / 1000)
         if (leftPressed) {
             this.x -= this.xControlSpeed * deltaTime / 1000
         }

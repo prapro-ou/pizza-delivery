@@ -88,6 +88,7 @@ export class DriveScene extends Scene {
         this.sharedData.collectedIngredients = occurrences;
         console.log(occurrences);
         console.log("次の画面に遷移します。");
+        this.sceneRouter.changeScene(scenes.scoreResult);
     }
 
     checkCollision() {
@@ -221,6 +222,7 @@ export class DriveScene extends Scene {
             }
         }
     }
+    
 
     drawTime(ctx) {
         ctx.fillStyle = "black";

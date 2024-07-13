@@ -104,23 +104,19 @@ export class DriveScene extends Scene {
     checkCollision(deltaTime) {
         const { center, left, right } = this.roadX(this.player.d);
         if (this.player.x < left || this.player.x > right) {
-            this.player.inCollision = true
-            setTimeout(() => {
-                this.player.inCollision = false
-                this.player.x = center;
-            }, 1000);
+            this.player.collideAndBackToCenter(this.roadX.bind(this));
         }
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
             if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
-                obstacle.handleCollision(this.player, this.roadX(this.player.d), deltaTime);
+                obstacle.handleCollision(this.player, this.roadX.bind(this), deltaTime);
             }
         }
         for (let i = 0; i < this.stage.cars.length; i++) {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
                 this.gameOverFlg = true;
-                car.handleCollision(this.player, this.roadX(this.player.d));
+                car.handleCollision(this.player, this.roadX.bind(this));
             }
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {

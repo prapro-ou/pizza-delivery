@@ -76,16 +76,7 @@ export class DriveScene extends Scene {
     }
 
     transitToNextScene() {
-        const occurrences = {};
-        for (let i = 0; i < this.collectedIngredients.length; i++) {
-            const ingredient = this.collectedIngredients[i];
-            if (occurrences[ingredient]) {
-                occurrences[ingredient]++;
-            } else {
-                occurrences[ingredient] = 1;
-            }
-        }
-        this.sharedData.collectedIngredients = occurrences;
+        this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sceneRouter.changeScene(scenes.cooking);
     }
 

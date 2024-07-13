@@ -5,6 +5,13 @@ export const ingredientType = {
     basil: "ingredientType.basil",
 }
 
+// 食材の表示名
+export const ingredientName = {
+    [ingredientType.tomato]: "トマト",
+    [ingredientType.cheese]: "チーズ",
+    [ingredientType.basil]: "バジル",
+}
+
 // ランダムなingredientTypeを返す関数
 export function randomIngredientType() {
     const ingredientTypes = Object.values(ingredientType);

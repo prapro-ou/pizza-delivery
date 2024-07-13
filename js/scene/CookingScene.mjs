@@ -1,14 +1,11 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { imageForIngredient } from '../gameObject/ingredients.mjs';
+import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
 
 export class CookingScene extends Scene {
     sceneWillAppear() {
         this.collectedIngredients = this.sharedData.collectedIngredients;
-        for (let ingredient in this.collectedIngredients) {
-            console.log(`${ingredient} が ${this.collectedIngredients[ingredient]} 個`);
-        }
-        this.selectedIngredients = [];
+        this.selectedIndices = [];
         this.errorShowing = false;
     }
 
@@ -25,9 +22,6 @@ export class CookingScene extends Scene {
         ctx.textAlign = "left";
         ctx.fillText("調理画面", 50, 50);
 
-        ctx.font = "50px Arial";
-        // ctx.fillText("→", maxX / 2, maxY / 2 + );
-
         this.drawCollectedIngredients(ctx, 100, 120, 200, maxY - 230);
 
         if (this.errorShowing) {
@@ -36,6 +30,13 @@ export class CookingScene extends Scene {
             ctx.fillStyle = "red"
             ctx.fillText("選択できるのは4つまでです", 200, maxY - 80);
         }
+
+        ctx.font = "50px Arial";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "black";
+        ctx.fillText("→", maxX / 2, maxY / 2 );
+
+        this.drawSelectedIngredients(ctx, 490, 400, 230, 120);
     }
 
     drawCollectedIngredients(ctx, x, y, width, height) {
@@ -45,30 +46,40 @@ export class CookingScene extends Scene {
 
         let place = 0;
         this.ingredientPositions = [];
-        for (let ingredient in this.collectedIngredients) {
-            for (let i = 0; i < this.collectedIngredients[ingredient]; i++) {
-                // 左から Math.floor(place / 4) 番目 上から place % 4 番目の場所に描画
-                const image = imageForIngredient(ingredient);
-                const ix = x + Math.floor(place / 4) * (width / 2) + (width / 4);
-                const iy = y + place % 4 * (height / 4) + 45;
-                const scaleFactor = 2.5;
-                const pos = {
-                    x: ix - image.width * scaleFactor / 2,
-                    y: iy - image.height * scaleFactor / 2,
-                    width: image.width * scaleFactor,
-                    height: image.height * scaleFactor,
-                };
-                if (this.selectedIngredients.includes(place)) {
+        for (let place = 0; place < this.collectedIngredients.length; place++) {
+            const ingredient = this.collectedIngredients[place];
+            // 左から Math.floor(place / 4) 番目 上から place % 4 番目の場所に描画
+            const image = imageForIngredient(ingredient);
+            const ix = x + Math.floor(place / 4) * (width / 2) + (width / 4);
+            const iy = y + place % 4 * (height / 4) + 45;
+            const scaleFactor = 2.5;
+            const pos = {
+                x: ix - image.width * scaleFactor / 2,
+                y: iy - image.height * scaleFactor / 2,
+                width: image.width * scaleFactor,
+                height: image.height * scaleFactor,
+            };
+            if (image.complete) {
+                if (this.selectedIndices.includes(place)) {
                     ctx.fillStyle = 'yellow';
                     ctx.fillRect(pos.x - 3, pos.y - 3, pos.width + 6, pos.height + 6);
                 }
-                this.ingredientPositions.push(pos);
-                if (image.complete) {
-                    ctx.imageSmoothingEnabled = false;
-                    ctx.drawImage(image, pos.x, pos.y, pos.width, pos.height);
-                }
-                place++;
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(image, pos.x, pos.y, pos.width, pos.height);
             }
+            this.ingredientPositions.push(pos);
+        }
+    }
+
+    drawSelectedIngredients(ctx, x, y, width, height) {
+        ctx.fillStyle = "gainsboro";
+        ctx.fillRect(x, y, width, height);
+        for (let i = 0; i < this.selectedIndices.length; i++) {
+            const ingredient = this.collectedIngredients[this.selectedIndices[i]];
+            ctx.font = "20px Arial";
+            ctx.textAlign = "left";
+            ctx.fillStyle = "black";
+            ctx.fillText(`・${ingredientName[ingredient]}`, x+10, y + i * (height / 4) + 20, );
         }
     }
 
@@ -80,11 +91,12 @@ export class CookingScene extends Scene {
                 y >= this.ingredientPositions[i].y &&
                 y <= this.ingredientPositions[i].y + this.ingredientPositions[i].height
             ) {
-                if (this.selectedIngredients.includes(i)) {
-                    this.selectedIngredients = this.selectedIngredients.filter((e) => e != i);
+                if (this.selectedIndices.includes(i)) {
+                    this.selectedIndices = this.selectedIndices.filter((e) => e != i);
                     this.errorShowing = false;
-                } else if (this.selectedIngredients.length < 4) {
-                    this.selectedIngredients.push(i);
+                } else if (this.selectedIndices.length < 4) {
+                    this.selectedIndices.push(i);
+                    
                 } else {
                     this.errorShowing = true;
                 }

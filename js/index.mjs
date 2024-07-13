@@ -22,8 +22,10 @@ sceneRouter.sharedData.collectedIngredients = [
     ingredientType.basil,
     ingredientType.tomato,
     ingredientType.tomato,
-    ingredientType.tomato,
-    ingredientType.cheese
+    ingredientType.squid,
+    ingredientType.cheese,
+    ingredientType.onion,
+    ingredientType.octopus,
 ]
 sceneRouter.changeScene(scenes.cooking);
 requestAnimationFrame(gameLoop);

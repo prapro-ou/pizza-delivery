@@ -1,12 +1,14 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
+import { getPizza, imageForPizza } from '../gameObject/pizzas.mjs';
 
 export class CookingScene extends Scene {
     sceneWillAppear() {
         this.collectedIngredients = this.sharedData.collectedIngredients;
         this.selectedIndices = [];
         this.errorShowing = false;
+        this.pizza = null;
     }
 
     updateStates(deltaTime) {}
@@ -36,6 +38,7 @@ export class CookingScene extends Scene {
         ctx.fillStyle = "black";
         ctx.fillText("→", maxX / 2, maxY / 2 );
 
+        this.drawPizza(ctx, 490, 120, 230, 230);
         this.drawSelectedIngredients(ctx, 490, 400, 230, 120);
     }
 
@@ -71,6 +74,14 @@ export class CookingScene extends Scene {
         }
     }
 
+    drawPizza(ctx, x, y, width, height) {
+        if (!this.pizza) return;
+        const image = imageForPizza(this.pizza)
+        if (image.complete) {
+            ctx.drawImage(image, x, y, width, height);
+        }
+    }
+
     drawSelectedIngredients(ctx, x, y, width, height) {
         ctx.fillStyle = "gainsboro";
         ctx.fillRect(x, y, width, height);
@@ -94,9 +105,12 @@ export class CookingScene extends Scene {
                 if (this.selectedIndices.includes(i)) {
                     this.selectedIndices = this.selectedIndices.filter((e) => e != i);
                     this.errorShowing = false;
+                    const selectedIngredients = this.selectedIndices.map((i) => this.collectedIngredients[i]);
+                    this.pizza = getPizza(selectedIngredients);
                 } else if (this.selectedIndices.length < 4) {
                     this.selectedIndices.push(i);
-                    
+                    const selectedIngredients = this.selectedIndices.map((i) => this.collectedIngredients[i]);
+                    this.pizza = getPizza(selectedIngredients);
                 } else {
                     this.errorShowing = true;
                 }

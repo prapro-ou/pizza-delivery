@@ -38,6 +38,26 @@ export class CookingScene extends Scene {
         ctx.fillStyle = "black";
         ctx.fillText("→", maxX / 2, maxY / 2 );
 
+        let r = { x: maxX - 150, y: 25, w: 100, h: 40 };
+        this.PizzaRecipeArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "18px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("ピザレシピ", r.x + r.w / 2, r.y + r.h / 2);
+
+        r = { x: maxX - 240, y: maxY - 80, w: 100, h: 45 };
+        this.decisionArea = r;
+        ctx.fillStyle = "blue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "white";
+        ctx.font = "22px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("決定", r.x + r.w / 2, r.y + r.h / 2);
+
         this.drawPizza(ctx, 495, 120, 220, 250);
         this.drawSelectedIngredients(ctx, 490, 400, 230, 120);
     }
@@ -122,6 +142,16 @@ export class CookingScene extends Scene {
                 }
                 break;
             }
+        }
+
+        let r = this.PizzaRecipeArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            console.log("ピザレシピ画面に移動")
+        }
+
+        r = this.decisionArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            console.log("PizzaResultSceneに移動")
         }
     }
 }

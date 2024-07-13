@@ -84,6 +84,9 @@ export class DriveScene extends Scene {
     }
 
     transitToNextScene() {
+        this.sharedData.targetTime = this.stage.targetTime;
+        this.sharedData.elapsedTime = this.elapsedTime;
+        console.log(this.sharedData.targetTime, this.sharedData.elapsedTime);
         const occurrences = {};
         for (let i = 0; i < this.collectedIngredients.length; i++) {
             const ingredient = this.collectedIngredients[i];

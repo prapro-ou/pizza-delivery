@@ -34,7 +34,7 @@ export const stage1 =
         {d: 807, x: 65},
         {d: 940, x: 36},
     ],
-    roadWidth: 40,
+    roadWidth: 35,
     goalDistance: 1000,
     targetTime: 17,
 };

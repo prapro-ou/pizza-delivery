@@ -8,6 +8,7 @@ export class Car extends Obstacle {
         this.type = obstacleType.car;
         this.image = new Image();
         this.image.src = 'resource/image/car_red.png';
+        this.scaleFactor = 1.5;
     }
 
     updatePosition(deltaTime, roadX) {
@@ -17,7 +18,7 @@ export class Car extends Obstacle {
     }
 
     checkCollision(x, d, pixelSize) {
-        return Math.abs(this.x - x) <= this.image.width / (2 * pixelSize) && Math.abs(this.d - d) <= this.image.height / (2 * pixelSize);
+        return Math.abs(this.x - x) <= this.image.width * this.scaleFactor / (2 * pixelSize) && Math.abs(this.d - d) <= this.image.height * this.scaleFactor / (2 * pixelSize);
     }
 
     handleCollision(player, roadX) {

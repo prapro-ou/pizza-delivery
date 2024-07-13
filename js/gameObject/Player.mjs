@@ -17,7 +17,7 @@ export class Player {
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
-        const scaleFactor = 1.5;
+        const scaleFactor = 1.4;
         const centerX = x - this.image.width * scaleFactor / 2;
         const centerY = y - this.image.height * scaleFactor / 2;
 
@@ -37,6 +37,9 @@ export class Player {
                 this.image.height * scaleFactor
             );
             ctx.restore();
+            // // 当たり判定の確認用
+            // ctx.fillStyle = "blue"
+            // ctx.fillRect(x-4, y-4, 8, 8)
         }
     }
 

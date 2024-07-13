@@ -22,5 +22,8 @@ export class Obstacle {
                 this.image.height * this.scaleFactor,
             );
         }
+        // // 当たり判定の確認用
+        // ctx.fillStyle = "rgba(" + [255, 0, 255, 0.5] + ")";
+        // ctx.fillRect(x - this.image.width * this.scaleFactor / 2, y - this.image.height * this.scaleFactor / 2, this.image.width * this.scaleFactor, this.image.height * this.scaleFactor)
     }
 }

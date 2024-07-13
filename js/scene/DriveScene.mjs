@@ -161,6 +161,8 @@ export class DriveScene extends Scene {
 
     drawRoad(max_x, max_y, ctx) {
         const whiteLineSpacing = 10;
+        const nWhiteLine = 2;
+        const whiteLineWidth = this.pixelSize * 0.8;
         let goalSquareSize = 1.7;
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             const { center, left, right } = this.roadX(d);
@@ -173,7 +175,11 @@ export class DriveScene extends Scene {
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
                 ctx.fillStyle = "white";
-                ctx.fillRect(center * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+                for (let i = 0; i < nWhiteLine; i++) {
+                    const ratio = (i + 1) / (nWhiteLine + 1)
+                    const x = left * (1 - ratio) + right * ratio
+                    ctx.fillRect(x * this.pixelSize - whiteLineWidth / 2, max_y - ((d - this.cameraDistance) * this.pixelSize), whiteLineWidth, this.pixelSize);
+                }
             }
             // 道路の境界
             ctx.fillStyle = "black";
@@ -253,7 +259,7 @@ export class DriveScene extends Scene {
 
     drawGameOver(ctx, max_x, max_y) {
         if (this.gameOverAnimationTime >= 1.0) {
-            ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";;
+            ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
             ctx.fillRect(0, 0, max_x, max_y);
 
             ctx.fillStyle = "red";

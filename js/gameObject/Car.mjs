@@ -22,10 +22,6 @@ export class Car extends Obstacle {
 
     handleCollision(player, roadX) {
         player.inCollision = true;
-        setTimeout(() => {
-            player.inCollision = false;
-            player.x = roadX.center;
-        }, 1000);
     }
 }
 

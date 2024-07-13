@@ -17,6 +17,8 @@ export class DriveScene extends Scene {
         this.collectedIngredients = [];
         this.goalFlg = false;
         this.elapsedTime = 0.0;
+        this.gameOverFlg = false;
+        this.gameOverAnimationTime = 0.0;
 
         // this.stage.obstacles をクラスに変換
         this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
@@ -34,8 +36,11 @@ export class DriveScene extends Scene {
         const rightPressed = pressedKeys.has("ArrowRight");
         const upPressed = pressedKeys.has("ArrowUp");
         const downPressed = pressedKeys.has("ArrowDown");
-        if (!this.goalFlg) { 
+        if (!this.goalFlg && !this.gameOverFlg) {
             this.elapsedTime += deltaTime / 1000;
+        }
+        if (this.gameOverFlg) {
+            this.gameOverAnimationTime += deltaTime / 1000;
         }
         this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
         if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
@@ -73,6 +78,9 @@ export class DriveScene extends Scene {
 
         this.drawTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
+        if (this.gameOverFlg) {
+            this.drawGameOver(ctx, max_x, max_y);
+        }
     }
 
     transitToNextScene() {
@@ -108,6 +116,7 @@ export class DriveScene extends Scene {
         for (let i = 0; i < this.stage.cars.length; i++) {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                this.gameOverFlg = true;
                 car.handleCollision(this.player, this.roadX(this.player.d));
             }
         }
@@ -238,5 +247,52 @@ export class DriveScene extends Scene {
         const secondsString = `${seconds}`.padStart(2, '0');
         const commaSecondsString = `${commaSeconds}`.padStart(2, '0');
         ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
+    }
+
+    drawGameOver(ctx, max_x, max_y) {
+        if (this.gameOverAnimationTime >= 1.0) {
+            ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";;
+            ctx.fillRect(0, 0, max_x, max_y);
+
+            ctx.fillStyle = "red";
+            ctx.font = "50px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER!", max_x / 2, max_y / 2 - 90);
+
+            let r = { x: max_x / 2 - 100, y: max_y / 2, w: 200, h: 50 };
+            this.retryButtonArea = r;
+            ctx.fillStyle = "blue";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2);
+
+            r = { x: max_x / 2 - 100, y: max_y / 2 + 90, w: 200, h: 50 };
+            this.continueButtonArea = r;
+            ctx.fillStyle = "blue";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2);
+
+        } else if (this.gameOverAnimationTime > 0.9) {
+            ctx.fillStyle = "rgba(" + [0, 0, 0, (this.gameOverAnimationTime - 0.9) * 0.4 / (1.0 - 0.9)] + ")";;
+            ctx.fillRect(0, 0, max_x, max_y);
+        }
+    }
+
+    didTap(x, y) {
+        let r = this.retryButtonArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.changeScene(scenes.drive);
+        }
+        r = this.continueButtonArea;
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.changeScene(scenes.stageSelection);
+        }
     }
 }

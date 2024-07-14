@@ -1,11 +1,11 @@
 // DriveScene で走るプレイヤー
 export class Player {
-    constructor(x) {
+    constructor(x, speedSetting) {
         this.x = x;
         this.d = 0;
-        this.xControlSpeed = 20; // px/s
-        this.dControlSpeed = 30; // px/s
-        this.dSpeed = 50; // px/s
+        this.xControlSpeed = speedSetting.playerXControlSpeed; // px/s
+        this.dControlSpeed = speedSetting.playerDControlSpeed; // px/s
+        this.dSpeed = speedSetting.playerDSpeed; // px/s
         this.dBoostedSpeed = 0; // 加速板でブーストされた速度
         this.dBoostedSpeedDecay = 60; // 加速板でブーストされた速度の減衰速度 px/s^2
         this.image = new Image();

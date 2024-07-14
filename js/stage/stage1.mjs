@@ -1,4 +1,5 @@
 import { obstacleType } from "../gameObject/obstacleSettings.mjs";
+import { speedModes } from "./speedModes.mjs";
 
 export const stage1 =
 {
@@ -38,5 +39,6 @@ export const stage1 =
     goalDistance: 1000,
     targetTime: 17,
     inertia: false,
-    nightMode: true,
+    nightMode: false,
+    speedMode: speedModes.normal
 };

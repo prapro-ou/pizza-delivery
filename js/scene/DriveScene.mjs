@@ -5,6 +5,8 @@ import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
 import { Player, PlayerWithInertia } from '../gameObject/Player.mjs';
 import { Ingredient } from '../gameObject/Ingredient.mjs';
 import { randomIngredientType, imageForIngredient } from '../gameObject/ingredients.mjs';
+import { speedSettings } from '../stage/speedModes.mjs';
+import { Car } from '../gameObject/Car.mjs';
 
 export class DriveScene extends Scene {
     sceneWillAppear() {
@@ -12,11 +14,12 @@ export class DriveScene extends Scene {
         this.stage = stage1
         this.cameraDistance = -10
         this.pixelSize = 8
+        this.speedSetting = speedSettings[this.stage.speedMode];
         const playerX = this.stage.roadPoint.find((e) => e.d == 0).x;
         if (this.stage.inertia) {
-            this.player = new PlayerWithInertia(playerX);
+            this.player = new PlayerWithInertia(playerX, this.speedSetting);
         } else {
-            this.player = new Player(playerX);
+            this.player = new Player(playerX, this.speedSetting);
         }
         this.collectedIngredients = [];
         this.goalFlg = false;
@@ -162,7 +165,8 @@ export class DriveScene extends Scene {
         const d = this.cameraDistance + max_y / this.pixelSize + 10;
         const x = Math.random() * this.stage.roadWidth + this.roadX(d).left;
         if (this.stage.cars.length < 2) {
-            this.stage.cars.push(makeObstacle(obstacleType.car, x, d));
+            const car = new Car(x, d, this.speedSetting);
+            this.stage.cars.push(car);
         }
 
         this.stage.cars = this.stage.cars.filter((car) => car.d >= this.cameraDistance - 10);

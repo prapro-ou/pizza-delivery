@@ -17,7 +17,8 @@ export function makeObstacle(type, x, d) {
             return new Mud(x, d);
 
         case obstacleType.car:
-            return new Car(x, d);
+            console.error(`makeObstacleに${type}が渡されました。このタイプはmakeObstacleで生成できません。`)
+            break;
 
         case obstacleType.speedingBoard:
             return new SpeedingBoard(x, d);

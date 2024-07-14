@@ -19,6 +19,16 @@ export class DriveScene extends Scene {
         this.elapsedTime = 0.0;
         this.gameOverFlg = false;
         this.gameOverAnimationTime = 0.0;
+        this.startFlg = true;
+        this.startAnimationFlg = false;
+        this.startAnimationTime = 0.0;
+        // 0 秒後にsetTimeoutしないと、setTimeout が 3.0 になるタイミングと 3 秒後の setTimeout の間に何故かラグが生まれてしまう
+        setTimeout(() => {
+            this.startAnimationFlg = true;
+        }, 0);
+        setTimeout(() => {
+            this.startFlg = false;
+        }, 3000);
 
         // this.stage.obstacles をクラスに変換
         this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
@@ -36,15 +46,21 @@ export class DriveScene extends Scene {
         const rightPressed = pressedKeys.has("ArrowRight");
         const upPressed = pressedKeys.has("ArrowUp");
         const downPressed = pressedKeys.has("ArrowDown");
-        if (!this.goalFlg && !this.gameOverFlg) {
+        if (!this.goalFlg && !this.gameOverFlg && !this.startFlg) {
             this.elapsedTime += deltaTime / 1000;
         }
         if (this.gameOverFlg) {
             this.gameOverAnimationTime += deltaTime / 1000;
         }
-        this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
-        if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
-            this.checkCollision(deltaTime);
+        if (this.startAnimationFlg) {
+            this.startAnimationTime += deltaTime / 1000;
+        }
+        if (!this.startFlg) {
+            this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
+            if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
+                this.checkCollision(deltaTime);
+            }
+            this.moveCars(deltaTime);
         }
         if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
             this.goalFlg = true;
@@ -52,7 +68,6 @@ export class DriveScene extends Scene {
                 this.transitToNextScene()
             }, 1000);
         }
-        this.moveCars(deltaTime)
     }
 
     render(ctx) {
@@ -80,6 +95,9 @@ export class DriveScene extends Scene {
         this.drawCollectedIngredients(max_x, max_y, ctx);
         if (this.gameOverFlg) {
             this.drawGameOver(ctx, max_x, max_y);
+        }
+        if (this.startAnimationFlg) {
+            this.drawStartAnimation(max_x, max_y, ctx);
         }
     }
 
@@ -297,6 +315,23 @@ export class DriveScene extends Scene {
         r = this.continueButtonArea;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
             this.sceneRouter.changeScene(scenes.stageSelection);
+        }
+    }
+
+    drawStartAnimation(max_x, max_y, ctx) {
+        ctx.fillStyle = "black";
+        ctx.font = "64px Arial";
+        ctx.textAlign = "center";
+        if (this.startAnimationTime < 1) {
+            ctx.fillText("3", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 2) {
+            ctx.fillText("2", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 3) {
+            ctx.fillText("1", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 3.5) {
+            ctx.fillText("START", max_x / 2, max_y / 2);
+        } else {
+            this.startAnimationFlg = false;
         }
     }
 }

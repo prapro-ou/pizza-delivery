@@ -38,4 +38,5 @@ export const stage1 =
     goalDistance: 1000,
     targetTime: 17,
     inertia: false,
+    nightMode: true,
 };

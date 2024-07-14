@@ -26,6 +26,11 @@ export class DriveScene extends Scene {
         this.startFlg = true;
         this.startAnimationFlg = false;
         this.startAnimationTime = 0.0;
+        if (this.stage.nightMode) {
+            this.textColor = "white";
+        } else {
+            this.textColor = "black";
+        }
         // 0 秒後にsetTimeoutしないと、setTimeout が 3.0 になるタイミングと 3 秒後の setTimeout の間に何故かラグが生まれてしまう
         setTimeout(() => {
             this.startAnimationFlg = true;
@@ -88,9 +93,12 @@ export class DriveScene extends Scene {
         this.drawObstacle(max_x, max_y, ctx);
         this.drawCars(max_x, max_y, ctx);
         this.drawIngredients(max_x, max_y, ctx);
+        if (this.stage.nightMode) {
+            this.drawShadow(max_x, max_y, ctx);
+        }
         this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
-        ctx.fillStyle = "black";
+        ctx.fillStyle = this.textColor;
         ctx.font = "20px Arial";
         ctx.textAlign = "left";
         ctx.fillText("STAGE 1", 50, 50);
@@ -211,6 +219,25 @@ export class DriveScene extends Scene {
         }
     }
 
+    drawShadow(max_x, max_y, ctx) {
+        const px = this.player.x;
+        const pd = this.player.d;
+        const cos = Math.cos(-this.player.theta);
+        const sin = Math.sin(-this.player.theta);
+        for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
+            for (let x = 0; x < max_x / this.pixelSize + 1; x++) {
+                const dx = (x - px);
+                const dd = (d - pd);
+                const alpha = Math.min(
+                    ((dx * cos + dd * sin)**2 + (-dx * sin + dd * cos)**2 / 2) / 16**2 * 0.9,
+                    0.9
+                )
+                ctx.fillStyle = "rgba(" + [0, 0, 0, alpha] + ")";
+                ctx.fillRect(x * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            }
+        }
+    }
+
     drawObstacle(max_x, max_y, ctx) {
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             this.stage.obstacles[i].draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
@@ -253,7 +280,7 @@ export class DriveScene extends Scene {
     } 
 
     drawTime(ctx) {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = this.textColor;
         ctx.font = "25px Arial";
         ctx.textAlign = "left";
         const minutes = Math.floor(this.elapsedTime / 60);
@@ -312,7 +339,7 @@ export class DriveScene extends Scene {
     }
 
     drawStartAnimation(max_x, max_y, ctx) {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = this.textColor;
         ctx.font = "64px Arial";
         ctx.textAlign = "center";
         if (this.startAnimationTime < 1) {

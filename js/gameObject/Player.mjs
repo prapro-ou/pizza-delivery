@@ -59,23 +59,41 @@ export class Player {
         }
 
         if (this.inCollision) return;
-        this.d += (this.dSpeed + this.dBoostedSpeed) * deltaTime / 1000
+        const xSpeed = 0
+            + this.getXControlledSpeed(leftPressed, rightPressed, deltaTime);
+        const dSpeed = this.dSpeed
+            + this.getDBoostedSpeed(deltaTime)
+            + this.getDControlledSpeed(upPressed, downPressed, deltaTime);
+        this.x += xSpeed * deltaTime / 1000;
+        this.d += dSpeed * deltaTime / 1000;
+        this.theta = Math.atan(xSpeed / dSpeed);
+    }
+
+    getDBoostedSpeed(deltaTime) {
         this.dBoostedSpeed = Math.max(0, this.dBoostedSpeed - this.dBoostedSpeedDecay * deltaTime / 1000)
-        if (leftPressed) {
-            this.x -= this.xControlSpeed * deltaTime / 1000
-        }
-        if (rightPressed) {
-            this.x += this.xControlSpeed * deltaTime / 1000
-        }
+        return this.dBoostedSpeed
+    }
+
+    getDControlledSpeed(upPressed, downPressed, deltaTime) {
+        let dSpeed = 0
         if (upPressed) {
-            this.d += this.dControlSpeed * deltaTime / 1000
+            dSpeed += this.dControlSpeed
         }
         if (downPressed) {
-            this.d -= this.dControlSpeed * deltaTime / 1000
+            dSpeed -= this.dControlSpeed
         }
-        const currentXSpeed = ((rightPressed - leftPressed) * this.xControlSpeed);
-        const currentDSpeed = ((upPressed - downPressed) * this.dControlSpeed) + this.dSpeed;
-        this.theta = Math.atan(currentXSpeed / currentDSpeed);
+        return dSpeed;
+    }
+
+    getXControlledSpeed(leftPressed, rightPressed, deltaTime) {
+        let xSpeed = 0
+        if (leftPressed) {
+            xSpeed -= this.xControlSpeed
+        }
+        if (rightPressed) {
+            xSpeed += this.xControlSpeed
+        }
+        return xSpeed
     }
 
     collideAndBackToCenter(roadX) {
@@ -95,5 +113,55 @@ export class Player {
             this.inCollision = false;
             this.x = center;
         }, 1000);
+    }
+}
+
+
+// 慣性付きのプレイヤー
+export class PlayerWithInteria extends Player {
+    constructor(x) {
+        super(x);
+        this.xAcceleratedSpeed = 0;
+        this.xControlAcceleration = 50; // px/s^2
+        this.dAcceleratedSpeed = 0;
+        this.dControlAcceleration = 50; // px/s^2
+        this.dAccelerationDecay = 50; // px/s^2
+    }
+
+    getDControlledSpeed(upPressed, downPressed, deltaTime) {
+        if (upPressed && !downPressed) {
+            this.dAcceleratedSpeed += this.dControlAcceleration * deltaTime / 1000
+            this.dAcceleratedSpeed = Math.min(this.dAcceleratedSpeed, this.dControlSpeed)
+        }
+        if (downPressed && !upPressed) {
+            this.dAcceleratedSpeed -= this.dControlAcceleration * deltaTime / 1000
+            this.dAcceleratedSpeed = Math.max(this.dAcceleratedSpeed, -this.dControlSpeed)
+        }
+        if (upPressed == downPressed) {
+            if (this.dAcceleratedSpeed > 0) {
+                this.dAcceleratedSpeed -= this.dAccelerationDecay * deltaTime / 1000
+                this.dAcceleratedSpeed = Math.max(this.dAcceleratedSpeed, 0)
+            } else if (this.dAcceleratedSpeed < 0) {
+                this.dAcceleratedSpeed += this.dAccelerationDecay * deltaTime / 1000
+                this.dAcceleratedSpeed = Math.min(this.dAcceleratedSpeed, 0)
+            }
+        }
+        return this.dAcceleratedSpeed;
+    }
+
+    getXControlledSpeed(leftPressed, rightPressed, deltaTime) {
+        if (leftPressed) {
+            this.xAcceleratedSpeed -= this.xControlAcceleration * deltaTime / 1000
+        }
+        if (rightPressed) {
+            this.xAcceleratedSpeed += this.xControlAcceleration * deltaTime / 1000
+        }
+        return this.xAcceleratedSpeed
+    }
+
+    collideAndBackToCenter(roadX) {
+        super.collideAndBackToCenter(roadX);
+        this.xAcceleratedSpeed = 0;
+        this.dAcceleratedSpeed = 0;
     }
 }

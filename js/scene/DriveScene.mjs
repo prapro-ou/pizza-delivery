@@ -2,7 +2,7 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { stage1 } from '../stage/stage1.mjs';
 import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
-import { Player } from '../gameObject/Player.mjs';
+import { Player, PlayerWithInertia } from '../gameObject/Player.mjs';
 import { Ingredient } from '../gameObject/Ingredient.mjs';
 import { randomIngredientType, imageForIngredient } from '../gameObject/ingredients.mjs';
 
@@ -13,7 +13,11 @@ export class DriveScene extends Scene {
         this.cameraDistance = -10
         this.pixelSize = 8
         const playerX = this.stage.roadPoint.find((e) => e.d == 0).x;
-        this.player = new Player(playerX);
+        if (this.stage.inertia) {
+            this.player = new PlayerWithInertia(playerX);
+        } else {
+            this.player = new Player(playerX);
+        }
         this.collectedIngredients = [];
         this.goalFlg = false;
         this.elapsedTime = 0.0;

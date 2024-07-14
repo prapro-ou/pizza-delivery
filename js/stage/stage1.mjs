@@ -40,6 +40,6 @@ export const stage1 =
     targetTime: 17,
     inertia: false,
     nightMode: false,
-    speedMode: speedModes.fast,
+    speedMode: speedModes.normal,
     nCars: 2,
 };

@@ -164,7 +164,7 @@ export class DriveScene extends Scene {
     putCars(max_y) {
         const d = this.cameraDistance + max_y / this.pixelSize + 10;
         const x = Math.random() * this.stage.roadWidth + this.roadX(d).left;
-        if (this.stage.cars.length < 2) {
+        if (this.stage.cars.length < this.stage.nCars) {
             const car = new Car(x, d, this.speedSetting);
             this.stage.cars.push(car);
         }

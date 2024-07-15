@@ -1,11 +1,11 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { pizzaType, imageForPizza} from "../gameObject/pizzas.mjs";
-import { ingredientType, imageForIngredient} from "../gameObject/ingredients.mjs"
+import { pizzaType, imageForPizza } from "../gameObject/pizzas.mjs";
+import { ingredientType, imageForIngredient } from "../gameObject/ingredients.mjs"
 
 
-//スコアリザルト画面
-export class ScoreResultScene extends Scene {
+//リザルト画面
+export class ResultScene extends Scene {
     sceneWillAppear(){
         this.NextButton = null;
         
@@ -61,7 +61,7 @@ export class ScoreResultScene extends Scene {
         ctx.fillStyle = "black";
         ctx.font = "50px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("スコアリザルト画面", 50, 50);
+        ctx.fillText("リザルト画面", 50, 50);
 
         
 
@@ -149,19 +149,15 @@ export class ScoreResultScene extends Scene {
     }
 
     calculateScore() {
-        console.log("Cooked Pizza Type:", this.sharedData.cookedPizza);
     
         // 余分な部分を取り除いてキーを抽出
         const cookedPizzaKey = this.sharedData.cookedPizza.split('.')[1];
-        console.log("Extracted Pizza Key:", cookedPizzaKey);
     
         const cookedPizzaScore = this.pizzaList[cookedPizzaKey].score;
-        console.log('cookedPizzaScore = ' + cookedPizzaScore);
         let ingredientScoreTotal = 0;
     
         // 食材毎のスコアを計算
         const ingredientKeys = Object.keys(this.sharedData.selectedIngredients);
-        console.log(ingredientKeys);
         for (let i = 0; i < ingredientKeys.length; i++) {
             const ingredientKey = ingredientKeys[i];
             const ingredientCount = this.sharedData.selectedIngredients[ingredientKey];
@@ -169,13 +165,10 @@ export class ScoreResultScene extends Scene {
             ingredientScoreTotal += ingredientScore * ingredientCount;
         }
 
-        console.log('ingredientScoreTotal = ' + ingredientScoreTotal);
     
         const timeBonus = (this.targetTime.stage1 - this.sharedData.goalTime) * this.timeBonusFactor;
-        console.log('timeBonus = ' + timeBonus);
 
         const totalScore = cookedPizzaScore + ingredientScoreTotal + timeBonus;
-        console.log(totalScore);
         return totalScore;
         
     }

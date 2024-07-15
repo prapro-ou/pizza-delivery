@@ -17,7 +17,7 @@ function gameLoop(timestamp) {
 let lastTimestamp = 0;
 
 // 遷移元が未実装のため、初期画面をスコアリザルト画面に設定
-sceneRouter.changeScene(scenes.scoreResult);
+sceneRouter.changeScene(scenes.result);
 //sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 

@@ -108,7 +108,7 @@ export class ResultScene extends Scene {
 
     drawResultIngredients(max_x, max_y, ctx) {
         const xOffset = 150;
-        const yOffset = 250;
+        const yOffset = 200;
         const scaleFactor = 5; // 画像の拡大率を調整
         
         const ingredientKeys = Object.keys(this.ingredientCounts);
@@ -138,7 +138,7 @@ export class ResultScene extends Scene {
 
     drawPizza(max_x, max_y, ctx) {
         const xOffset = max_x / 2 - 50;
-        const yOffset = 100;
+        const yOffset = 70;
         const scaleFactor = 5; // 画像の拡大率を調整
         const pizzaImage = imageForPizza(this.pizza);
         if (pizzaImage.complete) {
@@ -168,10 +168,10 @@ export class ResultScene extends Scene {
         const timeText = `クリアタイム: ${time.toFixed(2)}s`;
 
         ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.font = "30px Arial";
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
-        ctx.fillText(timeText, 400, 450);
+        ctx.fillText(timeText, 425, 370);
     }
 
     //ピザの画像の右側にピザのスコアを、材料の画像の右側に材料の合計のスコアを、クリアタイムの右側にタイムボーナスを表示する
@@ -183,15 +183,16 @@ export class ResultScene extends Scene {
         const totalScoreText = `合計スコア: ${this.totalScore}`;
 
         ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.font = "30px Arial";
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
-        ctx.fillText(pizzaScoreText, 700, 150);
-        ctx.fillText(ingredientsScoreText, 700, 300);
-        ctx.fillText(timeBonusText, 700, 450);
+        ctx.fillText(pizzaScoreText, 730, 130);
+        ctx.fillText(ingredientsScoreText, 730, 265);
+        ctx.fillText(timeBonusText, 730, 370); 
+        ctx.fillText(totalScoreText, 730, 450);
 
-        ctx.font = "30px Arial";
-        ctx.fillText(totalScoreText, 400, 570);
+        ctx.fillStyle = "black";
+        ctx.fillRect(465, 380, 275, 5);
 
     }
 

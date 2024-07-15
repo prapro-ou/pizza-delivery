@@ -9,6 +9,9 @@ export class ScoreResultScene extends Scene {
     sceneWillAppear(){
         this.NextButton = null;
         
+        //仮データ
+        this.sharedData.cookedPizza = pizzaType.margherita;
+        this.pizza = this.sharedData.cookedPizza;
         //CookingSceneでチーズを1つ、バジルを２つ、トマトを１つ選択したと想定
         this.sharedData.selectedIngredients = {};
         this.sharedData.selectedIngredients[ingredientType.cheese] = 1;
@@ -16,7 +19,35 @@ export class ScoreResultScene extends Scene {
         this.sharedData.selectedIngredients[ingredientType.tomato] = 1;
         
         this.resultIngredients = this.sharedData.selectedIngredients;
+        this.sharedData.goalTime = 14.8405241;
         console.log(this.resultIngredients);
+        console.log(this.sharedData.goalTime);
+
+        this.pizzaList = {
+            margherita: { displayName: 'マルゲリータ', score: 1000},
+            marinara: { displayName: 'マリナーラ', score: 2000},
+            seafood: { displayName: 'シーフード', score: 3000}
+        }
+
+        this.ingredientScore = {
+            cheese: 50,
+            basil: 75,
+            tomato: 100
+        }
+
+        this.targetTime = {
+            stage1: 20,
+            stage2: 25,
+            stage3: 30
+        }
+
+        this.timeBonusFactor = 1;
+
+        //仮データ終わり
+        
+        //`スコア = 作ったピザの点数 + 食材毎の点数 +  (目標タイム - 経過時間) * n`
+
+        
     }
 
     updateStates(deltaTime){}
@@ -44,7 +75,9 @@ export class ScoreResultScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("次のシーンへ", r.x + r.w / 2, r.y + r.h / 2);
 
+        this.drawPizza(max_x,max_y,ctx);
         this.drawResultIngredients(max_x, max_y, ctx);
+        this.calculateScore();
     }
 
     didTap(x, y){
@@ -61,12 +94,8 @@ export class ScoreResultScene extends Scene {
     drawResultIngredients(max_x, max_y, ctx) {
         const xOffset = 350; 
         const yOffset = 200; 
-        const areaWidth = 80; // 白い枠の幅
-        const itemHeight = 30; // 各食材の高さ
-    
-        ctx.fillStyle = "white";
-        ctx.fillRect(xOffset, yOffset, areaWidth, itemHeight * Object.keys(this.resultIngredients).length);
-    
+        const itemHeight = 50; // 各食材の高さ
+        
         const keys = Object.keys(this.resultIngredients);
         for (let i = 0; i < keys.length; i++) {
             const type = keys[i];
@@ -74,7 +103,7 @@ export class ScoreResultScene extends Scene {
             const image = imageForIngredient(type);
             const x = xOffset + 10;
             const y = yOffset + (itemHeight * i) + (itemHeight / 2);
-            const scaleFactor = 2; // 画像の拡大率を調整
+            const scaleFactor = 3; // 画像の拡大率を調整
     
             if (image.complete) {
                 ctx.imageSmoothingEnabled = false;
@@ -93,6 +122,62 @@ export class ScoreResultScene extends Scene {
             ctx.textBaseline = "middle";
             ctx.fillText(`x${count}`, x + image.width * scaleFactor + 10, y);
         }
+    }
+
+    drawPizza(max_x, max_y, ctx) {
+        const pizzaImage = imageForPizza(this.sharedData.cookedPizza);
+        const xOffset = 150;
+        const yOffset = 200;
+        const scaleFactor = 5; // 画像の拡大率を調整
+
+        if (pizzaImage.complete) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                pizzaImage,
+                xOffset,
+                yOffset,
+                pizzaImage.width * scaleFactor,
+                pizzaImage.height * scaleFactor
+            );
+            
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            // ctx.fillText();
+        }
+    }
+
+    calculateScore() {
+        console.log("Cooked Pizza Type:", this.sharedData.cookedPizza);
+    
+        // 余分な部分を取り除いてキーを抽出
+        const cookedPizzaKey = this.sharedData.cookedPizza.split('.')[1];
+        console.log("Extracted Pizza Key:", cookedPizzaKey);
+    
+        const cookedPizzaScore = this.pizzaList[cookedPizzaKey].score;
+        console.log('cookedPizzaScore = ' + cookedPizzaScore);
+        let ingredientScoreTotal = 0;
+    
+        // 食材毎のスコアを計算
+        const ingredientKeys = Object.keys(this.sharedData.selectedIngredients);
+        console.log(ingredientKeys);
+        for (let i = 0; i < ingredientKeys.length; i++) {
+            const ingredientKey = ingredientKeys[i];
+            const ingredientCount = this.sharedData.selectedIngredients[ingredientKey];
+            const ingredientScore = this.ingredientScore[ingredientKey];
+            ingredientScoreTotal += ingredientScore * ingredientCount;
+        }
+
+        console.log('ingredientScoreTotal = ' + ingredientScoreTotal);
+    
+        const timeBonus = (this.targetTime.stage1 - this.sharedData.goalTime) * this.timeBonusFactor;
+        console.log('timeBonus = ' + timeBonus);
+
+        const totalScore = cookedPizzaScore + ingredientScoreTotal + timeBonus;
+        console.log(totalScore);
+        return totalScore;
+        
     }
     
 }

@@ -86,6 +86,7 @@ export class DriveScene extends Scene {
             }
         }
         this.sharedData.collectedIngredients = occurrences;
+        this.sharedData.goalTime = this.elapsedTime;
         console.log(occurrences);
         console.log("次の画面に遷移します。");
         this.sceneRouter.changeScene(scenes.scoreResult);

@@ -18,6 +18,17 @@ export const ingredientName = {
     [ingredientType.squid]: "イカ",
 }
 
+// 食材のスコア
+export const ingredientScore = {
+    [ingredientType.tomato]: 100,
+    [ingredientType.cheese]: 50,
+    [ingredientType.basil]: 75,
+    [ingredientType.onion]: 50,
+    [ingredientType.octopus]: 200,
+    [ingredientType.squid]: 150,
+}
+
+
 // ランダムなingredientTypeを返す関数
 export function randomIngredientType() {
     const ingredientTypes = Object.values(ingredientType);

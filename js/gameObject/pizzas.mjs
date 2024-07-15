@@ -14,6 +14,14 @@ export const pizzaName = {
     [pizzas.seafood]: "シーフードピザ",
 }
 
+// ピザのスコア
+export const pizzaScore = {
+    [pizzas.margherita]: 1000,
+    [pizzas.marinara]: 2000,
+    [pizzas.seafood]: 3000,
+
+}
+
 // ピザを作るのに必要な素材の表
 export const recipe = {
     [pizzas.marinara]: [ingredientType.tomato, ingredientType.onion, ingredientType.basil],

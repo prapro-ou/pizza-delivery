@@ -210,8 +210,7 @@ export class DriveScene extends Scene {
                 );
             }
         }
-    }
-    
+    } 
 
     drawTime(ctx) {
         ctx.fillStyle = "black";

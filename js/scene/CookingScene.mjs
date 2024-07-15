@@ -151,7 +151,7 @@ export class CookingScene extends Scene {
 
         r = this.decisionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            console.log("PizzaResultSceneに移動")
+            this.sceneRouter.changeScene(scenes.result);
         }
     }
 }

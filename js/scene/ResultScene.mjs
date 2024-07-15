@@ -51,7 +51,7 @@ export class ResultScene extends Scene {
         this.score = this.calculateScore();
         this.totalScore = this.score.pizzaScore + this.score.ingredientsScore + this.score.timeBonus;
 
-        console.log(this.totalScore);
+        console.log('トータルスコア : ' + this.totalScore);
 
 
         //仮データ終わり
@@ -103,7 +103,7 @@ export class ResultScene extends Scene {
     }
     
     didTapNext() {
-        console.log('nextScene');
+        console.log('セーブスロット選択画面へ遷移');
     }
 
     drawResultIngredients(max_x, max_y, ctx) {

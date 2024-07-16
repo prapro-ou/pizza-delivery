@@ -17,9 +17,6 @@ export class Mud extends Obstacle {
 
     handleCollision(player, roadX) {
         player.inCollision = true;
-        setTimeout(() => {
-            player.inCollision = false;
-            player.x = roadX.center;
-        }, 1000);
+        player.collideAndBackToCenter(roadX);
     }
 }

@@ -17,6 +17,18 @@ export class DriveScene extends Scene {
         this.collectedIngredients = [];
         this.goalFlg = false;
         this.elapsedTime = 0.0;
+        this.gameOverFlg = false;
+        this.gameOverAnimationTime = 0.0;
+        this.startFlg = true;
+        this.startAnimationFlg = false;
+        this.startAnimationTime = 0.0;
+        // 0 秒後にsetTimeoutしないと、setTimeout が 3.0 になるタイミングと 3 秒後の setTimeout の間に何故かラグが生まれてしまう
+        setTimeout(() => {
+            this.startAnimationFlg = true;
+        }, 0);
+        setTimeout(() => {
+            this.startFlg = false;
+        }, 3000);
 
         // this.stage.obstacles をクラスに変換
         this.stage.obstacles = this.stage.obstacles.map((e) => makeObstacle(e.type, e.x, e.d));
@@ -34,12 +46,21 @@ export class DriveScene extends Scene {
         const rightPressed = pressedKeys.has("ArrowRight");
         const upPressed = pressedKeys.has("ArrowUp");
         const downPressed = pressedKeys.has("ArrowDown");
-        if (!this.goalFlg) { 
+        if (!this.goalFlg && !this.gameOverFlg && !this.startFlg) {
             this.elapsedTime += deltaTime / 1000;
         }
-        this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
-        if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
-            this.checkCollision();
+        if (this.gameOverFlg) {
+            this.gameOverAnimationTime += deltaTime / 1000;
+        }
+        if (this.startAnimationFlg) {
+            this.startAnimationTime += deltaTime / 1000;
+        }
+        if (!this.startFlg) {
+            this.player.updatePosition(deltaTime, leftPressed, rightPressed, upPressed, downPressed);
+            if (this.player.d <= this.stage.goalDistance && !this.player.inCollision) {
+                this.checkCollision(deltaTime);
+            }
+            this.moveCars(deltaTime);
         }
         if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
             this.goalFlg = true;
@@ -47,7 +68,6 @@ export class DriveScene extends Scene {
                 this.transitToNextScene()
             }, 1000);
         }
-        this.moveCars(deltaTime)
     }
 
     render(ctx) {
@@ -73,26 +93,37 @@ export class DriveScene extends Scene {
 
         this.drawTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
+        if (this.gameOverFlg) {
+            this.drawGameOver(ctx, max_x, max_y);
+        }
+        if (this.startAnimationFlg) {
+            this.drawStartAnimation(max_x, max_y, ctx);
+        }
     }
 
     transitToNextScene() {
+        this.sharedData.targetTime = this.stage.targetTime;
+        this.sharedData.elapsedTime = this.elapsedTime;
         this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
-    checkCollision() {
+    checkCollision(deltaTime) {
         const { center, left, right } = this.roadX(this.player.d);
         if (this.player.x < left || this.player.x > right) {
-            this.player.inCollision = true
-            setTimeout(() => {
-                this.player.inCollision = false
-                this.player.x = center;
-            }, 1000);
+            this.player.collideAndBackToCenter(this.roadX.bind(this));
         }
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
-            if (obstacle.checkCollision(this.player.x, this.player.d)) {
-                obstacle.handleCollision(this.player, this.roadX(this.player.d));
+            if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                obstacle.handleCollision(this.player, this.roadX.bind(this), deltaTime);
+            }
+        }
+        for (let i = 0; i < this.stage.cars.length; i++) {
+            const car = this.stage.cars[i];
+            if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                this.gameOverFlg = true;
+                car.handleCollision(this.player, this.roadX.bind(this));
             }
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
@@ -133,6 +164,8 @@ export class DriveScene extends Scene {
 
     drawRoad(max_x, max_y, ctx) {
         const whiteLineSpacing = 10;
+        const nWhiteLine = 2;
+        const whiteLineWidth = this.pixelSize * 0.8;
         let goalSquareSize = 1.7;
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             const { center, left, right } = this.roadX(d);
@@ -145,8 +178,11 @@ export class DriveScene extends Scene {
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
                 ctx.fillStyle = "white";
-                const roadCenter = Math.round(center * 3) / 3;
-                ctx.fillRect(roadCenter * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+                for (let i = 0; i < nWhiteLine; i++) {
+                    const ratio = (i + 1) / (nWhiteLine + 1)
+                    const x = left * (1 - ratio) + right * ratio
+                    ctx.fillRect(x * this.pixelSize - whiteLineWidth / 2, max_y - ((d - this.cameraDistance) * this.pixelSize), whiteLineWidth, this.pixelSize);
+                }
             }
             // 道路の境界
             ctx.fillStyle = "black";
@@ -222,5 +258,69 @@ export class DriveScene extends Scene {
         const secondsString = `${seconds}`.padStart(2, '0');
         const commaSecondsString = `${commaSeconds}`.padStart(2, '0');
         ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
+    }
+
+    drawGameOver(ctx, max_x, max_y) {
+        if (this.gameOverAnimationTime >= 1.0) {
+            ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
+            ctx.fillRect(0, 0, max_x, max_y);
+
+            ctx.fillStyle = "red";
+            ctx.font = "50px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER!", max_x / 2, max_y / 2 - 90);
+
+            let r = { x: max_x / 2 - 100, y: max_y / 2, w: 200, h: 50 };
+            this.retryButtonArea = r;
+            ctx.fillStyle = "blue";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2);
+
+            r = { x: max_x / 2 - 100, y: max_y / 2 + 90, w: 200, h: 50 };
+            this.continueButtonArea = r;
+            ctx.fillStyle = "blue";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2);
+
+        } else if (this.gameOverAnimationTime > 0.9) {
+            ctx.fillStyle = "rgba(" + [0, 0, 0, (this.gameOverAnimationTime - 0.9) * 0.4 / (1.0 - 0.9)] + ")";;
+            ctx.fillRect(0, 0, max_x, max_y);
+        }
+    }
+
+    didTap(x, y) {
+        let r = this.retryButtonArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.changeScene(scenes.drive);
+        }
+        r = this.continueButtonArea;
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.changeScene(scenes.stageSelection);
+        }
+    }
+
+    drawStartAnimation(max_x, max_y, ctx) {
+        ctx.fillStyle = "black";
+        ctx.font = "64px Arial";
+        ctx.textAlign = "center";
+        if (this.startAnimationTime < 1) {
+            ctx.fillText("3", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 2) {
+            ctx.fillText("2", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 3) {
+            ctx.fillText("1", max_x / 2, max_y / 2);
+        } else if (this.startAnimationTime < 3.5) {
+            ctx.fillText("START", max_x / 2, max_y / 2);
+        } else {
+            this.startAnimationFlg = false;
+        }
     }
 }

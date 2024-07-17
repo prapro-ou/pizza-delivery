@@ -15,7 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-sceneManager.changeScene(scenes.whichSlotToSave);
+sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 

@@ -54,7 +54,7 @@ export class SlotSelectionScene extends Scene {
         //各セーブデータ
         for ( let i = 0; i < 4; i++ ){
             let r = this.slotButtonAreas[i];
-             if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
+            if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
                 this.didTapSlot(i);
             }
         }   

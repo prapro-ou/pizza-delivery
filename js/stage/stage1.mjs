@@ -1,4 +1,5 @@
 import { obstacleType } from "../gameObject/obstacleSettings.mjs";
+import { speedModes } from "./speedModes.mjs";
 
 export const stage1 =
 {
@@ -19,6 +20,10 @@ export const stage1 =
         {type: obstacleType.mud, d: 507, x: 27},
         {type: obstacleType.mud, d: 248, x: 78},
         {type: obstacleType.mud, d: 111, x: 37},
+        {type: obstacleType.speedingBoard, d: 100, x: 58},
+        {type: obstacleType.speedingBoard, d: 392, x: 61},
+        {type: obstacleType.speedingBoard, d: 587, x: 51},
+        {type: obstacleType.speedingBoard, d: 744, x: 56},
     ],
     ingredients: [
         {d: 86, x: 52},
@@ -30,6 +35,11 @@ export const stage1 =
         {d: 807, x: 65},
         {d: 940, x: 36},
     ],
-    roadWidth: 40,
+    roadWidth: 35,
     goalDistance: 1000,
+    targetTime: 17,
+    inertia: false,
+    nightMode: false,
+    speedMode: speedModes.normal,
+    nCars: 2,
 };

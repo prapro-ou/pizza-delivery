@@ -2,12 +2,13 @@ import { Obstacle } from "./Obstacle.mjs";
 import { obstacleType } from "./obstacleSettings.mjs";
 
 export class Car extends Obstacle {
-    constructor(x, d) {
+    constructor(x, d, speedSetting) {
         super(x, d);
-        this.dSpeed = 20 + Math.random() * 20
+        this.dSpeed = speedSetting.carDSpeed + Math.random() * 20;
         this.type = obstacleType.car;
         this.image = new Image();
         this.image.src = 'resource/image/car_red.png';
+        this.scaleFactor = 1.5;
     }
 
     updatePosition(deltaTime, roadX) {
@@ -15,4 +16,13 @@ export class Car extends Obstacle {
         this.x += roadX(new_d).center - roadX(this.d).center;
         this.d = new_d;
     }
+
+    checkCollision(x, d, pixelSize) {
+        return Math.abs(this.x - x) <= this.image.width * this.scaleFactor / (2 * pixelSize) && Math.abs(this.d - d) <= this.image.height * this.scaleFactor / (2 * pixelSize);
+    }
+
+    handleCollision(player, roadX) {
+        player.inCollision = true;
+    }
 }
+

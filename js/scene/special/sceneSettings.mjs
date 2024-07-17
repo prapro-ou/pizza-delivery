@@ -7,6 +7,8 @@ import { EndingCollectionScene} from "../EndingCollectionScene.mjs";
 import { RuleScene } from "../RuleScene.mjs";
 import { StageSelectionScene } from "../StageSelectionScene.mjs";
 import { DriveScene } from "../DriveScene.mjs";
+import { ResultScene } from "../ResultScene.mjs";
+import { CookingScene } from "../CookingScene.mjs";
 import { WhichSlotToSaveScene} from "../WhichSlotToSaveScene.mjs"
 
 // すべてのシーンの列挙した連想配列
@@ -16,10 +18,12 @@ export const scenes = {
     slotSelection: "scene-slotSelection",
     config: "scene-config",
     pizzaCollection: "scene-pizzaCollection",
-    endingCollection: "secen-endingCollection",
+    endingCollection: "scene-endingCollection",
     rule: "scene-rule",
     stageSelection: "scene-stageSelection",
     drive: "scene-drive",
+    result: "scene-result",
+    cooking: "scene-cooking",
     whichSlotToSave: "scene-slotToSave",
 }
 
@@ -50,8 +54,14 @@ export function makeScene(scene, sceneRouter, sharedData) {
         case scenes.drive:
             return new DriveScene(sceneRouter, sharedData);
 
+        case scenes.cooking:
+            return new CookingScene(sceneRouter, sharedData);
+
         case scenes.pizzaCollection:
             return new PizzaCollectionScene(sceneRouter, sharedData);
+        
+        case scenes.result:
+            return new ResultScene(sceneRouter, sharedData);
 
         case scenes.whichSlotToSave:
             return new WhichSlotToSaveScene(sceneRouter, sharedData);

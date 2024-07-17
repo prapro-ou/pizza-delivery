@@ -141,26 +141,6 @@ export class EndingCollectionScene extends Scene {
             this.didTapPrePage();
         }
     }
-
-    
-    drawPizzaAndIngredients(ctx, pizzaName, ingredients, x, y) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(x, y, 350, 90);
-
-        const pizzaImage = this.pizzaImages[pizzaName];
-        if (pizzaImage && pizzaImage.complete) {
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(pizzaImage, x, y, 90, 90);
-        }
-
-        ingredients.forEach((ingredient, index) => {
-            const ingredientImage = this.ingredientImages[ingredient];
-            if (ingredientImage && ingredientImage.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(ingredientImage, x + 100 + (index * 60), y, 50, 50);
-            }
-        });
-    }
     
     // 「タイトルに戻る」ボタンがタップされた
     didTapBack() {

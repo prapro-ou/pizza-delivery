@@ -103,7 +103,7 @@ export class ResultScene extends Scene {
     }
     
     didTapNext() {
-        console.log('セーブスロット選択画面へ遷移');
+        this.sceneRouter.changeScene(scenes.whichSlotToSave);
     }
 
     drawResultIngredients(max_x, max_y, ctx) {

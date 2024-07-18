@@ -1,61 +1,29 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 // ピザコレクション画面
 export class PizzaCollectionScene extends Scene {
     sceneWillAppear() {
-        
         this.backButtonArea = null;
         this.nextPageButtonArea = null;
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
 
         this.pizzaImages = { // ピザの画像
-            margherita: new Image(),
-            marinara: new Image(),
-            seafood: new Image()
+            margherita: resource.images.margherita,
+            marinara: resource.images.marinara,
+            seafood: resource.images.seafood
         }
 
         this.ingredientImages = { //材料の画像
-            cheese: new Image(),
-            basil: new Image(),
-            octopus: new Image(),
-            tomato: new Image(),
-            onion: new Image(),
-            squid: new Image(),
+            cheese: resource.images.cheese,
+            basil: resource.images.basil,
+            octopus: resource.images.octopus,
+            tomato: resource.images.tomato,
+            onion: resource.images.onion,
+            squid: resource.images.squid,
         };
-        
-        this.pizzaImages.margherita.src = "resource/image/pizza/margherita.png";
-        this.pizzaImages.marinara.src = "resource/image/pizza/marinara.png";
-        this.pizzaImages.seafood.src = "resource/image/pizza/seafood.png"
-
-        this.ingredientImages.cheese.src = "resource/image/ingredient/cheese.png";
-        this.ingredientImages.basil.src = "resource/image/ingredient/basil.png";
-        this.ingredientImages.octopus.src = "resource/image/ingredient/octopus.png";
-        this.ingredientImages.tomato.src = "resource/image/ingredient/tomato.png";
-        this.ingredientImages.onion.src = "resource/image/ingredient/onion.png";
-        this.ingredientImages.squid.src = "resource/image/ingredient/squid.png";
-
-
-        this.imagesLoaded = 0;
-        const images = [
-            ...Object.values(this.pizzaImages),
-            ...Object.values(this.ingredientImages)
-        ];
-
-        // すべての画像が読み込まれてから描画
-        images.forEach(image => { 
-            image.onload = () => {
-                this.imagesLoaded++;
-                if (this.imagesLoaded === images.length) {
-                    this.allImagesLoaded = true;
-                }
-            };
-            image.onerror = () => {
-                console.error(`Failed to load image: ${image.src}`);
-            };
-        });
-
     }
 
     updateStates(deltaTime) {}
@@ -91,23 +59,21 @@ export class PizzaCollectionScene extends Scene {
         // 1ページ目
         if(this.page === 1){
 
-            if (this.allImagesLoaded) {
-                // sharedDataの形式に合わせて後ほど修正
-                const pizzasPage1 = [
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'seafood', displayName:'シーフード', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'seafood', displayName:'シーフード', ingredients: ['cheese', 'cheese', 'cheese', 'cheese'] }
-                ];
-    
-                for (let i = 0; i < 8; i++) {
-                    const pizza = pizzasPage1[i];
-                    this.drawPizzaAndIngredients(ctx, pizza.name, pizza.displayName, pizza.ingredients, pizzaFrame[i].x, pizzaFrame[i].y);
-                }
+            // sharedDataの形式に合わせて後ほど修正
+            const pizzasPage1 = [
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'seafood', displayName:'シーフード', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'seafood', displayName:'シーフード', ingredients: ['cheese', 'cheese', 'cheese', 'cheese'] }
+            ];
+
+            for (let i = 0; i < 8; i++) {
+                const pizza = pizzasPage1[i];
+                this.drawPizzaAndIngredients(ctx, pizza.name, pizza.displayName, pizza.ingredients, pizzaFrame[i].x, pizzaFrame[i].y);
             }
 
             // 次のページに遷移するボタン
@@ -125,25 +91,23 @@ export class PizzaCollectionScene extends Scene {
         //2ページ目
         if(this.page === 2){
 
-            if (this.allImagesLoaded) {
-                const pizzasPage2 = [
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'seafood', displayName:'シーフード', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
-                    { name: 'seafood', displayName:'シーフード', ingredients: ['cheese', 'cheese', 'cheese', 'cheese'] }
-                ];
-    
-                for (let i = 0; i < 8; i++) {
-                    const pizza = pizzasPage2[i];
-                    this.drawPizzaAndIngredients(ctx, pizza.name, pizza.displayName,pizza.ingredients, pizzaFrame[i].x, pizzaFrame[i].y);
-                }
+            const pizzasPage2 = [
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'margherita', displayName:'マルゲリータ', ingredients: ['cheese', 'tomato', 'onion', 'basil'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'seafood', displayName:'シーフード', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'marinara', displayName:'マリナーラ', ingredients: ['basil', 'octopus', 'cheese', 'squid'] },
+                { name: 'seafood', displayName:'シーフード', ingredients: ['cheese', 'cheese', 'cheese', 'cheese'] }
+            ];
+
+            for (let i = 0; i < 8; i++) {
+                const pizza = pizzasPage2[i];
+                this.drawPizzaAndIngredients(ctx, pizza.name, pizza.displayName,pizza.ingredients, pizzaFrame[i].x, pizzaFrame[i].y);
             }
 
-            
+
             // 前のページに遷移するボタン
             r = { x: 0, y: max_y - 100, w: 50, h: 50 }
             this.previousPageButtonArea = r;

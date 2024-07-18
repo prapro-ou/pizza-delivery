@@ -32,7 +32,7 @@ export class ResultScene extends Scene {
 
         
         // ゴールまでの時間
-        this.sharedData.goalTime = 16.8405241;
+        this.sharedData.goalTime = 18.8405241;
 
         //規定タイム
         this.sharedData.targetTime = 20;
@@ -179,7 +179,7 @@ export class ResultScene extends Scene {
     drawScore(max_x, max_y, ctx){
         const pizzaScoreText = `ピザのスコア: ${this.score.pizzaScore}`;
         const ingredientsScoreText = `材料のスコア: ${this.score.ingredientsScore}`;
-        const timeBonusText = `タイムボーナス: ${this.score.timeBonus}`;
+        const timeBonusText = `${this.score.timeBonus >= 0 ? 'タイムボーナス' : 'タイムペナルティ'}: ${this.score.timeBonus}`;
         const totalScoreText = `合計スコア: ${this.totalScore}`;
 
         ctx.fillStyle = "black";
@@ -212,7 +212,7 @@ export class ResultScene extends Scene {
             scoreDetails.ingredientsScore += ingredientScore[ingredientKey] * this.ingredientCounts[ingredientKey];
         }
 
-        scoreDetails.timeBonus =  Math.max(0, Math.round((this.sharedData.targetTime - this.sharedData.goalTime) * this.timeBonusFactor));
+        scoreDetails.timeBonus = Math.round((this.sharedData.targetTime - this.sharedData.goalTime) * this.timeBonusFactor);
         return scoreDetails;
     }
 }

@@ -1,4 +1,4 @@
-import { StageResult } from "./stageResult.mjs";
+import { StageResult } from "./StageResult.mjs";
 
 // セーブデータ
 export class Slot {

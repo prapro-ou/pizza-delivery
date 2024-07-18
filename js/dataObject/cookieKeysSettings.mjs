@@ -1,7 +1,7 @@
 import { Slot } from "./Slot.mjs";
 import { UserConfig } from "./UserConfig.mjs";
 import { PizzaInfo } from "./PizzaInfo.mjs";
-import { EndingInfo } from "./endingInfo.mjs";
+import { EndingInfo } from "./EndingInfo.mjs";
 
 //cookieに保存するデータの項目を列挙した連想配列
 export const cookieKeys = {

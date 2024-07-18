@@ -1,5 +1,6 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
 import { convertToKey, parseJSONData } from "./dataObject/cookieKeysSettings.mjs";
+import { resource } from "./resource.mjs";
 
 // Cookie操作をするためのクラス
 class CookieHandler {
@@ -79,6 +80,8 @@ export class SceneRouter {
         }.bind(this));
 
         this.cookieHandler = new CookieHandler();
+
+        resource.startLoadingAllImages();
     }
 
     // 画面遷移の処理

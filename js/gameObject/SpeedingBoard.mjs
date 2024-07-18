@@ -1,13 +1,13 @@
 import { Obstacle } from "./Obstacle.mjs";
 import { obstacleType } from "./obstacleSettings.mjs";
+import { resource } from "../resource.mjs";
 
 // 障害物の泥水
 export class SpeedingBoard extends Obstacle {
     constructor(x, d) {
         super(x, d);
         this.type = obstacleType.speedingBoard;
-        this.image = new Image();
-        this.image.src = 'resource/image/speedup.png';
+        this.image = resource.images.speedup;
         this.scaleFactor = 1.5;
         this.acceleration = 2000.0; // px/s^2
     }

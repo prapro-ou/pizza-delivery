@@ -1,3 +1,5 @@
+import { resource } from "../resource.mjs";
+
 // DriveScene で走るプレイヤー
 export class Player {
     constructor(x, speedSetting) {
@@ -8,8 +10,7 @@ export class Player {
         this.dSpeed = speedSetting.playerDSpeed; // px/s
         this.dBoostedSpeed = 0; // 加速板でブーストされた速度
         this.dBoostedSpeedDecay = 60; // 加速板でブーストされた速度の減衰速度 px/s^2
-        this.image = new Image();
-        this.image.src = 'resource/image/rider.png';
+        this.image = resource.images.rider;
         this.theta = 0;
         this.inCollision = false;
         this.collideAnimating = false;

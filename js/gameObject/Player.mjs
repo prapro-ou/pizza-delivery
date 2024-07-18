@@ -119,8 +119,8 @@ export class Player {
 
 // 慣性付きのプレイヤー
 export class PlayerWithInertia extends Player {
-    constructor(x) {
-        super(x);
+    constructor(x, speedSetting) {
+        super(x, speedSetting);
         this.xAcceleratedSpeed = 0;
         this.xControlAcceleration = 50; // px/s^2
         this.dAcceleratedSpeed = 0;

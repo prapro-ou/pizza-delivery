@@ -1,5 +1,5 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
-import { convertToKey, parseJSONData } from "./dataObject/cookieKeysSettings.mjs";
+import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cookieKeysSettings.mjs";
 import { resource } from "./resource.mjs";
 
 // Cookie操作をするためのクラス
@@ -12,7 +12,7 @@ class CookieHandler {
         document.cookie = `${key}=${jsonData}; path=/;`;
     }
 
-    // Cookieから読み込む関数
+    // Cookieから読み込む。データがない場合はnullを返す
     load(cookieKey) {
         const cookieArray = document.cookie.split(';');
         for (let i = 0; i < cookieArray.length; i++) {
@@ -101,9 +101,15 @@ export class SceneRouter {
         this.cookieHandler.save(cookieKey, value)
     }
 
-    // Cookieから読み込み
+    // Cookieから読み込み。データがない場合はデフォルトのデータを保存して返す
     load(cookieKey) {
-        return this.cookieHandler.load(cookieKey);
+        let value = this.cookieHandler.load(cookieKey);
+        if (value == null) {
+            // Cookieにデータが存在しなかった場合はデフォルトの値をセーブ
+            value = defaultValueFor(cookieKey);
+            this.save(cookieKey, value);
+        }
+        return value
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される

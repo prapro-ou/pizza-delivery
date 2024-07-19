@@ -1,6 +1,6 @@
 // ユーザー設定の情報
 export class UserConfig {
-    constructor(seVolume, bgmVolume) {
+    constructor(seVolume = 80, bgmVolume = 80) {
         this.seVolume = seVolume;
         this.bgmVolume = bgmVolume;
     }

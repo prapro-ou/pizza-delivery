@@ -36,3 +36,24 @@ export function parseJSONData(cookieKey, data) {
             return;
     }
 }
+
+// キーに対応するデフォルトの値を返す
+export function defaultValueFor(cookieKey) {
+    switch (cookieKey) {
+        case cookieKeys.slots:
+            return [];
+
+        case cookieKeys.userConfig:
+            return new UserConfig();
+
+        case cookieKeys.pizzaInfo:
+            return new PizzaInfo();
+
+        case cookieKeys.endingInfo:
+            return new EndingInfo();
+
+        default:
+            console.error(`defaultValueForに未定義のcookieKeyが渡されました：${cookieKey}`);
+            return;
+    }
+}

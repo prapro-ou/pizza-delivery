@@ -1,7 +1,17 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { UserConfig } from '../dataObject/UserConfig.mjs';
 
 export class TitleScene extends Scene {
+    sceneWillAppear() {
+        this.userConfig = new UserConfig(0, 0);
+        this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        this.bgm = new Audio('resource/bgm/MusMus-BGM-103.mp3');
+        this.bgm.loop = true; // ループ再生
+    }
+
     updateStates(deltaTime) {}
 
     render(ctx) {
@@ -66,6 +76,11 @@ export class TitleScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
+
+        const soundImage = (this.userConfig.bgmVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
+        r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
+        this.switchSoundArea = r;
+        ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
     }
 
     didTap(x, y) {
@@ -90,5 +105,17 @@ export class TitleScene extends Scene {
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.sceneRouter.changeScene(scenes.endingCollection);
         }
+
+        r = this.switchSoundArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.didTapSoundIcon()
+        }
+    }
+
+    didTapSoundIcon() {
+        this.userConfig.bgmVolume = (this.userConfig.bgmVolume == 0) ? 0.1 : 0.0;
+        this.bgm.volume = this.userConfig.bgmVolume;
+        this.bgm.currentTime = 0;
+        this.bgm.play();
     }
 }

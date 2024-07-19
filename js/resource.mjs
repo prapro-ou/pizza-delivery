@@ -15,6 +15,9 @@ const imagePaths = {
     onion:      "resource/image/ingredient/onion.png",
     squid:      "resource/image/ingredient/squid.png",
     tomato:     "resource/image/ingredient/tomato.png",
+
+    soundOn:    "resource/image/soundOn.png",
+    soundOff:   "resource/image/soundOff.png",
 }
 
 class Resource {

@@ -7,6 +7,7 @@ import { Ingredient } from '../gameObject/Ingredient.mjs';
 import { randomIngredientType, imageForIngredient } from '../gameObject/ingredients.mjs';
 import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
+import { resource } from '../resource.mjs';
 
 export class DriveScene extends Scene {
     sceneWillAppear() {
@@ -51,6 +52,7 @@ export class DriveScene extends Scene {
         });
         // ここに動く障害物を追加して管理する
         this.stage.cars = [];
+        this.sceneRouter.setBGM(this.stage.bgm);
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -137,6 +139,8 @@ export class DriveScene extends Scene {
         for (let i = 0; i < this.stage.cars.length; i++) {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                this.sceneRouter.playSE(resource.se.crashEffect);
+                this.sceneRouter.stopBGM();
                 this.gameOverFlg = true;
                 car.handleCollision(this.player, this.roadX.bind(this));
             }
@@ -334,10 +338,12 @@ export class DriveScene extends Scene {
     didTap(x, y) {
         let r = this.retryButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.drive);
         }
         r = this.continueButtonArea;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.stageSelection);
         }
     }
@@ -347,6 +353,7 @@ export class DriveScene extends Scene {
         ctx.font = "64px Arial";
         ctx.textAlign = "center";
         if (this.startAnimationTime < 1) {
+            this.sceneRouter.playSE(resource.se.engineEffect);
             ctx.fillText("3", max_x / 2, max_y / 2);
         } else if (this.startAnimationTime < 2) {
             ctx.fillText("2", max_x / 2, max_y / 2);

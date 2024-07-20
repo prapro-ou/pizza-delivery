@@ -1,8 +1,10 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 export class StageSelectionScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.stageButtonAreas = null;
     }
 
@@ -43,6 +45,8 @@ export class StageSelectionScene extends Scene {
     }
 
     didTapStage(stage_index) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.stopBGM();
         this.sceneRouter.changeScene(scenes.drive);
     }
 }

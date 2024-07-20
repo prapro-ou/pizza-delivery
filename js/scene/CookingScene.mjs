@@ -2,9 +2,11 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
 import { getPizza, imageForPizza, pizzaName } from '../gameObject/pizzas.mjs';
+import { resource } from '../resource.mjs';
 
 export class CookingScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM146);
         this.collectedIngredients = this.sharedData.collectedIngredients;
         this.selectedIndices = [];
         this.errorShowing = false;
@@ -146,11 +148,13 @@ export class CookingScene extends Scene {
 
         let r = this.PizzaRecipeArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             console.log("ピザレシピ画面に移動")
         }
 
         r = this.decisionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.result);
         }
     }

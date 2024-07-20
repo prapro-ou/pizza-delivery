@@ -1,9 +1,11 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 // 設定画面
 export class ConfigScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.backButtonArea = null;
         this.volumeButtonArea = null;
         this.seButtonArea = null;
@@ -74,16 +76,19 @@ export class ConfigScene extends Scene {
 
     // 「タイトルに戻る」ボタンがタップされた
     didTapBack() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.title);
     }
 
     // 音量ボタンがタップされた
     didTapVolume() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         console.log("didTapVolume");
     }
 
     // SEボタンがタップされた
     didTapSe() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         console.log("didTapSe");
     }
 }

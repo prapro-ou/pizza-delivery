@@ -1,8 +1,10 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 export class WhichSlotToSaveScene extends Scene{
     sceneWillAppear(){
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM115);
         this.slotToSaveButtonAreas = [];
     }
 
@@ -30,8 +32,8 @@ export class WhichSlotToSaveScene extends Scene{
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(`セーブデータ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
-        }       
-    }   
+        }
+    }
 
     didTap(x, y){
         for ( let i = 0; i < 4; i++ ){
@@ -43,6 +45,7 @@ export class WhichSlotToSaveScene extends Scene{
     }
 
     didTapSlot(slot_index) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.stageSelection);
     }
 }

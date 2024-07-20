@@ -1,6 +1,7 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
 import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cookieKeysSettings.mjs";
 import { resource } from "./resource.mjs";
+import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
 
 // Cookie操作をするためのクラス
 class CookieHandler {
@@ -31,6 +32,7 @@ class CookieHandler {
 export class SceneRouter {
     constructor(canvas) {
         this.currentScene = null;
+        this.currentBGM = null;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.canvas.width = canvas.clientWidth;
@@ -110,6 +112,39 @@ export class SceneRouter {
             this.save(cookieKey, value);
         }
         return value
+    }
+
+    // BGMをセットする
+    setBGM(bgm) {
+        if (!bgm) {
+            this.stopBGM();
+        } else if (bgm != this.currentBGM) {
+            this.stopBGM();
+            const volume = this.load(cookieKeys.userConfig).bgmVolume;
+            if (volume > 0) {
+                bgm.currentTime = 0;
+                bgm.loop = true;
+                bgm.volume = volume;
+                bgm.play();
+                this.currentBGM = bgm;
+            }
+        }
+    }
+
+    stopBGM() {
+        if (this.currentBGM) {
+            this.currentBGM.pause();
+            this.currentBGM.currentTime = 0;
+        }
+        this.currentBGM = null;
+    }
+
+    // SEを流す
+    playSE(se) {
+        se.currentTime = 0;
+        se.loop = false;
+        se.volume = this.load(cookieKeys.userConfig).seVolume;
+        se.play();
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される

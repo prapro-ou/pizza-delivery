@@ -4,12 +4,17 @@ import { resource } from '../resource.mjs';
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 import { UserConfig } from '../dataObject/UserConfig.mjs';
 
+let appearsFirstTime = true;
+
 export class TitleScene extends Scene {
     sceneWillAppear() {
-        this.userConfig = new UserConfig(0, 0);
-        this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
-        this.bgm = new Audio('resource/bgm/MusMus-BGM-103.mp3');
-        this.bgm.loop = true; // ループ再生
+        if (appearsFirstTime) {
+            this.userConfig = new UserConfig(0, 0);
+            this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        } else {
+            this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
+        }
+        appearsFirstTime = false;
     }
 
     updateStates(deltaTime) {}
@@ -85,24 +90,29 @@ export class TitleScene extends Scene {
 
     didTap(x, y) {
         let r = this.startFromBeginningButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.arasuji);
         }
         r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.slotSelection);
         }
         r = this.configButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.config);
         }
         r = this.PizzaCollectionArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.pizzaCollection);
         }
 
         r = this.endingCollectionButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.endingCollection);
         }
 
@@ -113,9 +123,14 @@ export class TitleScene extends Scene {
     }
 
     didTapSoundIcon() {
-        this.userConfig.bgmVolume = (this.userConfig.bgmVolume == 0) ? 0.1 : 0.0;
-        this.bgm.volume = this.userConfig.bgmVolume;
-        this.bgm.currentTime = 0;
-        this.bgm.play();
+        const volume = (this.userConfig.bgmVolume == 0) ? 0.1 : 0.0;
+        this.userConfig.bgmVolume = volume;
+        this.userConfig.seVolume = volume;
+        this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        if (volume > 0) {
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+        } else {
+            this.sceneRouter.stopBGM();
+        }
     }
 }

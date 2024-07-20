@@ -1,9 +1,11 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 //セーブデータ選択画面
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.slotButtonAreas = [];
     }
 
@@ -62,10 +64,12 @@ export class SlotSelectionScene extends Scene {
 
     //タイトルに戻るが押されたとき
     didTapBack(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.title);
     }
     //各セーブデータが押されたとき
     didTapSlot(slot_index) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.stageSelection);
     }
 }

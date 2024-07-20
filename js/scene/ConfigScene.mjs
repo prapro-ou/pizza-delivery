@@ -3,6 +3,11 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 
+const sliders = {
+    bgm: "sliders.bgm",
+    se: "sliders.se",
+}
+
 // 設定画面
 export class ConfigScene extends Scene {
     sceneWillAppear() {
@@ -10,14 +15,14 @@ export class ConfigScene extends Scene {
         this.backButtonArea = null;
         this.volumeButtonArea = null;
         this.seButtonArea = null;
-        this.bgmSlider = { x: 100, y: 200, w: 300, h: 20 };
-        this.seSlider = { x: 100, y: 300, w: 300, h: 20 };
+        this.bgmSliderArea = null; // { x: 100, y: 200, w: 300, h: 20 };
+        this.seSliderArea = null; // { x: 100, y: 300, w: 300, h: 20 };
         this.draggingSlider = null; // 現在ドラッグ中のスライダー
         this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
     }
 
     updateStates(deltaTime, mouse) {
-        if (mouse.isDown) {
+        if (mouse.isDown && this.bgmSliderArea && this.seSliderArea) {
             if (this.draggingSlider) {
                 this.updateSlider(mouse.x, this.draggingSlider);
             } else {
@@ -39,8 +44,29 @@ export class ConfigScene extends Scene {
         ctx.textAlign = "left";
         ctx.fillText("設定画面", 50, 50);
 
+        // 音量スライダー
+        this.bgmSliderArea = {
+            x: max_x / 2 - 150,
+            y: max_y / 2 - 70,
+            w: 300,
+            h: 20
+        };
+        this.drawSlider(ctx, this.bgmSliderArea, "BGM Volume", this.userConfig.bgmVolume);
+        this.seSliderArea = {
+            x: max_x / 2 - 150,
+            y: max_y / 2 + 50,
+            w: 300,
+            h: 20
+        };
+        this.drawSlider(ctx, this.seSliderArea, "SE Volume", this.userConfig.seVolume);
+
         // タイトルに戻るボタン
-        let r = { x: max_x - 200, y: max_y - 100, w: 200, h: 50 };
+        let r = {
+            x: max_x / 2 - 100,
+            y: max_y - 100,
+            w: 200,
+            h: 50
+        };
         this.backButtonArea = r;
         ctx.fillStyle = "blue";
         ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -49,24 +75,20 @@ export class ConfigScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
-
-        // 音量スライダー
-        this.drawSlider(ctx, this.bgmSlider, "BGM Volume", this.userConfig.bgmVolume);
-        this.drawSlider(ctx, this.seSlider, "SE Volume", this.userConfig.seVolume);
     }
 
-    drawSlider(ctx, slider, label, value) {
+    drawSlider(ctx, area, label, value) {
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
         ctx.textAlign = "left";
-        ctx.fillText(label, slider.x, slider.y - 10);
+        ctx.fillText(`${label}  ${Math.round(value * 100)}%`, area.x, area.y - 20);
 
         ctx.fillStyle = "gray";
-        ctx.fillRect(slider.x, slider.y, slider.w, slider.h);
+        ctx.fillRect(area.x, area.y, area.w, area.h);
 
-        const knobX = slider.x + value * slider.w;
+        const knobX = area.x + value * area.w;
         ctx.fillStyle = "white";
-        ctx.fillRect(knobX - 10, slider.y - 5, 20, slider.h + 10);
+        ctx.fillRect(knobX - 10, area.y - 5, 20, area.h + 10);
     }
 
     didTap(x, y) {
@@ -82,22 +104,25 @@ export class ConfigScene extends Scene {
     }
 
     checkSliderDragStart(x, y) {
-        if (this.isWithinSlider(x, y, this.bgmSlider)) {
-            this.draggingSlider = this.bgmSlider;
-        } else if (this.isWithinSlider(x, y, this.seSlider)) {
-            this.draggingSlider = this.seSlider;
+        if (this.isWithinSlider(x, y, this.bgmSliderArea)) {
+            this.draggingSlider = sliders.bgm;
+        } else if (this.isWithinSlider(x, y, this.seSliderArea)) {
+            this.draggingSlider = sliders.se;
         }
     }
 
     updateSlider(x, slider) {
-        let value = (x - slider.x) / slider.w;
-        value = Math.min(Math.max(value, 0.0), 1.0);
-        value = Math.round(value * 100) / 100;
-
-        if (slider === this.bgmSlider) {
+        if (slider === sliders.bgm) {
+            let value = (x - this.bgmSliderArea.x) / this.bgmSliderArea.w;
+            value = Math.min(Math.max(value, 0.0), 1.0);
+            value = Math.round(value * 100) / 100;
             this.userConfig.bgmVolume = value;
             this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
-        } else if (slider === this.seSlider) {
+
+        } else if (slider === sliders.se) {
+            let value = (x - this.seSliderArea.x) / this.seSliderArea.w;
+            value = Math.min(Math.max(value, 0.0), 1.0);
+            value = Math.round(value * 100) / 100;
             this.userConfig.seVolume = value;
             this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
         }

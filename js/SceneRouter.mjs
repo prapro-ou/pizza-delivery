@@ -100,6 +100,9 @@ export class SceneRouter {
 
     // Cookieに読み込み
     save(cookieKey, value) {
+        if (cookieKey == cookieKeys.userConfig) {
+            this.setBGMVolume(value.bgmVolume);
+        }
         this.cookieHandler.save(cookieKey, value)
     }
 
@@ -121,13 +124,11 @@ export class SceneRouter {
         } else if (bgm != this.currentBGM) {
             this.stopBGM();
             const volume = this.load(cookieKeys.userConfig).bgmVolume;
-            if (volume > 0) {
-                bgm.currentTime = 0;
-                bgm.loop = true;
-                bgm.volume = volume;
-                bgm.play();
-                this.currentBGM = bgm;
-            }
+            bgm.currentTime = 0;
+            bgm.loop = true;
+            bgm.volume = volume * 0.1;
+            bgm.play();
+            this.currentBGM = bgm;
         }
     }
 
@@ -139,11 +140,17 @@ export class SceneRouter {
         this.currentBGM = null;
     }
 
+    setBGMVolume(volume) {
+        if (this.currentBGM) {
+            this.currentBGM.volume = volume * 0.1;
+        }
+    }
+
     // SEを流す
     playSE(se) {
         se.currentTime = 0;
         se.loop = false;
-        se.volume = this.load(cookieKeys.userConfig).seVolume;
+        se.volume = this.load(cookieKeys.userConfig).seVolume * 0.1;
         se.play();
     }
 

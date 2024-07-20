@@ -13,6 +13,7 @@ export class TitleScene extends Scene {
             this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
         } else {
             this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
         appearsFirstTime = false;
     }
@@ -82,7 +83,7 @@ export class TitleScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
 
-        const soundImage = (this.userConfig.bgmVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
+        const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
         r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
         this.switchSoundArea = r;
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
@@ -123,14 +124,13 @@ export class TitleScene extends Scene {
     }
 
     didTapSoundIcon() {
-        const volume = (this.userConfig.bgmVolume == 0) ? 0.1 : 0.0;
+        const volume = (this.userConfig.bgmVolume == 0) ? 1.0 : 0.0;
         this.userConfig.bgmVolume = volume;
         this.userConfig.seVolume = volume;
         this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
-        if (volume > 0) {
+        if (!this.sceneRouter.currentBGM) {
             this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
-        } else {
-            this.sceneRouter.stopBGM();
         }
+        this.sceneRouter.currentBGM.currentTime = 0;
     }
 }

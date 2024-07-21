@@ -2,6 +2,8 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { pizzaName, recipe, pizzaOrder, imageForPizza } from '../gameObject/pizzas.mjs';
 import { imageForIngredient } from '../gameObject/ingredients.mjs';
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { resource } from '../resource.mjs';
 
 // ピザコレクション画面
 export class PizzaCollectionScene extends Scene {
@@ -113,7 +115,8 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillText(pizzaName[pizza], x + 100, y + 25);
 
         // ピザ画像
-        const pizzaImage = imageForPizza(pizza);
+        const isUnlocked = this.sceneRouter.load(cookieKeys.pizzaInfo).isUnlocked(pizza);
+        const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(pizzaImage, x, y, 90, 90);
 

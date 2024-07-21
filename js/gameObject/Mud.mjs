@@ -9,6 +9,7 @@ export class Mud extends Obstacle {
         this.type = obstacleType.mud;
         this.image = resource.images.mud;
         this.scaleFactor = 1.5;
+
     }
 
     checkCollision(x, d) {
@@ -16,6 +17,7 @@ export class Mud extends Obstacle {
     }
 
     handleCollision(player, roadX) {
+        player.onMud = true;
         player.inCollision = true;
         player.collideAndBackToCenter(roadX);
     }

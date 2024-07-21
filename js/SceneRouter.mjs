@@ -147,11 +147,17 @@ export class SceneRouter {
     }
 
     // SEを流す
-    playSE(se) {
+    playSE(se, loop = false) {
         se.currentTime = 0;
-        se.loop = false;
+        se.loop = loop;
         se.volume = this.load(cookieKeys.userConfig).seVolume * 0.1;
         se.play();
+    }
+
+    // SEを止める
+    stopSE(se) {
+        se.pause();
+        se.currentTime = 0;
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される

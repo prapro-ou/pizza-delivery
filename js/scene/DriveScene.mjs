@@ -53,6 +53,7 @@ export class DriveScene extends Scene {
         // ここに動く障害物を追加して管理する
         this.stage.cars = [];
         this.sceneRouter.setBGM(this.stage.bgm);
+        this.sceneRouter.playSE(resource.se.startEffect);
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -77,6 +78,8 @@ export class DriveScene extends Scene {
             this.moveCars(deltaTime);
         }
         if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
+            this.sceneRouter.playSE(resource.se.goalEffect);
+            this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
             this.goalFlg = true;
             setTimeout(() => {
                 this.transitToNextScene()
@@ -128,12 +131,20 @@ export class DriveScene extends Scene {
     checkCollision(deltaTime) {
         const { center, left, right } = this.roadX(this.player.d);
         if (this.player.x < left || this.player.x > right) {
+            this.sceneRouter.playSE(resource.se.courseOutEffect);
             this.player.collideAndBackToCenter(this.roadX.bind(this));
         }
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
             if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
                 obstacle.handleCollision(this.player, this.roadX.bind(this), deltaTime);
+                if (this.player.onMud) {
+                    this.sceneRouter.playSE(resource.se.mudEffect);
+                    this.player.onMud = false;
+                } else if (this.player.onSpeedingBoard) {
+                    this.sceneRouter.playSE(resource.se.speedUpEffect);
+                    this.player.onSpeedingBoard = false;
+                }
             }
         }
         for (let i = 0; i < this.stage.cars.length; i++) {
@@ -148,6 +159,7 @@ export class DriveScene extends Scene {
         for (let i = 0; i < this.stage.ingredients.length; i++) {
             const ingredient = this.stage.ingredients[i];
             if (ingredient.checkCollision(this.player.x, this.player.d)) {
+                this.sceneRouter.playSE(resource.se.getIngredientEffect);
                 this.collectedIngredients.push(ingredient.type);
                 ingredient.disappear();
             }
@@ -353,7 +365,6 @@ export class DriveScene extends Scene {
         ctx.font = "64px Arial";
         ctx.textAlign = "center";
         if (this.startAnimationTime < 1) {
-            this.sceneRouter.playSE(resource.se.engineEffect);
             ctx.fillText("3", max_x / 2, max_y / 2);
         } else if (this.startAnimationTime < 2) {
             ctx.fillText("2", max_x / 2, max_y / 2);
@@ -363,6 +374,7 @@ export class DriveScene extends Scene {
             ctx.fillText("START", max_x / 2, max_y / 2);
         } else {
             this.startAnimationFlg = false;
+            this.sceneRouter.playSE(resource.se.bikeEngineEffect, true);
         }
     }
 }

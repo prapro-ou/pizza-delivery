@@ -17,6 +17,7 @@ export class SpeedingBoard extends Obstacle {
     }
 
     handleCollision(player, roadX, deltaTime) {
+        player.onSpeedingBoard = true;
         player.dBoostedSpeed += this.acceleration * deltaTime / 1000;
     }
 }

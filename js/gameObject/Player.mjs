@@ -13,6 +13,8 @@ export class Player {
         this.image = resource.images.rider;
         this.theta = 0;
         this.inCollision = false;
+        this.onMud =false;
+        this.onSpeedingBoard = false;
         this.collideAnimating = false;
         this.collideAnimationDuration = 1; // 秒 アニメーション継続時間
         this.collideAnimationTime = 0; // 秒 アニメーション開始からの経過時間

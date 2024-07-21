@@ -37,9 +37,15 @@ const bgmPaths = {
 
 // SEのパス一覧
 const sePaths = {
-    clickEffect:   "resource/se/click.mp3",
-    engineEffect:   "resource/se/bike.wav",
+    clickEffect:    "resource/se/click.mp3",
+    startEffect:   "resource/se/start.mp3",
     crashEffect:    "resource/se/crash.wav",
+    mudEffect:      "resource/se/mud.mp3",
+    getIngredientEffect:    "resource/se/getIngredient.wav",
+    courseOutEffect:    "resource/se/courseOut.wav",
+    speedUpEffect:  "resource/se/speedUp.mp3",
+    goalEffect:    "resource/se/goal.mp3",
+    bikeEngineEffect:    "resource/se/bikeEngine.mp3",
 }
 
 class Resource {

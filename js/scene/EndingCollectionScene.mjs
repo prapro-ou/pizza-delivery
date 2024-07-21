@@ -1,3 +1,4 @@
+import { endingHint, endingName, endingOrder } from '../gameObject/endings.mjs';
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
@@ -8,19 +9,18 @@ export class EndingCollectionScene extends Scene {
         this.nextPageButtonArea = null;
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
+        this.endingFrame = [];
     }
 
-    updateStates(deltaTime) {
-
-    }
+    updateStates(deltaTime) {}
 
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
 
         //エンディングのテキストを配置する枠の位置
-        const endingFrame = [{x:50, y:100}, {x:50, y:250},  {x:50, y:400}, 
-                             {x:450, y:100}, {x:450, y:250}, {x:450, y:400} ]
+        this.endingFrame = [{x:50, y:100}, {x:50, y:240},  {x:50, y:380},
+                            {x:430, y:100}, {x:430, y:240}, {x:430, y:380} ]
 
         ctx.fillStyle = "pink";
         ctx.fillRect(0, 0, max_x, max_y);
@@ -28,13 +28,6 @@ export class EndingCollectionScene extends Scene {
         ctx.font = "50px Arial";
         ctx.textAlign = "left";
         ctx.fillText(`エンディングコレクション画面${this.page}`, 50, 50);
-
-        //エンディングの画像とヒントを表示する矩形を配置
-        for(let i = 0; i <= 5; i++){
-            ctx.fillStyle = "white";
-            ctx.fillRect(endingFrame[i].x, endingFrame[i].y, 275, 125);
-        }
-        
 
         // タイトルに戻るボタン
         let r = { x: max_x / 2 - 100, y: max_y - 100, w: 200, h: 50 };
@@ -47,34 +40,7 @@ export class EndingCollectionScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
 
-
-        // 1ページ目
-        if(this.page === 1){
-
-            //エンディングのテキストを配置
-            //現在はxxxエンディングを仮置き
-            for(let i = 0; i <= 5; i++){
-            
-                //if(this.xxxEnding.complete) {
-                    ctx.fillStyle = "black";
-                    ctx.font = "30px Arial";
-                    ctx.textAlign = "left";
-                    ctx.fillText(`xxxエンディング`, endingFrame[i].x + 25, endingFrame[i].y+20 );
-                //}
-            }
-
-            //ヒントのテキストを配置
-            for(let i = 0; i <= 5; i++) {
-                 
-                //iに応じて表示するヒントを変える
-                    ctx.fillStyle = "black";
-                    ctx.font = "15px Arial";
-                    ctx.textAlign = "left";
-                    ctx.fillText("xxxエンディングのヒント", endingFrame[i].x + 5 , endingFrame[i].y + 50 );
-            }
-
-
-            // 次のページに遷移するボタン
+        if (endingOrder.length - this.endingFrame.length * this.page > 0) {
             r = { x: max_x - 50, y: max_y - 100, w: 50, h: 50 }
             this.nextPageButtonArea = r;
             ctx.fillStyle = "blue";
@@ -86,32 +52,7 @@ export class EndingCollectionScene extends Scene {
             ctx.fillText("→", r.x + r.w / 2, r.y + r.h / 2);
         }
 
-        //2ページ目
-        if(this.page === 2){
-
-           //エンディングのテキストを配置
-            //現在はoooエンディングを仮置き
-            for(let i = 0; i <= 5; i++){
-            
-                //if(this.xxxEnding.complete) {
-                    ctx.fillStyle = "black";
-                    ctx.font = "30px Arial";
-                    ctx.textAlign = "left";
-                    ctx.fillText(`oooエンディング`, endingFrame[i].x + 25, endingFrame[i].y+20 );
-                //}
-            }
-
-            //ヒントのテキストを配置
-            for(let i = 0; i <= 5; i++) {
-                 
-                //iに応じて表示するヒントを変える
-                    ctx.fillStyle = "black";
-                    ctx.font = "15px Arial";
-                    ctx.textAlign = "left";
-                    ctx.fillText("oooエンディングのヒント", endingFrame[i].x + 5 , endingFrame[i].y + 50 );
-            }
-            
-            // 前のページに遷移するボタン
+        if (this.page > 1) {
             r = { x: 0, y: max_y - 100, w: 50, h: 50 }
             this.previousPageButtonArea = r;
             ctx.fillStyle = "blue";
@@ -123,7 +64,39 @@ export class EndingCollectionScene extends Scene {
             ctx.fillText("←", r.x + r.w / 2, r.y + r.h / 2);
         }
 
+        this.renderPage(ctx, this.page);
+    }
 
+    renderPage(ctx, page) {
+        for(let i = 0; i < this.endingFrame.length; i++){
+            const endingIndex = this.endingFrame.length * (page - 1) + i;
+            if (endingIndex >= endingOrder.length) break;
+            const ending = endingOrder[endingIndex];
+            this.drawEnding(ctx, ending, this.endingFrame[i].x, this.endingFrame[i].y)
+        }
+    }
+
+    drawEnding(ctx, ending, x, y) {
+        // エンディングの画像とヒントを表示する矩形を配置
+        ctx.fillStyle = "white";
+        ctx.fillRect(x, y, 320, 120);
+
+        // エンディングのテキストを配置
+        const fontSize = Math.min(250 / 11, 250 / endingName[ending].length);
+        ctx.fillStyle = "black";
+        ctx.font = `${fontSize}px Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText
+        ctx.fillText(endingName[ending], x + 320 / 2, y + 30);
+
+        // ヒントのテキストを配置
+        ctx.fillStyle = "black";
+        ctx.font = "15px Arial";
+        ctx.textAlign = "left";
+        const hintLines = endingHint[ending].split("\n");
+        for (let i = 0; i < hintLines.length; i++) {
+            ctx.fillText(hintLines[i], x + 10 , y + 60 + 22 * i);
+        }
     }
 
     // 画面内のどこかがタップされた
@@ -141,7 +114,7 @@ export class EndingCollectionScene extends Scene {
             this.didTapPrePage();
         }
     }
-    
+
     // 「タイトルに戻る」ボタンがタップされた
     didTapBack() {
         this.sceneRouter.changeScene(scenes.title);
@@ -157,5 +130,4 @@ export class EndingCollectionScene extends Scene {
     didTapPrePage(){
         this.page = 1;
     }
-
 }

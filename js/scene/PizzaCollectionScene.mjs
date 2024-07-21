@@ -107,10 +107,9 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillRect(x, y, 350, 90);
 
         // ピザ名
-        // FIXME：名前が長い(クアトロ・フォルマッジやスパイシーシーフードピザ)は
-        //        ピザは枠に入りきらない
+        const fontSize = Math.min(24, 240 / pizzaName[pizza].length)
         ctx.fillStyle = 'black';
-        ctx.font = "30px Arial";
+        ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = "left";
         ctx.fillText(pizzaName[pizza], x + 100, y + 25);
 

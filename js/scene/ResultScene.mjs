@@ -3,25 +3,25 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { pizzas, pizzaName, pizzaScore,imageForPizza } from "../gameObject/pizzas.mjs";
 import { ingredientType, ingredientName, ingredientScore, imageForIngredient } from "../gameObject/ingredients.mjs"
 
-
-//リザルト画面
+// リザルト画面
+// - 入力
+//   - this.sharedData.stage: ステージ
+//   - this.sharedData.cookedPizza: 作ったピザ
+//   - this.sharedData.goalTime: タイム
+//   - this.sharedData.collectedIngredients: 集めた食材の配列
+// - 出力
+//   - this.sharedData.score: スコア
 export class ResultScene extends Scene {
     sceneWillAppear(){
         this.NextButton = null;
-        
-        //仮データ
-        this.sharedData.cookedPizza = pizzas.marinara;
-        this.pizza = this.sharedData.cookedPizza;
-        //CookingSceneでチーズを1つ、バジルを２つ、トマトを１つ選択したと想定
-        this.sharedData.selectedIngredients = [
-            ingredientType.cheese,
-            ingredientType.basil,
-            ingredientType.basil,
-            ingredientType.tomato,
-            
-        ];
 
-        this.ingredientCounts = this.sharedData.selectedIngredients.reduce((obj, ingredient) => {
+        this.pizza = this.sharedData.cookedPizza;
+        this.stage = this.sharedData.stage;
+        this.goalTime = this.sharedData.goalTime;
+        this.targetTime = this.sharedData.stage.targetTime;
+
+        const collectedIngredients = this.sharedData.collectedIngredients;
+        this.ingredientCounts = collectedIngredients.reduce((obj, ingredient) => {
             if (obj[ingredient]) {
                 obj[ingredient]++;
             } else {
@@ -30,38 +30,17 @@ export class ResultScene extends Scene {
             return obj;
         }, {});
 
-        
-        // ゴールまでの時間
-        this.sharedData.goalTime = 18.8405241;
-
-        //規定タイム
-        this.sharedData.targetTime = 20;
-
+        // クリアタイムによるスコア変動の倍率
         this.timeBonusFactor = 1;
 
-
-
-
-        // this.score = {
-        //     pizzaScore: [number],
-        //     ingredientsScore: [number],
-        //     timeBonus:  [number],
-        // }
-
-        this.score = this.calculateScore();
-        this.totalScore = this.score.pizzaScore + this.score.ingredientsScore + this.score.timeBonus;
+        this.scoreDetail = this.calculateScoreDetail();
+        this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;
 
         console.log('トータルスコア : ' + this.totalScore);
-
-
-        //仮データ終わり
-        
-        
-        
     }
 
     updateStates(deltaTime){}
-    
+
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
@@ -72,8 +51,6 @@ export class ResultScene extends Scene {
         ctx.font = "50px Arial";
         ctx.textAlign = "left";
         ctx.fillText("リザルト画面", 50, 60);
-        
-        
 
         let r = { x: max_x - 300, y: max_y - 100, w: 200, h: 50 };
         this.NextButton = r;
@@ -92,7 +69,6 @@ export class ResultScene extends Scene {
         this.drawTime(max_x, max_y, ctx);
 
         this.drawScore(max_x, max_y, ctx);
-        
     }
 
     didTap(x, y){
@@ -101,7 +77,7 @@ export class ResultScene extends Scene {
             this.didTapNext();
         }
     }
-    
+
     didTapNext() {
         this.sceneRouter.changeScene(scenes.whichSlotToSave);
     }
@@ -110,7 +86,7 @@ export class ResultScene extends Scene {
         const xOffset = 150;
         const yOffset = 200;
         const scaleFactor = 5; // 画像の拡大率を調整
-        
+
         const ingredientKeys = Object.keys(this.ingredientCounts);
         // console.log(ingredientKeys);
         for (let i = 0; i < ingredientKeys.length; i++) {
@@ -164,7 +140,7 @@ export class ResultScene extends Scene {
 
     //クリアタイムを画面左下に表示する
     drawTime(max_x, max_y, ctx) {
-        const time = this.sharedData.goalTime;
+        const time = this.goalTime;
         const timeText = `クリアタイム: ${time.toFixed(2)}s`;
 
         ctx.fillStyle = "black";
@@ -177,9 +153,9 @@ export class ResultScene extends Scene {
     //ピザの画像の右側にピザのスコアを、材料の画像の右側に材料の合計のスコアを、クリアタイムの右側にタイムボーナスを表示する
 
     drawScore(max_x, max_y, ctx){
-        const pizzaScoreText = `ピザのスコア: ${this.score.pizzaScore}`;
-        const ingredientsScoreText = `材料のスコア: ${this.score.ingredientsScore}`;
-        const timeBonusText = `${this.score.timeBonus >= 0 ? 'タイムボーナス' : 'タイムペナルティ'}: ${this.score.timeBonus}`;
+        const pizzaScoreText = `ピザのスコア: ${this.scoreDetail.pizzaScore}`;
+        const ingredientsScoreText = `材料のスコア: ${this.scoreDetail.ingredientsScore}`;
+        const timeBonusText = `${this.scoreDetail.timeBonus >= 0 ? 'タイムボーナス' : 'タイムペナルティ'}: ${this.scoreDetail.timeBonus}`;
         const totalScoreText = `合計スコア: ${this.totalScore}`;
 
         ctx.fillStyle = "black";
@@ -196,23 +172,21 @@ export class ResultScene extends Scene {
 
     }
 
-
-    //スコア = 作ったピザの点数 + 食材毎の点数 +  max(0, (目標タイム - 経過時間) * timeBonusFactor)
-    calculateScore() {
-
-        const scoreDetails = {
+    //スコア = 作ったピザの点数 + 食材毎の点数 + (目標タイム - 経過時間) * timeBonusFactor
+    calculateScoreDetail() {
+        const scoreDetail = {
             pizzaScore: 0,
             ingredientsScore: 0,
             timeBonus: 0,
         }
 
-        scoreDetails.pizzaScore = pizzaScore[this.pizza];
+        scoreDetail.pizzaScore = pizzaScore[this.pizza];
 
-        for(let ingredientKey in this.ingredientCounts){
-            scoreDetails.ingredientsScore += ingredientScore[ingredientKey] * this.ingredientCounts[ingredientKey];
+        for(let ingredientKey in this.ingredientCounts) {
+            scoreDetail.ingredientsScore += ingredientScore[ingredientKey] * this.ingredientCounts[ingredientKey];
         }
 
-        scoreDetails.timeBonus = Math.round((this.sharedData.targetTime - this.sharedData.goalTime) * this.timeBonusFactor);
-        return scoreDetails;
+        scoreDetail.timeBonus = Math.round((this.targetTime - this.goalTime) * this.timeBonusFactor);
+        return scoreDetail;
     }
 }

@@ -29,6 +29,9 @@ sceneRouter.sharedData.collectedIngredients = [
     ingredientType.basil,
     ingredientType.basil,
     ingredientType.tomato,
+    ingredientType.octopus,
+    ingredientType.squid,
+    ingredientType.onion
 ];
 
 sceneRouter.changeScene(scenes.result);

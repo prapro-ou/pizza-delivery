@@ -85,14 +85,16 @@ export class ResultScene extends Scene {
     drawResultIngredients(ctx, xOffset, yOffset, width) {
         const ingredientKeys = Object.keys(this.ingredientCounts);
         for (let i = 0; i < ingredientKeys.length; i++) {
+            const row = Math.floor(i / 4);
+            const column = i % 4;
             const ingredient = ingredientKeys[i];
             const ingredientCount = this.ingredientCounts[ingredient];
             this.drawIngredient(
                 ctx,
                 ingredient,
                 ingredientCount,
-                xOffset + i * width / 4 + 10,
-                yOffset,
+                xOffset + column * width / 4 + 10,
+                yOffset + row * (width / 4 + 15),
                 80
             )
         }

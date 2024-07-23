@@ -62,13 +62,13 @@ export class ResultScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("次のシーンへ", r.x + r.w / 2, r.y + r.h / 2);
 
-        this.drawPizza(ctx, 160, 80, 140);
-
-        this.drawResultIngredients(ctx, 45, 270, 400);
-
-        this.drawTime(ctx, 50, max_y - 50);
-
-        this.drawScore(max_x, max_y, ctx);
+        const IngredientsX = 45
+        const IngredientsW = 400
+        const centerX = IngredientsX + IngredientsW / 2
+        this.drawPizza(ctx, centerX - 140 / 2, 80, 140);
+        this.drawResultIngredients(ctx, IngredientsX, 270, IngredientsW);
+        this.drawTime(ctx, centerX, max_y - 60);
+        this.drawScore(ctx);
     }
 
     didTap(x, y){
@@ -83,6 +83,10 @@ export class ResultScene extends Scene {
     }
 
     drawResultIngredients(ctx, xOffset, yOffset, width) {
+
+        ctx.fillStyle = "lightblue";
+        ctx.fillRect(xOffset, yOffset, width, (width / 4 + 15) * 2);
+
         const ingredientKeys = Object.keys(this.ingredientCounts);
         for (let i = 0; i < ingredientKeys.length; i++) {
             const row = Math.floor(i / 4);
@@ -145,30 +149,44 @@ export class ResultScene extends Scene {
 
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
-        ctx.textAlign = "left";
+        ctx.textAlign = "center";
         ctx.textBaseline = "bottom";
         ctx.fillText(timeText, xOffset, yOffset);
     }
 
     //ピザの画像の右側にピザのスコアを、材料の画像の右側に材料の合計のスコアを、クリアタイムの右側にタイムボーナスを表示する
 
-    drawScore(max_x, max_y, ctx){
-        const pizzaScoreText = `ピザのスコア: ${this.scoreDetail.pizzaScore}`;
-        const ingredientsScoreText = `材料のスコア: ${this.scoreDetail.ingredientsScore}`;
-        const timeBonusText = `${this.scoreDetail.timeBonus >= 0 ? 'タイムボーナス' : 'タイムペナルティ'}: ${this.scoreDetail.timeBonus}`;
-        const totalScoreText = `合計スコア: ${this.totalScore}`;
+    drawScore(ctx){
+        const scoreDetailX = 490;
+        const scoreDetailMaxX = 740;
+        const scoreDetailY = 300;
+        const totalScoreX = (scoreDetailX + scoreDetailMaxX) / 2;
+        const timeBonusText = this.scoreDetail.timeBonus >= 0 ? "タイムボーナス" : "タイムペナルティ";
 
         ctx.fillStyle = "black";
-        ctx.font = "30px Arial";
-        ctx.textAlign = "right";
+        ctx.textAlign = "center";
         ctx.textBaseline = "bottom";
-        ctx.fillText(pizzaScoreText, 730, 130);
-        ctx.fillText(ingredientsScoreText, 730, 265);
-        ctx.fillText(timeBonusText, 730, 370); 
-        ctx.fillText(totalScoreText, 730, 450);
+        ctx.font = "24px Arial";
+        ctx.fillText("合計スコア", totalScoreX, 140);
 
-        ctx.fillStyle = "black";
-        ctx.fillRect(465, 380, 275, 5);
+        ctx.font = "64px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(`${this.totalScore}`, totalScoreX, 210);
+
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("ー スコア内訳 ー", totalScoreX, scoreDetailY - 35);
+        ctx.textAlign = "left";
+        ctx.fillText("ピザのスコア", scoreDetailX, scoreDetailY);
+        ctx.fillText("材料のスコア", scoreDetailX, scoreDetailY + 30);
+        ctx.fillText(timeBonusText, scoreDetailX, scoreDetailY + 60);
+        ctx.textAlign = "right";
+        ctx.fillText(`${this.scoreDetail.pizzaScore}`, scoreDetailMaxX, scoreDetailY);
+        ctx.fillText(`${this.scoreDetail.ingredientsScore}`, scoreDetailMaxX, scoreDetailY + 30);
+        ctx.fillText(`${this.scoreDetail.timeBonus}`, scoreDetailMaxX, scoreDetailY + 60);
+
+        // ctx.fillStyle = "black";
+        // ctx.fillRect(465, 380, 275, 5);
 
     }
 

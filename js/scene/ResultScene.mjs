@@ -62,11 +62,11 @@ export class ResultScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("次のシーンへ", r.x + r.w / 2, r.y + r.h / 2);
 
-        this.drawPizza(max_x,max_y,ctx);
+        this.drawPizza(ctx, 160, 80, 140);
 
-        this.drawResultIngredients(max_x, max_y, ctx);
+        this.drawResultIngredients(ctx, 45, 270, 400);
 
-        this.drawTime(max_x, max_y, ctx);
+        this.drawTime(ctx, 50, max_y - 50);
 
         this.drawScore(max_x, max_y, ctx);
     }
@@ -82,40 +82,38 @@ export class ResultScene extends Scene {
         this.sceneRouter.changeScene(scenes.whichSlotToSave);
     }
 
-    drawResultIngredients(max_x, max_y, ctx) {
-        const xOffset = 150;
-        const yOffset = 200;
-        const scaleFactor = 5; // 画像の拡大率を調整
-
+    drawResultIngredients(ctx, xOffset, yOffset, width) {
         const ingredientKeys = Object.keys(this.ingredientCounts);
-        // console.log(ingredientKeys);
         for (let i = 0; i < ingredientKeys.length; i++) {
             const ingredient = ingredientKeys[i];
             const ingredientCount = this.ingredientCounts[ingredient];
-            // console.log(ingredient);
-            const ingredientImage = imageForIngredient(ingredient);
-            if (ingredientImage.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(
-                    ingredientImage,
-                    xOffset + i * 100,
-                    yOffset,
-                    ingredientImage.width * scaleFactor,
-                    ingredientImage.height * scaleFactor
-                );
-                ctx.fillStyle = "black";
-                ctx.font = "20px Arial";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(`x${ingredientCount}`, xOffset + i * 100 + ingredientImage.width * scaleFactor / 2, yOffset + ingredientImage.height * scaleFactor + 10);
-            }
+            this.drawIngredient(
+                ctx,
+                ingredient,
+                ingredientCount,
+                xOffset + i * width / 4 + 10,
+                yOffset,
+                80
+            )
         }
     }
 
-    drawPizza(max_x, max_y, ctx) {
-        const xOffset = max_x / 2 - 50;
-        const yOffset = 70;
-        const scaleFactor = 5; // 画像の拡大率を調整
+    drawIngredient(ctx, ingredient, ingredientCount, xOffset, yOffset, width) {
+        ctx.imageSmoothingEnabled = false;
+        const ingredientImage = imageForIngredient(ingredient);
+        ctx.drawImage(ingredientImage, xOffset, yOffset, width, width);
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(
+            `x${ingredientCount}`,
+            xOffset + width / 2,
+            yOffset + width + 10
+        );
+    }
+
+    drawPizza(ctx, xOffset, yOffset, width) {
         const pizzaImage = imageForPizza(this.pizza);
         if (pizzaImage.complete) {
             ctx.imageSmoothingEnabled = false;
@@ -123,8 +121,8 @@ export class ResultScene extends Scene {
                 pizzaImage,
                 xOffset,
                 yOffset,
-                pizzaImage.width * scaleFactor,
-                pizzaImage.height * scaleFactor
+                width,
+                width
             );
         }
 
@@ -134,20 +132,20 @@ export class ResultScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(pizzaDisplayName, xOffset + 40, yOffset + 100, 100, 100);
+        ctx.fillText(pizzaDisplayName, xOffset + width / 2, yOffset + width + 10, width, 100);
 
     }
 
     //クリアタイムを画面左下に表示する
-    drawTime(max_x, max_y, ctx) {
+    drawTime(ctx, xOffset, yOffset) {
         const time = this.goalTime;
         const timeText = `クリアタイム: ${time.toFixed(2)}s`;
 
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
-        ctx.textAlign = "right";
+        ctx.textAlign = "left";
         ctx.textBaseline = "bottom";
-        ctx.fillText(timeText, 425, 370);
+        ctx.fillText(timeText, xOffset, yOffset);
     }
 
     //ピザの画像の右側にピザのスコアを、材料の画像の右側に材料の合計のスコアを、クリアタイムの右側にタイムボーナスを表示する

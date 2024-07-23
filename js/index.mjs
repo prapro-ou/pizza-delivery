@@ -15,26 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-
-//仮データ
-import { pizzas } from "./gameObject/pizzas.mjs";
-import { ingredientType } from "./gameObject/ingredients.mjs";
-import { stage1 } from "./stage/stage1.mjs";
-sceneRouter.sharedData.stage = stage1;
-sceneRouter.sharedData.cookedPizza = pizzas.seafood;
-sceneRouter.sharedData.goalTime = 15.1;
-sceneRouter.sharedData.collectedIngredients = [
-    ingredientType.cheese,
-    ingredientType.cheese,
-    ingredientType.basil,
-    ingredientType.basil,
-    ingredientType.tomato,
-    ingredientType.octopus,
-    ingredientType.squid,
-    ingredientType.onion
-];
-
-sceneRouter.changeScene(scenes.result);
+sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 

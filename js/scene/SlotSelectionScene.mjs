@@ -1,7 +1,9 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 
-//セーブデータ選択画面
+// セーブデータ選択画面
+// - 出力
+//   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
         this.slotButtonAreas = [];
@@ -55,7 +57,7 @@ export class SlotSelectionScene extends Scene {
         for ( let i = 0; i < 4; i++ ){
             let r = this.slotButtonAreas[i];
             if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-                this.didTapSlot(i);
+                this.didTapSlot(i + 1);
             }
         }   
     }
@@ -65,7 +67,8 @@ export class SlotSelectionScene extends Scene {
         this.sceneRouter.changeScene(scenes.title);
     }
     //各セーブデータが押されたとき
-    didTapSlot(slot_index) {
+    didTapSlot(slotIndex) {
+        this.sharedData.playingSlotIndex = slotIndex;
         this.sceneRouter.changeScene(scenes.stageSelection);
     }
 }

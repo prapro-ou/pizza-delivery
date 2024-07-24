@@ -1,5 +1,6 @@
 import { obstacleType } from "../gameObject/obstacleSettings.mjs";
 import { speedModes } from "./speedModes.mjs";
+import { resource } from "../resource.mjs";
 
 export const stage3 =
 {
@@ -141,4 +142,5 @@ export const stage3 =
     nightMode: false,
     speedMode: speedModes.fast,
     nCars: 3,
+    bgm: resource.bgm.MusMusBGM122,
 }

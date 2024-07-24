@@ -1,14 +1,15 @@
 import { Obstacle } from "./Obstacle.mjs";
 import { obstacleType } from "./obstacleSettings.mjs";
+import { resource } from "../resource.mjs";
 
 // 障害物の泥水
 export class Mud extends Obstacle {
     constructor(x, d) {
         super(x, d);
         this.type = obstacleType.mud;
-        this.image = new Image();
-        this.image.src = 'resource/image/mud.png';
-        this.scaleFactor = 1.5;
+        this.image = resource.images.mud;
+        this.scaleFactor = 2.0;
+        this.collisionCountUp = true;
     }
 
     checkCollision(x, d) {
@@ -16,6 +17,7 @@ export class Mud extends Obstacle {
     }
 
     handleCollision(player, roadX) {
+        player.onMud = true;
         player.inCollision = true;
         player.collideAndBackToCenter(roadX);
     }

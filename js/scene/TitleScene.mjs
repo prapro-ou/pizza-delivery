@@ -1,7 +1,23 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { UserConfig } from '../dataObject/UserConfig.mjs';
+
+let appearsFirstTime = true;
 
 export class TitleScene extends Scene {
+    sceneWillAppear() {
+        if (appearsFirstTime) {
+            this.userConfig = new UserConfig(0, 0);
+            this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        } else {
+            this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+        }
+        appearsFirstTime = false;
+    }
+
     updateStates(deltaTime) {}
 
     render(ctx) {
@@ -66,29 +82,55 @@ export class TitleScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
+
+        const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
+        r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
+        this.switchSoundArea = r;
+        ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
     }
 
     didTap(x, y) {
         let r = this.startFromBeginningButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.arasuji);
         }
         r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.slotSelection);
         }
         r = this.configButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.config);
         }
         r = this.PizzaCollectionArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.pizzaCollection);
         }
 
         r = this.endingCollectionButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.endingCollection);
         }
+
+        r = this.switchSoundArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.didTapSoundIcon()
+        }
+    }
+
+    didTapSoundIcon() {
+        const volume = (this.userConfig.bgmVolume == 0) ? 1.0 : 0.0;
+        this.userConfig.bgmVolume = volume;
+        this.userConfig.seVolume = volume;
+        this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        if (!this.sceneRouter.currentBGM) {
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+        }
+        this.sceneRouter.currentBGM.currentTime = 0;
     }
 }

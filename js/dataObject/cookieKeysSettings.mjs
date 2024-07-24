@@ -1,7 +1,7 @@
 import { Slot } from "./Slot.mjs";
 import { UserConfig } from "./UserConfig.mjs";
 import { PizzaInfo } from "./PizzaInfo.mjs";
-import { EndingInfo } from "./endingInfo.mjs";
+import { EndingInfo } from "./EndingInfo.mjs";
 
 //cookieに保存するデータの項目を列挙した連想配列
 export const cookieKeys = {
@@ -20,7 +20,9 @@ export function convertToKey(cookieKey) {
 export function parseJSONData(cookieKey, data) {
     switch (cookieKey) {
         case cookieKeys.slots:
-            return data.map(Slot.createFromJSONData);
+            return Object.fromEntries(
+                Object.entries(data).map(([key, value]) => [key, Slot.createFromJSONData(value)])
+            );
 
         case cookieKeys.userConfig:
             return UserConfig.createFromJSONData(data);
@@ -33,6 +35,27 @@ export function parseJSONData(cookieKey, data) {
 
         default:
             console.error(`parseDataに未定義のcookieKeyが渡されました：${cookieKey}`);
+            return;
+    }
+}
+
+// キーに対応するデフォルトの値を返す
+export function defaultValueFor(cookieKey) {
+    switch (cookieKey) {
+        case cookieKeys.slots:
+            return {};
+
+        case cookieKeys.userConfig:
+            return new UserConfig();
+
+        case cookieKeys.pizzaInfo:
+            return new PizzaInfo();
+
+        case cookieKeys.endingInfo:
+            return new EndingInfo();
+
+        default:
+            console.error(`defaultValueForに未定義のcookieKeyが渡されました：${cookieKey}`);
             return;
     }
 }

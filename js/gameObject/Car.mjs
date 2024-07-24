@@ -1,13 +1,13 @@
 import { Obstacle } from "./Obstacle.mjs";
 import { obstacleType } from "./obstacleSettings.mjs";
+import { resource } from "../resource.mjs";
 
 export class Car extends Obstacle {
     constructor(x, d, speedSetting) {
         super(x, d);
         this.dSpeed = speedSetting.carDSpeed + Math.random() * 20;
         this.type = obstacleType.car;
-        this.image = new Image();
-        this.image.src = 'resource/image/car_red.png';
+        this.image = resource.images.car_red;
         this.scaleFactor = 1.5;
     }
 

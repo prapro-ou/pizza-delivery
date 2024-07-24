@@ -1,4 +1,5 @@
 import { ingredientType } from "./ingredients.mjs"
+import { resource } from "../resource.mjs"
 
 // ピザの種類の列挙した連想配列
 export const pizzas = {
@@ -19,7 +20,6 @@ export const pizzaScore = {
     [pizzas.margherita]: 1000,
     [pizzas.marinara]: 2000,
     [pizzas.seafood]: 3000,
-
 }
 
 // ピザを作るのに必要な素材の表
@@ -28,6 +28,13 @@ export const recipe = {
     [pizzas.margherita]: [ingredientType.tomato, ingredientType.cheese, ingredientType.basil],
     [pizzas.seafood]: [ingredientType.squid, ingredientType.octopus]
 }
+
+// ピザの順序
+export const pizzaOrder = [
+    pizzas.marinara,
+    pizzas.margherita,
+    pizzas.seafood,
+]
 
 // 素材の配列から、どんなピザができるかを返す
 export function getPizza(ingredients) {
@@ -42,25 +49,18 @@ export function getPizza(ingredients) {
 }
 
 export function imageForPizza(type) {
-    const image = new Image();
-
     switch (type) {
         case pizzas.margherita:
-            image.src = 'resource/image/pizza/margherita.png';
-            break;
+            return resource.images.margherita;
 
         case pizzas.marinara:
-            image.src = 'resource/image/pizza/marinara.png';
-            break;
+            return resource.images.marinara;
 
         case pizzas.seafood:
-            image.src = 'resource/image/pizza/seafood.png';
-            break;
+            return resource.images.seafood;
 
         default:
             console.error(`imageForPizzaに未定義のtypeが渡されました：${type}`)
             return;
     }
-
-    return image;
 }

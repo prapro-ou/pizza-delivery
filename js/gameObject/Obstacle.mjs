@@ -6,6 +6,8 @@ export class Obstacle {
         this.d = d;
         this.image = null;
         this.scaleFactor = 1;
+        // エンディングの判定に使う「障害物衝突回数」にカウントするか
+        this.collisionCountUp = false;
     }
 
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {

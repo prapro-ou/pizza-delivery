@@ -1,3 +1,5 @@
+import { resource } from "../resource.mjs";
+
 // 食材の種類の列挙した連想配列
 export const ingredientType = {
     tomato: "ingredientType.tomato",
@@ -37,37 +39,27 @@ export function randomIngredientType() {
 }
 
 export function imageForIngredient(type) {
-    const image = new Image();
-
     switch (type) {
         case ingredientType.basil:
-            image.src = 'resource/image/ingredient/basil.png';
-            break;
+            return resource.images.basil;
 
         case ingredientType.cheese:
-            image.src = 'resource/image/ingredient/cheese.png';
-            break;
+            return resource.images.cheese;
 
         case ingredientType.tomato:
-            image.src = 'resource/image/ingredient/tomato.png';
-            break;
+            return resource.images.tomato;
 
         case ingredientType.onion:
-            image.src = 'resource/image/ingredient/onion.png';
-            break;
+            return resource.images.onion;
 
         case ingredientType.octopus:
-            image.src = 'resource/image/ingredient/octopus.png';
-            break;
+            return resource.images.octopus;
 
         case ingredientType.squid:
-            image.src = 'resource/image/ingredient/squid.png';
-            break;
+            return resource.images.squid;
 
         default:
             console.error(`imageForIngredientに未定義のtypeが渡されました：${type}`)
             return;
     }
-
-    return image;
 }

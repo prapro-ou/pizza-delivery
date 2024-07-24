@@ -1,17 +1,26 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { stage1 } from '../stage/stage1.mjs';
 import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
 import { Player, PlayerWithInertia } from '../gameObject/Player.mjs';
 import { Ingredient } from '../gameObject/Ingredient.mjs';
 import { randomIngredientType, imageForIngredient } from '../gameObject/ingredients.mjs';
 import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
+import { resource } from '../resource.mjs';
 
+// ステージ選択画面
+// - 入力
+//   - this.sharedData.stage: ステージ
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数
+// - 出力
+//   - this.sharedData.goalTime: タイム
+//   - this.sharedData.collectedIngredients: 集めた食材の配列
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数
+//   - this.sharedData.collisionCount: 障害物に衝突した回数
 export class DriveScene extends Scene {
     sceneWillAppear() {
         this.elapsedTime = 0.0
-        this.stage = stage1
+        this.stage = this.sharedData.stage
         this.cameraDistance = -10
         this.pixelSize = 8
         this.speedSetting = speedSettings[this.stage.speedMode];
@@ -26,6 +35,8 @@ export class DriveScene extends Scene {
         this.elapsedTime = 0.0;
         this.gameOverFlg = false;
         this.gameOverAnimationTime = 0.0;
+        this.gameOverCount = this.sharedData.gameOverCount;
+        this.collisionCount = 0;
         this.startFlg = true;
         this.startAnimationFlg = false;
         this.startAnimationTime = 0.0;
@@ -51,6 +62,8 @@ export class DriveScene extends Scene {
         });
         // ここに動く障害物を追加して管理する
         this.stage.cars = [];
+        this.sceneRouter.setBGM(this.stage.bgm);
+        this.sceneRouter.playSE(resource.se.startEffect);
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
@@ -75,6 +88,8 @@ export class DriveScene extends Scene {
             this.moveCars(deltaTime);
         }
         if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
+            this.sceneRouter.playSE(resource.se.goalEffect);
+            this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
             this.goalFlg = true;
             setTimeout(() => {
                 this.transitToNextScene()
@@ -117,33 +132,48 @@ export class DriveScene extends Scene {
     }
 
     transitToNextScene() {
-        this.sharedData.targetTime = this.stage.targetTime;
-        this.sharedData.elapsedTime = this.elapsedTime;
+        this.sharedData.goalTime = this.elapsedTime;
         this.sharedData.collectedIngredients = this.collectedIngredients;
+        this.sharedData.gameOverCount = this.gameOverCount;
+        this.sharedData.collisionCount = this.collisionCount;
+        console.log(this.sharedData)
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
     checkCollision(deltaTime) {
         const { center, left, right } = this.roadX(this.player.d);
         if (this.player.x < left || this.player.x > right) {
+            this.sceneRouter.playSE(resource.se.courseOutEffect);
             this.player.collideAndBackToCenter(this.roadX.bind(this));
         }
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
             if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                if (obstacle.collisionCountUp) this.collisionCount += 1;
                 obstacle.handleCollision(this.player, this.roadX.bind(this), deltaTime);
+                if (this.player.onMud) {
+                    this.sceneRouter.playSE(resource.se.mudEffect);
+                    this.player.onMud = false;
+                } else if (this.player.onSpeedingBoard) {
+                    this.sceneRouter.playSE(resource.se.speedUpEffect);
+                    this.player.onSpeedingBoard = false;
+                }
             }
         }
         for (let i = 0; i < this.stage.cars.length; i++) {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                this.sceneRouter.playSE(resource.se.crashEffect);
+                this.sceneRouter.stopBGM();
                 this.gameOverFlg = true;
+                this.sharedData.gameOverCount += 1;
                 car.handleCollision(this.player, this.roadX.bind(this));
             }
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
             const ingredient = this.stage.ingredients[i];
             if (ingredient.checkCollision(this.player.x, this.player.d)) {
+                this.sceneRouter.playSE(resource.se.getIngredientEffect);
                 this.collectedIngredients.push(ingredient.type);
                 ingredient.disappear();
             }
@@ -334,10 +364,12 @@ export class DriveScene extends Scene {
     didTap(x, y) {
         let r = this.retryButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.drive);
         }
         r = this.continueButtonArea;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.stageSelection);
         }
     }
@@ -356,6 +388,7 @@ export class DriveScene extends Scene {
             ctx.fillText("START", max_x / 2, max_y / 2);
         } else {
             this.startAnimationFlg = false;
+            this.sceneRouter.playSE(resource.se.bikeEngineEffect, true);
         }
     }
 }

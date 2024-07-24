@@ -1,18 +1,20 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 export class ArasujiScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.deliveryButtonArea = null;
     }
 
     updateStates(deltaTime) {
         // 更新処理が必要な場合に実装
-    } 
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;
-        const max_y = ctx.canvas.height;         
+        const max_y = ctx.canvas.height;
 
         ctx.fillStyle = "lightblue";
         ctx.fillRect(0, 0, max_x, max_y);
@@ -67,6 +69,7 @@ export class ArasujiScene extends Scene {
     }
 
     didTapDelivery() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.rule);
     }
 

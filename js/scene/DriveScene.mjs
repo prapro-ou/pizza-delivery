@@ -1,6 +1,5 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { stage1 } from '../stage/stage1.mjs';
 import { obstacleType, makeObstacle } from '../gameObject/obstacleSettings.mjs';
 import { Player, PlayerWithInertia } from '../gameObject/Player.mjs';
 import { Ingredient } from '../gameObject/Ingredient.mjs';
@@ -8,10 +7,13 @@ import { randomIngredientType, imageForIngredient } from '../gameObject/ingredie
 import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
 
+// ステージ選択画面
+// - 入力
+//   - this.sharedData.stage: ステージ
 export class DriveScene extends Scene {
     sceneWillAppear() {
         this.elapsedTime = 0.0
-        this.stage = stage1
+        this.stage = this.sharedData.stage
         this.cameraDistance = -10
         this.pixelSize = 8
         this.speedSetting = speedSettings[this.stage.speedMode];

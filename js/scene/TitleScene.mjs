@@ -1,7 +1,13 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 
 export class TitleScene extends Scene {
+    sceneWillAppear() {
+        const endingInfo = this.sceneRouter.load(cookieKeys.endingInfo);
+        this.endingUnlocked = endingInfo.getEndingCount() >= 1;
+    }
+
     updateStates(deltaTime) {}
 
     render(ctx) {
@@ -45,7 +51,6 @@ export class TitleScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
 
-        
         r = { x: max_x / 2 - 250, y: max_y / 2 + 225, w: 200, h: 50 };
         this.PizzaCollectionArea = r;
 
@@ -56,16 +61,18 @@ export class TitleScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("ピザコレクション", r.x + r.w / 2, r.y + r.h / 2);
-        
-        r = { x: max_x / 2 + 100 , y: max_y / 2 + 225, w: 200, h: 50 };
-        this.endingCollectionButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
+
+        if (this.endingUnlocked) {
+            r = { x: max_x / 2 + 100 , y: max_y / 2 + 225, w: 200, h: 50 };
+            this.endingCollectionButtonArea = r;
+            ctx.fillStyle = "blue";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
+        }
     }
 
     didTap(x, y) {

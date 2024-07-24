@@ -18,6 +18,11 @@ export class EndingInfo {
         }
     }
 
+    // 解放されているエンディングの数を取得する
+    getEndingCount() {
+        return Object.keys(this.unlockedEndings).length;
+    }
+
     static createFromJSONData(data) {
         return new EndingInfo(data.unlockedEndings);
     }

@@ -50,6 +50,10 @@ export class StageSelectionScene extends Scene {
     didTapStage(stageIndex) {
         this.sharedData.stage = stages[stageIndex];
         this.sharedData.gameOverCount = 0;
-        this.sceneRouter.changeScene(scenes.drive);
+        if (this.sharedData.stage) {
+            this.sceneRouter.changeScene(scenes.drive);
+        } else {
+            console.error(`未実装のstageです: ${stageIndex}`)
+        }
     }
 }

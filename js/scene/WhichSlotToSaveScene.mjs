@@ -6,6 +6,7 @@ import { Slot } from '../dataObject/Slot.mjs';
 
 // どのスロットにセーブするかを選択する画面
 // - 入力
+//   ^ this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 //   - this.sharedData.stage: ステージ
 //   - this.sharedData.score: スコア
 //   - this.sharedData.cookedPizza: 作ったピザ
@@ -53,8 +54,7 @@ export class WhichSlotToSaveScene extends Scene{
         }
     }
 
-    didTapSlot(slot_index) {
-        const slots = this.sceneRouter.load(cookieKeys.slots);
+    didTapSlot(slotIndex) {
         const stageResult = new StageResult(
             this.sharedData.stage.stageNumber,
             this.sharedData.score,
@@ -64,9 +64,10 @@ export class WhichSlotToSaveScene extends Scene{
             this.sharedData.collisionCount,
             this.sharedData.collectedIngredients,
         )
-        console.log(stageResult)
-        if (!slots[slot_index]) slots[slot_index] = new Slot();
-        slots[slot_index].appendStageResult(stageResult);
+        const slots = this.sceneRouter.load(cookieKeys.slots);
+        const playingIndex = this.sharedData.playingSlotIndex;
+        let slot = slots[playingIndex] ?? new Slot();
+        slots[slotIndex] = slot.withAddedStageResult(stageResult);
 
         this.sceneRouter.save(cookieKeys.slots, slots);
         this.sceneRouter.changeScene(scenes.stageSelection);

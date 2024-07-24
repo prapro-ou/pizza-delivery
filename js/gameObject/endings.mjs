@@ -9,6 +9,12 @@ export const endings = {
     イタリア人ぶち切れエンド: "ending.イタリア人ぶち切れエンド"
 }
 
+// エンディングの表示名
+export const endingName = {
+    [endings.満腹エンド]: "満腹エンド",
+    [endings.引きこもりエンド]: "引きこもりエンド",
+}
+
 // エンディングを判定する
 export function judgeEnding(slot) {
     if (slot.stageResults.length >= 1) {

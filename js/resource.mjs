@@ -8,6 +8,7 @@ const imagePaths = {
     margherita: "resource/image/pizza/margherita.png",
     marinara:   "resource/image/pizza/marinara.png",
     seafood:    "resource/image/pizza/seafood.png",
+    unknownPizza:   "resource/image/pizza/unknown.png",
 
     basil:      "resource/image/ingredient/basil.png",
     cheese:     "resource/image/ingredient/cheese.png",

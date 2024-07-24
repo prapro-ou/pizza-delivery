@@ -14,7 +14,7 @@ export class Ingredient {
         if (this.disappeared) return;
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
-        const scaleFactor = 2;
+        const scaleFactor = 2.375;
 
         if (this.image.complete) {
             ctx.imageSmoothingEnabled = false;

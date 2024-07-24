@@ -8,7 +8,7 @@ export class SpeedingBoard extends Obstacle {
         super(x, d);
         this.type = obstacleType.speedingBoard;
         this.image = resource.images.speedup;
-        this.scaleFactor = 1.5;
+        this.scaleFactor = 2.0;
         this.acceleration = 2000.0; // px/s^2
     }
 

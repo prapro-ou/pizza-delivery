@@ -6,6 +6,7 @@ export class StageSelectionScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.stageButtonAreas = null;
+        this.goToEndingButtonArea = null;
     }
 
     updateStates(deltaTime) {}
@@ -33,6 +34,16 @@ export class StageSelectionScene extends Scene {
             ctx.textBaseline = "middle";
             ctx.fillText(`ステージ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
         }
+
+        let r = { x: 600, y: 550, w: 150, h: 50 };
+        this.goToEndingButtonArea = r;
+        ctx.fillStyle = "lightblue";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("エンディングへ", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     didTap(x, y) {
@@ -42,11 +53,21 @@ export class StageSelectionScene extends Scene {
                 this.didTapStage(i);
             }
         }
+
+        const r = this.goToEndingButtonArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.didTapEnding();
+        }
+
     }
 
     didTapStage(stage_index) {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.stopBGM();
         this.sceneRouter.changeScene(scenes.drive);
+    }
+
+    didTapEnding(){
+        this.sceneRouter.changeScene(scenes.ending);
     }
 }

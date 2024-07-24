@@ -2,8 +2,8 @@ import { StageResult } from "./StageResult.mjs";
 
 // セーブデータ
 export class Slot {
-    constructor() {
-        this.stageResults = [];
+    constructor(stageResults = []) {
+        this.stageResults = stageResults;
     }
 
     static createFromJSONData(data) {
@@ -12,7 +12,7 @@ export class Slot {
         return slot;
     }
 
-    appendStageResult(stageResult) {
-        this.stageResults.push(stageResult);
+    withAddedStageResult(stageResult) {
+        return new Slot([...this.stageResults, stageResult]);
     }
 }

@@ -20,7 +20,9 @@ export function convertToKey(cookieKey) {
 export function parseJSONData(cookieKey, data) {
     switch (cookieKey) {
         case cookieKeys.slots:
-            return data.map(Slot.createFromJSONData);
+            return Object.fromEntries(
+                Object.entries(data).map(([key, value]) => [key, Slot.createFromJSONData(value)])
+            );
 
         case cookieKeys.userConfig:
             return UserConfig.createFromJSONData(data);
@@ -41,7 +43,7 @@ export function parseJSONData(cookieKey, data) {
 export function defaultValueFor(cookieKey) {
     switch (cookieKey) {
         case cookieKeys.slots:
-            return [];
+            return {};
 
         case cookieKeys.userConfig:
             return new UserConfig();

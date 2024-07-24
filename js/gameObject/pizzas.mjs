@@ -20,7 +20,6 @@ export const pizzaScore = {
     [pizzas.margherita]: 1000,
     [pizzas.marinara]: 2000,
     [pizzas.seafood]: 3000,
-
 }
 
 // ピザを作るのに必要な素材の表
@@ -29,6 +28,13 @@ export const recipe = {
     [pizzas.margherita]: [ingredientType.tomato, ingredientType.cheese, ingredientType.basil],
     [pizzas.seafood]: [ingredientType.squid, ingredientType.octopus]
 }
+
+// ピザの順序
+export const pizzaOrder = [
+    pizzas.marinara,
+    pizzas.margherita,
+    pizzas.seafood,
+]
 
 // 素材の配列から、どんなピザができるかを返す
 export function getPizza(ingredients) {

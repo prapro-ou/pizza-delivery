@@ -1,6 +1,11 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { stages } from '../stage/stages.mjs';
 
+// ステージ選択画面
+// - 出力
+//   - this.sharedData.stage: ステージ
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数 (0に初期化)
 export class StageSelectionScene extends Scene {
     sceneWillAppear() {
         this.stageButtonAreas = null;
@@ -48,7 +53,7 @@ export class StageSelectionScene extends Scene {
         for (let i = 0; i < 4; i++) {
             const r = this.stageButtonAreas[i];
             if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                this.didTapStage(i);
+                this.didTapStage(i + 1);
             }
         }
 
@@ -59,8 +64,14 @@ export class StageSelectionScene extends Scene {
 
     }
 
-    didTapStage(stage_index) {
-        this.sceneRouter.changeScene(scenes.drive);
+    didTapStage(stageIndex) {
+        this.sharedData.stage = stages[stageIndex];
+        this.sharedData.gameOverCount = 0;
+        if (this.sharedData.stage) {
+            this.sceneRouter.changeScene(scenes.drive);
+        } else {
+            console.error(`未実装のstageです: ${stageIndex}`)
+        }
     }
 
     didTapEnding(){

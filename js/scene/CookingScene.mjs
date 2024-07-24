@@ -3,6 +3,9 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
 import { getPizza, imageForPizza, pizzaName } from '../gameObject/pizzas.mjs';
 
+// ピザを作る画面
+// - 出力
+//   - this.sharedData.cookedPizza: 作ったピザ
 export class CookingScene extends Scene {
     sceneWillAppear() {
         this.collectedIngredients = this.sharedData.collectedIngredients;
@@ -151,6 +154,7 @@ export class CookingScene extends Scene {
 
         r = this.decisionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sharedData.cookedPizza = this.pizza;
             this.sceneRouter.changeScene(scenes.result);
         }
     }

@@ -1,14 +1,23 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { judgeEnding } from '../gameObject/endings.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
 
+// エンディング画面
+// - 入力
+//   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class EndingScene extends Scene {
     sceneWillAppear() {
         this.goToTitleButtonArea = null;
+        const slots = this.sceneRouter.load(cookieKeys.slots);
+        const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
+        this.ending = judgeEnding(slot);
     }
 
     updateStates(deltaTime) {
         // 更新処理が必要な場合に実装
-    } 
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;

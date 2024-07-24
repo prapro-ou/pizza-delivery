@@ -15,7 +15,8 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-sceneRouter.changeScene(scenes.stageSelection);
+sceneRouter.sharedData.playingSlotIndex = 2;
+sceneRouter.changeScene(scenes.ending);
 requestAnimationFrame(gameLoop);
 
 

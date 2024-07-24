@@ -8,3 +8,12 @@ export const endings = {
     イタリア修行エンド: "ending.イタリア修行エンド",
     イタリア人ぶち切れエンド: "ending.イタリア人ぶち切れエンド"
 }
+
+// エンディングを判定する
+export function judgeEnding(slot) {
+    if (slot.stageResults.length >= 1) {
+        return endings.満腹エンド;
+    } else {
+        return endings.引きこもりエンド;
+    }
+}

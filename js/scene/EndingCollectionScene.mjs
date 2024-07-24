@@ -2,10 +2,12 @@ import { endingHint, endingName, endingOrder } from '../gameObject/endings.mjs';
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { resource } from '../resource.mjs';
 
 // ピザコレクション画面
 export class EndingCollectionScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.backButtonArea = null;
         this.nextPageButtonArea = null;
         this.previousPageButtonArea = null;
@@ -126,17 +128,20 @@ export class EndingCollectionScene extends Scene {
 
     // 「タイトルに戻る」ボタンがタップされた
     didTapBack() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.title);
     }
 
     // 「→」がタップされた
     didTapNextPage(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.page = 2;
 
     }
 
     // 「←」がタップされた．
     didTapPrePage(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.page = 1;
     }
 }

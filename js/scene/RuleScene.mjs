@@ -1,8 +1,10 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 
 export class RuleScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.saveButtonArea = null;
     }
 
@@ -38,6 +40,7 @@ export class RuleScene extends Scene {
     }
 
     didTapSave() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.slotSelection);
     }
 

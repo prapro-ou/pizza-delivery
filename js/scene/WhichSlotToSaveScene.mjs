@@ -1,5 +1,6 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 import { StageResult } from '../dataObject/StageResult.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
@@ -16,6 +17,7 @@ import { Slot } from '../dataObject/Slot.mjs';
 //   - this.sharedData.collisionCount: 障害物に衝突した回数
 export class WhichSlotToSaveScene extends Scene{
     sceneWillAppear(){
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM115);
         this.slotToSaveButtonAreas = [];
     }
 
@@ -55,6 +57,7 @@ export class WhichSlotToSaveScene extends Scene{
     }
 
     didTapSlot(slotIndex) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
         const stageResult = new StageResult(
             this.sharedData.stage.stageNumber,
             this.sharedData.score,

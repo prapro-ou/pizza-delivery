@@ -85,25 +85,19 @@ export const endingHint = {
         "少ないスコアでエンディングを見る",
 }
 
-// エンディングの表示名
-export const endingName = {
-    [endings.満腹エンド]: "満腹エンド",
-    [endings.引きこもりエンド]: "引きこもりエンド",
-}
-
 // エンディングを判定する
 export function judgeEnding(slot) {
     if (slot.stageResults.length >= 1) {
         return endings.満腹エンド;
     } else {
-        return endings.引きこもりエンド;
+        return endings.クビエンド;
     }
 }
 
 // エンディング画面で表示するテキスト
 export const endingMessage = {
-    [endings.引きこもりエンド]:
-        "店長「引きこもってないで仕事しなさい！」\n主人公「ひえぇ」",
+    [endings.クビエンド]:
+        "店長「明日から来なくていい！クビだ！」\n主人公「ひえぇ」",
     [endings.満腹エンド]:
         "店長「ご苦労！顧客はみんな満腹になったぞ！」\n主人公「やったー」",
 }

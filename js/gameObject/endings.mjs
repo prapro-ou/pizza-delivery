@@ -17,3 +17,11 @@ export function judgeEnding(slot) {
         return endings.引きこもりエンド;
     }
 }
+
+// エンディング画面で表示するテキスト
+export const endingMessage = {
+    [endings.引きこもりエンド]:
+        "店長「引きこもってないで仕事しなさい！」\n主人公「ひえぇ」",
+    [endings.満腹エンド]:
+        "店長「ご苦労！顧客はみんな満腹になったぞ！」\n主人公「やったー」",
+}

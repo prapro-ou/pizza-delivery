@@ -1,7 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
-import { judgeEnding } from '../gameObject/endings.mjs';
+import { judgeEnding, endingMessage } from '../gameObject/endings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
 
 // エンディング画面
@@ -13,6 +13,7 @@ export class EndingScene extends Scene {
         const slots = this.sceneRouter.load(cookieKeys.slots);
         const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
         this.ending = judgeEnding(slot);
+        this.endingMessage = endingMessage[this.ending];
     }
 
     updateStates(deltaTime) {
@@ -40,7 +41,18 @@ export class EndingScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("タイトルへ戻る", r.x + r.w / 2, r.y + r.h / 2);
 
+        ctx.fillStyle = "black";
+        ctx.font = "24px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("店長「配達ご苦労であった。それにしても君...」", 100, 200);
 
+        ctx.fillStyle = "black";
+        ctx.font = "24px Arial";
+        ctx.textAlign = "left";
+        const lines = this.endingMessage.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], 100, 200 + 50 * (i + 1));
+        }
     }
 
     didTap(x, y) {

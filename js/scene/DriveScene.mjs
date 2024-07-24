@@ -10,6 +10,12 @@ import { Car } from '../gameObject/Car.mjs';
 // ステージ選択画面
 // - 入力
 //   - this.sharedData.stage: ステージ
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数
+// - 出力
+//   - this.sharedData.goalTime: タイム
+//   - this.sharedData.collectedIngredients: 集めた食材の配列
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数
+//   - this.sharedData.collisionCount: 障害物に衝突した回数
 export class DriveScene extends Scene {
     sceneWillAppear() {
         this.elapsedTime = 0.0
@@ -28,6 +34,8 @@ export class DriveScene extends Scene {
         this.elapsedTime = 0.0;
         this.gameOverFlg = false;
         this.gameOverAnimationTime = 0.0;
+        this.gameOverCount = this.sharedData.gameOverCount;
+        this.collisionCount = 0;
         this.startFlg = true;
         this.startAnimationFlg = false;
         this.startAnimationTime = 0.0;
@@ -119,9 +127,11 @@ export class DriveScene extends Scene {
     }
 
     transitToNextScene() {
-        this.sharedData.targetTime = this.stage.targetTime;
-        this.sharedData.elapsedTime = this.elapsedTime;
+        this.sharedData.goalTime = this.elapsedTime;
         this.sharedData.collectedIngredients = this.collectedIngredients;
+        this.sharedData.gameOverCount = this.gameOverCount;
+        this.sharedData.collisionCount = this.collisionCount;
+        console.log(this.sharedData)
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
@@ -133,6 +143,7 @@ export class DriveScene extends Scene {
         for (let i = 0; i < this.stage.obstacles.length; i++) {
             const obstacle = this.stage.obstacles[i];
             if (obstacle.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
+                if (obstacle.collisionCountUp) this.collisionCount += 1;
                 obstacle.handleCollision(this.player, this.roadX.bind(this), deltaTime);
             }
         }
@@ -140,6 +151,7 @@ export class DriveScene extends Scene {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
                 this.gameOverFlg = true;
+                this.sharedData.gameOverCount += 1;
                 car.handleCollision(this.player, this.roadX.bind(this));
             }
         }

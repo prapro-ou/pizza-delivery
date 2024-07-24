@@ -9,6 +9,7 @@ export class Mud extends Obstacle {
         this.type = obstacleType.mud;
         this.image = resource.images.mud;
         this.scaleFactor = 2.0;
+        this.collisionCountUp = true;
     }
 
     checkCollision(x, d) {

@@ -5,6 +5,7 @@ import { stages } from '../stage/stages.mjs';
 // ステージ選択画面
 // - 出力
 //   - this.sharedData.stage: ステージ
+//   - this.sharedData.gameOverCount: ゲームオーバーした回数 (0に初期化)
 export class StageSelectionScene extends Scene {
     sceneWillAppear() {
         this.stageButtonAreas = null;
@@ -48,6 +49,7 @@ export class StageSelectionScene extends Scene {
 
     didTapStage(stageIndex) {
         this.sharedData.stage = stages[stageIndex];
+        this.sharedData.gameOverCount = 0;
         this.sceneRouter.changeScene(scenes.drive);
     }
 }

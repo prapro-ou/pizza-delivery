@@ -1,6 +1,7 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
 import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cookieKeysSettings.mjs";
 import { resource } from "./resource.mjs";
+import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
 
 // Cookie操作をするためのクラス
 class CookieHandler {
@@ -31,6 +32,7 @@ class CookieHandler {
 export class SceneRouter {
     constructor(canvas) {
         this.currentScene = null;
+        this.currentBGM = null;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.canvas.width = canvas.clientWidth;
@@ -98,6 +100,9 @@ export class SceneRouter {
 
     // Cookieに読み込み
     save(cookieKey, value) {
+        if (cookieKey == cookieKeys.userConfig) {
+            this.setBGMVolume(value.bgmVolume);
+        }
         this.cookieHandler.save(cookieKey, value)
     }
 
@@ -110,6 +115,49 @@ export class SceneRouter {
             this.save(cookieKey, value);
         }
         return value
+    }
+
+    // BGMをセットする
+    setBGM(bgm) {
+        if (!bgm) {
+            this.stopBGM();
+        } else if (bgm != this.currentBGM) {
+            this.stopBGM();
+            const volume = this.load(cookieKeys.userConfig).bgmVolume;
+            bgm.currentTime = 0;
+            bgm.loop = true;
+            bgm.volume = volume * 0.1;
+            bgm.play();
+            this.currentBGM = bgm;
+        }
+    }
+
+    stopBGM() {
+        if (this.currentBGM) {
+            this.currentBGM.pause();
+            this.currentBGM.currentTime = 0;
+        }
+        this.currentBGM = null;
+    }
+
+    setBGMVolume(volume) {
+        if (this.currentBGM) {
+            this.currentBGM.volume = volume * 0.1;
+        }
+    }
+
+    // SEを流す
+    playSE(se, loop = false) {
+        se.currentTime = 0;
+        se.loop = loop;
+        se.volume = this.load(cookieKeys.userConfig).seVolume * 0.1;
+        se.play();
+    }
+
+    // SEを止める
+    stopSE(se) {
+        se.pause();
+        se.currentTime = 0;
     }
 
     // 内部状態などの更新処理。フレームごとに呼び出される

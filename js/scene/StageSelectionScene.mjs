@@ -1,5 +1,6 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 import { stages } from '../stage/stages.mjs';
 
 // ステージ選択画面
@@ -8,6 +9,7 @@ import { stages } from '../stage/stages.mjs';
 //   - this.sharedData.gameOverCount: ゲームオーバーした回数 (0に初期化)
 export class StageSelectionScene extends Scene {
     sceneWillAppear() {
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.stageButtonAreas = null;
         this.goToEndingButtonArea = null;
     }
@@ -65,6 +67,8 @@ export class StageSelectionScene extends Scene {
     }
 
     didTapStage(stageIndex) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.stopBGM();
         this.sharedData.stage = stages[stageIndex];
         this.sharedData.gameOverCount = 0;
         if (this.sharedData.stage) {

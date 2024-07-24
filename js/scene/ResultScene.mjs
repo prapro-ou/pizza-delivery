@@ -2,6 +2,7 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { pizzas, pizzaName, pizzaScore,imageForPizza } from "../gameObject/pizzas.mjs";
 import { ingredientType, ingredientName, ingredientScore, imageForIngredient } from "../gameObject/ingredients.mjs"
+import { resource } from '../resource.mjs';
 
 // リザルト画面
 // - 入力
@@ -13,6 +14,7 @@ import { ingredientType, ingredientName, ingredientScore, imageForIngredient } f
 //   - this.sharedData.score: スコア
 export class ResultScene extends Scene {
     sceneWillAppear(){
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM115);
         this.NextButton = null;
 
         this.pizza = this.sharedData.cookedPizza;
@@ -74,6 +76,7 @@ export class ResultScene extends Scene {
     didTap(x, y){
         let r = this.NextButton;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
             this.didTapNext();
         }
     }

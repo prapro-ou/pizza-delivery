@@ -1,6 +1,7 @@
 import { endingHint, endingName, endingOrder } from '../gameObject/endings.mjs';
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 
 // ピザコレクション画面
 export class EndingCollectionScene extends Scene {
@@ -10,6 +11,7 @@ export class EndingCollectionScene extends Scene {
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.endingFrame = [];
+        this.endingInfo = this.sceneRouter.load(cookieKeys.endingInfo);
     }
 
     updateStates(deltaTime) {}
@@ -82,12 +84,19 @@ export class EndingCollectionScene extends Scene {
         ctx.fillRect(x, y, 320, 120);
 
         // エンディングのテキストを配置
-        const fontSize = Math.min(250 / 11, 250 / endingName[ending].length);
-        ctx.fillStyle = "black";
-        ctx.font = `${fontSize}px Arial`;
-        ctx.textAlign = "center";
-        ctx.fillText
-        ctx.fillText(endingName[ending], x + 320 / 2, y + 30);
+        const isUnlocked = this.endingInfo.isUnlocked(ending);
+        if (isUnlocked) {
+            const fontSize = Math.min(250 / 11, 250 / endingName[ending].length);
+            ctx.fillStyle = "black";
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textAlign = "center";
+            ctx.fillText(endingName[ending], x + 320 / 2, y + 30);
+        } else {
+            ctx.fillStyle = "black";
+            ctx.font = `${250 / 11}px Arial`;
+            ctx.textAlign = "center";
+            ctx.fillText("？？？", x + 320 / 2, y + 30);
+        }
 
         // ヒントのテキストを配置
         ctx.fillStyle = "black";

@@ -108,6 +108,7 @@ export class Player {
             this.collideAnimationTime = 0;
             this.collideAnimationFromX = this.x;
             this.collideAnimationToX = center;
+            this.dBoostedSpeed = 0; 
         }, 400);
         setTimeout(() => {
             this.collideAnimating = false;
@@ -166,5 +167,6 @@ export class PlayerWithInertia extends Player {
         super.collideAndBackToCenter(roadX);
         this.xAcceleratedSpeed = 0;
         this.dAcceleratedSpeed = 0;
+        this.dBoostedSpeed = 0; 
     }
 }

@@ -45,6 +45,13 @@ export class WhichSlotToSaveScene extends Scene{
             ctx.textBaseline = "middle";
             ctx.fillText(`セーブデータ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
         }
+
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        ctx.fillText("選択中のスロット : " + this.sharedData.playingSlotIndex, max_x - 20, 30);
+
     }
 
     didTap(x, y){

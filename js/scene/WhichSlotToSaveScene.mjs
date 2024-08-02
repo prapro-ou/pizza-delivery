@@ -79,6 +79,8 @@ export class WhichSlotToSaveScene extends Scene{
         let slot = slots[playingIndex] ?? new Slot();
         slots[slotIndex] = slot.withAddedStageResult(stageResult);
 
+        this.sharedData.playingSlotIndex = slotIndex;
+        
         this.sceneRouter.save(cookieKeys.slots, slots);
         this.sceneRouter.changeScene(scenes.stageSelection);
     }

@@ -14,13 +14,14 @@ export class EndingScene extends Scene {
         const slots = this.sceneRouter.load(cookieKeys.slots);
         const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
         
-        const fixedEnding = this.sceneRouter.load(cookieKeys.endingInfo);
+
+        //TODO: すべてのスロットで同じエンディングになってしまうので、それぞれの
+        //      スロットにたいして別々にエンディングを決める必要がある
+        const previousEnding = this.sceneRouter.load(cookieKeys.endingInfo);
         let ending;
 
-        console.log(fixedEnding && (Object.keys(fixedEnding.unlockedEndings).length > 0) ? "あります" : "ないです");
-
-        if(fixedEnding && (Object.keys(fixedEnding.unlockedEndings).length > 0)){
-            ending = fixedEnding.unlockedEndings;
+        if(previousEnding && (Object.keys(previousEnding.unlockedEndings).length > 0)){
+            ending = previousEnding.unlockedEndings;
         } else {
             ending = judgeEnding(slot);
             const endingInfo = new EndingInfo(ending);
@@ -28,7 +29,7 @@ export class EndingScene extends Scene {
         }
 
         this.ending = ending;
-        
+
         this.endingMessage = endingMessage[this.ending];
         this.showsResult = false;
     }

@@ -119,7 +119,7 @@ export class DriveScene extends Scene {
         ctx.fillStyle = this.textColor;
         ctx.font = "20px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("STAGE 1", 50, 50);
+        ctx.fillText(`STAGE${this.stage.stageNumber}`, 50, 50);
 
         this.drawTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);

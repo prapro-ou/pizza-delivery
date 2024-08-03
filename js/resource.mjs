@@ -1,22 +1,39 @@
 // リソース画像のパス一覧
 const imagePaths = {
+    // 自機・障害物
     car_red:    "resource/image/car_red.png",
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",
 
+    // ピザ
     margherita: "resource/image/pizza/margherita.png",
     marinara:   "resource/image/pizza/marinara.png",
     seafood:    "resource/image/pizza/seafood.png",
-    unknownPizza:   "resource/image/pizza/unknown.png",
+    unknownPizza:
+                "resource/image/pizza/unknown.png",
 
+    // 食材
+    bacon:      "resource/image/ingredient/bacon_kari.png",
     basil:      "resource/image/ingredient/basil.png",
     cheese:     "resource/image/ingredient/cheese.png",
+    chicken:    "resource/image/ingredient/chicken.png",
+    corn:       "resource/image/ingredient/corn_kari.png",
+    durian:     "resource/image/ingredient/durian_kari.png",
+    mayonnaise: "resource/image/ingredient/mayonnaise_kari.png",
+    mysteriousMushroom:
+                "resource/image/ingredient/mysterious_mushroom.png",
+    natto:      "resource/image/ingredient/natto.png",
     octopus:    "resource/image/ingredient/octopus.png",
     onion:      "resource/image/ingredient/onion.png",
+    redPepper:  "resource/image/ingredient/red_pepper.png",
+    rottenEgg:  "resource/image/ingredient/rotten_egg_kari.png",
+    salami:     "resource/image/ingredient/salami_kari.png",
+    shrimp:     "resource/image/ingredient/shrimp.png",
     squid:      "resource/image/ingredient/squid.png",
     tomato:     "resource/image/ingredient/tomato.png",
 
+    // UI
     soundOn:    "resource/image/soundOn.png",
     soundOff:   "resource/image/soundOff.png",
 }

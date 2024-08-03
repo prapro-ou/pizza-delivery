@@ -172,10 +172,12 @@ export class DriveScene extends Scene {
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
             const ingredient = this.stage.ingredients[i];
-            if (ingredient.checkCollision(this.player.x, this.player.d)) {
-                this.sceneRouter.playSE(resource.se.getIngredientEffect);
-                this.collectedIngredients.push(ingredient.type);
-                ingredient.disappear();
+            if (this.collectedIngredients.length < 8) {
+                if (ingredient.checkCollision(this.player.x, this.player.d)) {
+                    this.sceneRouter.playSE(resource.se.getIngredientEffect);
+                    this.collectedIngredients.push(ingredient.type);
+                    ingredient.disappear();
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 // リソース画像のパス一覧
 const imagePaths = {
     // 自機・障害物
-    car_red:    "resource/image/car_red.png",
+    carRed:    "resource/image/car_red.png",
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",

@@ -25,7 +25,7 @@ export class Player {
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
-        const scaleFactor = 1.4;
+        const scaleFactor = 2.0;
         const centerX = x - this.image.width * scaleFactor / 2;
         const centerY = y - this.image.height * scaleFactor / 2;
 

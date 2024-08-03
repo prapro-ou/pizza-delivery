@@ -107,10 +107,10 @@ export class DriveScene extends Scene {
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
 
-        this.drawRoad(max_x, max_y, ctx);
+        this.drawRoad(max_x, max_y, ctx);        
         this.drawObstacle(max_x, max_y, ctx);
-        this.drawCars(max_x, max_y, ctx);
         this.drawIngredients(max_x, max_y, ctx);
+        this.drawCars(max_x, max_y, ctx);
         if (this.stage.nightMode) {
             this.drawShadow(max_x, max_y, ctx);
         }

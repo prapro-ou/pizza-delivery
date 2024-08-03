@@ -25,7 +25,7 @@ export class Player {
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
         const x = this.x * pixelSize;
-        const scaleFactor = 1.4;
+        const scaleFactor = 2.0;
         const centerX = x - this.image.width * scaleFactor / 2;
         const centerY = y - this.image.height * scaleFactor / 2;
 
@@ -108,6 +108,7 @@ export class Player {
             this.collideAnimationTime = 0;
             this.collideAnimationFromX = this.x;
             this.collideAnimationToX = center;
+            this.dBoostedSpeed = 0; 
         }, 400);
         setTimeout(() => {
             this.collideAnimating = false;
@@ -166,5 +167,6 @@ export class PlayerWithInertia extends Player {
         super.collideAndBackToCenter(roadX);
         this.xAcceleratedSpeed = 0;
         this.dAcceleratedSpeed = 0;
+        this.dBoostedSpeed = 0; 
     }
 }

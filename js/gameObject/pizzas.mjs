@@ -83,7 +83,7 @@ export const recipe = {
     [pizzas.vegetablePizza]: [ingredientType.tomato, ingredientType.onion, ingredientType.corn],
 }
 
-// ピザの順序
+// ピザコレクション画面でのピザの表示順
 export const pizzaOrder = [
     pizzas.baconPizza,
     pizzas.diabola,
@@ -103,16 +103,60 @@ export const pizzaOrder = [
     pizzas.strangePizza,
 ]
 
+// ピザの優先順位: getPizzaでの判定順
+export const pizzaPriorityOrder = [
+    pizzas.dough,
+    pizzas.unfinishedPizza,
+    pizzas.shiningMushroomPizza,
+    pizzas.strangePizza,
+    pizzas.marinara,
+    pizzas.vegetablePizza,
+    pizzas.margherita,
+    pizzas.spicySeafood,
+    pizzas.seafood,
+    pizzas.quattroFormaggi,
+    pizzas.diabola,
+    pizzas.teriyakiPizza,
+    pizzas.mayoCorn,
+    pizzas.baconPizza,
+    pizzas.meatPizza,
+    pizzas.uniquePizza,
+]
+
+// ピザが作れるかの判定。getPizzaから呼び出す用
+function canMakePizza(pizza, ingredients) {
+    switch (pizza) {
+        case pizzas.dough:
+            return ingredients.length == 0;
+
+        case pizzas.unfinishedPizza:
+            return ingredients.length < 4;
+
+        case pizzas.strangePizza:
+            // recipe[pizza] で列挙されたゲテモノ食材のいずれかを ingredients が含んでいる
+            return recipe[pizza].some(ingr => ingredients.includes(ingr));
+
+        case pizzas.uniquePizza:
+            // uniquePizza は最後に判定される
+            return true;
+
+        default:
+            const rest = [...ingredients];
+            for (let ingredient of recipe[pizza]) {
+                const index = rest.indexOf(ingredient);
+                if (index === -1) return false;
+                rest.splice(index, 1); // 見つかった食材を取り除く
+            }
+            return true;
+    }
+}
+
 // 素材の配列から、どんなピザができるかを返す
 export function getPizza(ingredients) {
-    for (const [pizza, requiredIngredients] of Object.entries(recipe)) {
-        const hasAllIngredients = requiredIngredients.every(ingredient => ingredients.includes(ingredient));
-        if (hasAllIngredients) {
-            return pizza
-        }
+    for (const pizza of pizzaPriorityOrder) {
+        if (canMakePizza(pizza, ingredients)) return pizza;
     }
-    // どのピザも作れない場合は一旦シーフードを返す
-    return pizzas.seafood;
+    console.error("どのピザの条件にも一致しませんでした:", pizzaPriorityOrder)
 }
 
 export function imageForPizza(type) {

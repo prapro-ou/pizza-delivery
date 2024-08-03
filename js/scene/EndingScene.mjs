@@ -1,6 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { EndingInfo } from '../dataObject/EndingInfo.mjs';
 import { endingName, judgeEnding, endingMessage } from '../gameObject/endings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
 
@@ -12,7 +13,22 @@ export class EndingScene extends Scene {
         this.goToTitleButtonArea = null;
         const slots = this.sceneRouter.load(cookieKeys.slots);
         const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
-        this.ending = judgeEnding(slot);
+        
+        const fixedEnding = this.sceneRouter.load(cookieKeys.endingInfo);
+        let ending;
+
+        console.log(fixedEnding && (Object.keys(fixedEnding.unlockedEndings).length > 0) ? "あります" : "ないです");
+
+        if(fixedEnding && (Object.keys(fixedEnding.unlockedEndings).length > 0)){
+            ending = fixedEnding.unlockedEndings;
+        } else {
+            ending = judgeEnding(slot);
+            const endingInfo = new EndingInfo(ending);
+            this.sceneRouter.save(cookieKeys.endingInfo, endingInfo);
+        }
+
+        this.ending = ending;
+        
         this.endingMessage = endingMessage[this.ending];
         this.showsResult = false;
     }

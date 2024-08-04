@@ -61,8 +61,8 @@ export class SlotSelectionScene extends Scene {
             const endingNameToDisplay = endingName[slot.ending] ?? "";
             ctx.fillText(endingNameToDisplay, r.x + r.w / 2 + 130, r.y + r.h / 2);
 
-        }       
-    }    
+        }
+    }
 
     didTap(x, y){
         //タイトルに戻る

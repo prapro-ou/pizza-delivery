@@ -11,24 +11,15 @@ import { Slot } from '../dataObject/Slot.mjs';
 export class EndingScene extends Scene {
     sceneWillAppear() {
         this.goToTitleButtonArea = null;
+
         const slots = this.sceneRouter.load(cookieKeys.slots);
-        const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
-        
+        const slotIndex = this.sharedData.playingSlotIndex;
+        let slot = slots[slotIndex] ?? new Slot();
 
-        //TODO: すべてのスロットで同じエンディングになってしまうので、それぞれの
-        //      スロットにたいして別々にエンディングを決める必要がある
-        const previousEnding = this.sceneRouter.load(cookieKeys.endingInfo);
-        let ending;
-
-        if(previousEnding && (Object.keys(previousEnding.unlockedEndings).length > 0)){
-            ending = previousEnding.unlockedEndings;
-        } else {
-            ending = judgeEnding(slot);
-            const endingInfo = new EndingInfo(ending);
-            this.sceneRouter.save(cookieKeys.endingInfo, endingInfo);
-        }
-
-        this.ending = ending;
+        this.ending = slot.ending ?? judgeEnding(slot);
+        slot.ending = this.ending;
+        slots[slotIndex] = slot;
+        this.sceneRouter.save(cookieKeys.slots, slots);
 
         this.endingMessage = endingMessage[this.ending];
         this.showsResult = false;

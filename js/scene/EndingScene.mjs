@@ -21,6 +21,10 @@ export class EndingScene extends Scene {
         slots[slotIndex] = slot;
         this.sceneRouter.save(cookieKeys.slots, slots);
 
+        const ending = this.sceneRouter.load(cookieKeys.endingInfo) ?? new EndingInfo();
+        ending.unlock(this.ending);
+        this.sceneRouter.save(cookieKeys.endingInfo,ending);
+
         this.endingMessage = endingMessage[this.ending];
         this.showsResult = false;
     }

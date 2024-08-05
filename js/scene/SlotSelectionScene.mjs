@@ -1,6 +1,9 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
+import { endingName } from '../gameObject/endings.mjs';
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
 
 // セーブデータ選択画面
 // - 出力
@@ -46,8 +49,20 @@ export class SlotSelectionScene extends Scene {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(`セーブデータ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
-        }       
-    }   
+
+            r = { x: max_x/2 -100, y: max_y/2 -200 + 100*i, w: 200, h: 50 };
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+
+            const slots = this.sceneRouter.load(cookieKeys.slots);
+            let slot = slots[i + 1] ?? new Slot();
+            const endingNameToDisplay = endingName[slot.ending] ?? "";
+            ctx.fillText(endingNameToDisplay, r.x + r.w / 2 + 130, r.y + r.h / 2);
+
+        }
+    }
 
     didTap(x, y){
         //タイトルに戻る

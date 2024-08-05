@@ -15,6 +15,6 @@ export class Slot {
     }
 
     withAddedStageResult(stageResult) {
-        return new Slot([...this.stageResults, stageResult], ending);
+        return new Slot([...this.stageResults, stageResult], this.ending);
     }
 }

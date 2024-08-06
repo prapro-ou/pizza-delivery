@@ -18,6 +18,8 @@ let lastTimestamp = 0;
 sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
+
+
 function resizeCanvas() {
     const aspectRatio = canvas.width / canvas.height;
     const windowHeight = window.innerHeight - document.body.getBoundingClientRect().top;
@@ -27,8 +29,8 @@ function resizeCanvas() {
         // ウィンドウの幅が広い場合
         const newHeight = windowHeight;
         const newWidth = newHeight * aspectRatio;
-        canvas.style.width = `${newWidth}px`;
-        canvas.style.height = `${newHeight}px`;
+        canvas.style.width = `calc(100dvh * ${aspectRatio})`;
+        canvas.style.height = "100dvh";
         canvas.style.margin = `0 ${(window.innerWidth - newWidth) / 2}px`;
     } else {
         // ウィンドウの高さが高い場合
@@ -44,7 +46,12 @@ function resizeCanvas() {
 document.addEventListener("DOMContentLoaded", resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
 
-
+// ピンチズーム無効化
+document.addEventListener('touchstart', (event) => {
+    if (event.touches.length > 1) { event.preventDefault(); }
+}, {
+    passive: false
+});
 
 
 

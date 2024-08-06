@@ -1,3 +1,5 @@
+import { pizzas } from "./pizzas.mjs"
+
 // エンディングの種類を列挙した連想配列
 export const endings = {
     後遺症エンド: "endings.後遺症エンド",
@@ -87,8 +89,18 @@ export const endingHint = {
 
 // エンディングを判定する
 export function judgeEnding(slot) {
-    if (slot.stageResults.length >= 1) {
-        return endings.満腹エンド;
+    
+    const totalCollisionCount = slot.stageResults.reduce((total, result) => total + result.collisionCount, 0);
+    const totalGameOverCount = slot.stageResults.reduce((total, result) => total + result.gameOverCount, 0);
+    const totalStrangePizzaCount = slot.stageResults.reduce((count, result) => {
+        return result.pizza === pizzas.strangePizza ? count + 1 : count;
+    }, 0);
+    
+    
+    if (totalCollisionCount >= 5 || totalGameOverCount >= 10) {
+        return endings.後遺症エンド;
+    } else if(totalStrangePizzaCount >= 4){
+        return endings.入院エンド;
     } else {
         return endings.クビエンド;
     }
@@ -100,4 +112,24 @@ export const endingMessage = {
         "店長「明日から来なくていい！クビだ！」\n主人公「ひえぇ」",
     [endings.満腹エンド]:
         "店長「ご苦労！顧客はみんな満腹になったぞ！」\n主人公「やったー」",
+    [endings.後遺症エンド]:
+        "後遺症エンドのテキストです",
+    [endings.入院エンド]:
+        "入院エンドのテキストです",
+    [endings.ピザ生地冷めちゃったエンド]:
+        "ピザ生地冷めちゃったエンドのテキストです",
+    [endings.パーフェクトエンド]:
+        "パーフェクトエンドのテキストです",
+    [endings.素材の味エンド]:
+        "素材の味エンドのテキストです",
+    [endings.海の家エンド]:
+        "海の家エンドのテキストです",
+    [endings.イタリア人ぶち切れエンド]:
+        "イタリア人ぶち切れエンドのテキストです",
+    [endings.イタリア修行エンド]:
+        "イタリア修行エンドのテキストです",
+    [endings.ピザ博士エンド]:
+        "ピザ博士エンドのテキストです",
+    [endings.社員エンド]:
+        "社員エンドのテキストです",
 }

@@ -18,14 +18,14 @@ let lastTimestamp = 0;
 sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
-
 function resizeCanvas() {
     const aspectRatio = canvas.width / canvas.height;
-    const windowAspectRatio = window.innerWidth / window.innerHeight;
+    const windowHeight = window.innerHeight - document.body.getBoundingClientRect().top;
+    const windowAspectRatio = window.innerWidth / windowHeight;
 
     if (windowAspectRatio > aspectRatio) {
         // ウィンドウの幅が広い場合
-        const newHeight = window.innerHeight;
+        const newHeight = windowHeight;
         const newWidth = newHeight * aspectRatio;
         canvas.style.width = `${newWidth}px`;
         canvas.style.height = `${newHeight}px`;
@@ -36,12 +36,14 @@ function resizeCanvas() {
         const newHeight = newWidth / aspectRatio;
         canvas.style.width = `${newWidth}px`;
         canvas.style.height = `${newHeight}px`;
-        canvas.style.margin = `${(window.innerHeight - newHeight) / 2}px 0`;
+        canvas.style.margin = `${(windowHeight - newHeight) / 2}px 0`;
     }
 }
+
 // 初回ロード時 と 画面のサイズ変更時 に resizeCanvas を実行する
 document.addEventListener("DOMContentLoaded", resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
+
 
 
 

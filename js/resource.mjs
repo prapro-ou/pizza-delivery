@@ -5,6 +5,8 @@ const imagePaths = {
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",
+    lampRight:  "resource/image/lamp_right.png",
+    lampLeft:   "resource/image/lamp_left.png",
 
     // 食材
     bacon:      "resource/image/ingredient/bacon_kari.png",

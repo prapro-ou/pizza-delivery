@@ -7,7 +7,6 @@ export const obstacleType = {
     mud: "obstacleType.mud",
     car: "obstacleType.car",
     speedingBoard: "obstacleType.speedingBoard",
-
 }
 
 // 障害物を生成する方法を記述した関数

@@ -89,31 +89,49 @@ export const endingHint = {
         "少ないスコアでエンディングを見る",
 }
 
+// // judgeEnding動作確認用
+// import { Slot } from "../dataObject/Slot.mjs"
+// import { StageResult } from "../dataObject/StageResult.mjs"
+// import { ingredientType } from "./ingredients.mjs"
+// const slotTmp = new Slot([
+//     new StageResult(stages[1], 5000, pizzas.seafood, 2, 3, 3, [ingredientType.bacon]),
+//     new StageResult(stages[4], 2300, pizzas.margherita, 2, 0, 0, [ingredientType.bacon]),
+//     new StageResult(stages[4], 7000, pizzas.spicySeafood, 2, 0, 0, [ingredientType.bacon]),
+//     new StageResult(stages[4], 6600, pizzas.margherita, 2, 0, 0, [ingredientType.bacon]),
+// ]);
+// console.log(judgeEnding(slotTmp));
+
 // エンディングを判定する
 export function judgeEnding(slot) {
-    
-    const totalCollisionCount = slot.stageResults.reduce((total, result) => {
-        total + result.collisionCount
-    }, 0);
-    const totalGameOverCount = slot.stageResults.reduce((total, result) => {
-        total + result.gameOverCount
-    }, 0);
-    
-    const isEveryExceedTargetTime  = 
+    const totalCollisionCount = slot.stageResults
+        .reduce((total, result) => total + result.collisionCount, 0);
+    const totalGameOverCount = slot.stageResults
+        .reduce((total, result) => total + result.gameOverCount, 0);
+
+    const isEveryExceedTargetTime =
     slot.stageResults.every(result => {
-        const stage = stages[result.stage];
+        const stage = result.stage;
         return stage && result.goalTime > stage.targetTime;
     })
-    
+
+    const totalScore = Object.keys(stages).map((stageNumber) =>
+        // stages[stageNumber] のスコアの最大値
+        slot.stageResults
+            .filter((result) => result.stage.stageNumber == stageNumber)
+            .map((result) => result.score)
+            .reduce((maxScore, score) => Math.max(maxScore, score))
+    ).reduce((total, score) => total + score, 0)
+
     const totalStrangePizzaCount = totalPizzaCount(slot, pizzas.strangePizza);
-    const totalDoughCount = totalPizzaCount(slot, pizzas.strangePizza);
-    const totalSeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
-    const totalSpicySeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
+    const totalDoughCount = totalPizzaCount(slot, pizzas.dough);
+    const totalSeafoodCount = totalPizzaCount(slot, pizzas.seafood);
+    const totalSpicySeafoodCount = totalPizzaCount(slot, pizzas.spicySeafood);
     const totalMargheritaCount = totalPizzaCount(slot, pizzas.margherita);
     const totalMarinaraCount = totalPizzaCount(slot, pizzas.marinara);
     const totalQuattroFormaggiCount = totalPizzaCount(slot, pizzas.quattroFormaggi);
-    //本場のピザ(マルゲリータ・マリナーラ・クアトロフォルマッジ)の合計
-    const AuthenticPizzaCount = totalMargheritaCount + totalMarinaraCount + totalQuattroFormaggiCount;
+    const totalDiabolaCount = totalPizzaCount(slot, pizzas.diabola);
+    //本場のピザ(マルゲリータ・マリナーラ・クアトロフォルマッジ・ディアボラ)の合計
+    const authenticPizzaCount = totalMargheritaCount + totalMarinaraCount + totalQuattroFormaggiCount + totalDiabolaCount;
 
     const pizzasType = (new Set(slot.stageResults.map(result => result.pizza))).size;
 
@@ -121,23 +139,25 @@ export function judgeEnding(slot) {
         return endings.後遺症エンド;
     } else if(totalStrangePizzaCount >= 4){
         return endings.入院エンド;
-    } else if(slot.stageResults.length >= 1 && isEveryExceedTargetTime){
+    } else if(slot.stageResults && isEveryExceedTargetTime){
         return endings.ピザ生地冷めちゃったエンド;
-    // TODO:パーフェクトエンド
+    } else if(pizzasType == Object.values(pizzas).length - 1 && totalScore >= 10000){
+        return endings.パーフェクトエンド;
     } else if(totalDoughCount >= 4){
         return endings.素材の味エンド;
     } else if(totalSeafoodCount + totalSpicySeafoodCount >= 3){
         return endings.海の家エンド;
-    } else if(slot.stageResults.length >= 1 && AuthenticPizzaCount === 0){
+    } else if(slot.stageResults && authenticPizzaCount == 0){
         return endings.イタリア人ぶち切れエンド;
-    // TODO:イタリア修行エンド
-    } else if(pizzasType >= 4){
+    } else if(totalScore >= 10000){
+        return endings.イタリア修行エンド;
+    } else if(pizzasType >= Math.floor(Object.values(pizzas).length * 0.75)){
         return endings.ピザ博士エンド;
-    } else if(slot.stageResults.length >= 4){
+    } else if(slot.stageResults.length >= 8){
         return endings.満腹エンド;
-    }
-    // TODO:社員エンド
-    else {
+    } else if(totalScore >= 5000){
+        return endings.社員エンド;
+    } else {
         return endings.クビエンド;
     }
 }

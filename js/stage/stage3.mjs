@@ -4,6 +4,7 @@ import { resource } from "../resource.mjs";
 
 export const stage3 =
 {
+    stageNumber: 3,
     roadPoint: [
         {d: -50, x: 50},
         {d: 0, x: 50},

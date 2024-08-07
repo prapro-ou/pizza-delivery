@@ -42,6 +42,7 @@ export class ResultScene extends Scene {
 
         this.scoreDetail = this.calculateScoreDetail();
         this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;
+        this.sharedData.score = this.totalScore;
 
         console.log('トータルスコア : ' + this.totalScore);
     }

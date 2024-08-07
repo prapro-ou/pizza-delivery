@@ -299,19 +299,12 @@ export class DriveScene extends Scene {
             const image = imageForIngredient(type);
             const x = max_x - 20;
             const y = 20 + 30 * i;
-            const scaleFactor = 2;
             if (image.complete) {
                 ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(
-                    image,
-                    x - image.width * scaleFactor / 2,
-                    y - image.height * scaleFactor / 2,
-                    image.width * scaleFactor,
-                    image.height * scaleFactor,
-                );
+                ctx.drawImage(image, x - 16, y - 16, 32, 32);
             }
         }
-    } 
+    }
 
     drawTime(ctx) {
         ctx.fillStyle = this.textColor;

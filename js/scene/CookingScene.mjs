@@ -13,7 +13,7 @@ export class CookingScene extends Scene {
         this.collectedIngredients = this.sharedData.collectedIngredients;
         this.selectedIndices = [];
         this.errorShowing = false;
-        this.pizza = null;
+        this.pizza = getPizza([]);
     }
 
     updateStates(deltaTime) {}

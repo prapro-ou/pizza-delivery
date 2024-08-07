@@ -1,22 +1,52 @@
 // リソース画像のパス一覧
 const imagePaths = {
-    car_red:    "resource/image/car_red.png",
+    // 自機・障害物
+    carRed:     "resource/image/car_red.png",
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",
 
-    margherita: "resource/image/pizza/margherita.png",
-    marinara:   "resource/image/pizza/marinara.png",
-    seafood:    "resource/image/pizza/seafood.png",
-    unknownPizza:   "resource/image/pizza/unknown.png",
-
+    // 食材
+    bacon:      "resource/image/ingredient/bacon_kari.png",
     basil:      "resource/image/ingredient/basil.png",
     cheese:     "resource/image/ingredient/cheese.png",
+    chicken:    "resource/image/ingredient/chicken.png",
+    corn:       "resource/image/ingredient/corn_kari.png",
+    durian:     "resource/image/ingredient/durian_kari.png",
+    mayonnaise: "resource/image/ingredient/mayonnaise_kari.png",
+    mysteriousMushroom:
+                "resource/image/ingredient/mysterious_mushroom.png",
+    natto:      "resource/image/ingredient/natto.png",
     octopus:    "resource/image/ingredient/octopus.png",
     onion:      "resource/image/ingredient/onion.png",
+    redPepper:  "resource/image/ingredient/red_pepper.png",
+    rottenEgg:  "resource/image/ingredient/rotten_egg_kari.png",
+    salami:     "resource/image/ingredient/salami_kari.png",
+    shrimp:     "resource/image/ingredient/shrimp.png",
     squid:      "resource/image/ingredient/squid.png",
     tomato:     "resource/image/ingredient/tomato.png",
 
+    // ピザ
+    baconPizza:         "resource/image/pizza/bacon_kari.png",
+    diabola:            "resource/image/pizza/diabola_kari.png",
+    dough:              "resource/image/pizza/dough.png",
+    margherita:         "resource/image/pizza/margherita.png",
+    marinara:           "resource/image/pizza/marinara.png",
+    mayoCorn:           "resource/image/pizza/mayo_corn.png",
+    meatPizza:          "resource/image/pizza/meat.png",
+    quattroFormaggi:    "resource/image/pizza/quattro_formaggi.png",
+    seafood:            "resource/image/pizza/seafood.png",
+    shiningMushroomPizza:
+                        "resource/image/pizza/shining_mushroom.png",
+    spicySeafood:       "resource/image/pizza/spicy_seafood_kari.png",
+    strangePizza:       "resource/image/pizza/strange.png",
+    teriyakiPizza:      "resource/image/pizza/teriyaki.png",
+    unfinishedPizza:    "resource/image/pizza/unfinished_pizza_kari.png",
+    uniquePizza:        "resource/image/pizza/unique_kari.png",
+    unknownPizza:       "resource/image/pizza/unknown.png",
+    vegetablePizza:     "resource/image/pizza/vegetable.png",
+
+    // UI
     soundOn:    "resource/image/soundOn.png",
     soundOff:   "resource/image/soundOff.png",
 }

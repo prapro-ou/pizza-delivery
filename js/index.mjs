@@ -19,16 +19,18 @@ sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 
+
 function resizeCanvas() {
     const aspectRatio = canvas.width / canvas.height;
-    const windowAspectRatio = window.innerWidth / window.innerHeight;
+    const windowHeight = window.innerHeight - document.body.getBoundingClientRect().top;
+    const windowAspectRatio = window.innerWidth / windowHeight;
 
     if (windowAspectRatio > aspectRatio) {
         // ウィンドウの幅が広い場合
-        const newHeight = window.innerHeight;
+        const newHeight = windowHeight;
         const newWidth = newHeight * aspectRatio;
-        canvas.style.width = `${newWidth}px`;
-        canvas.style.height = `${newHeight}px`;
+        canvas.style.width = `calc(100dvh * ${aspectRatio})`;
+        canvas.style.height = "100dvh";
         canvas.style.margin = `0 ${(window.innerWidth - newWidth) / 2}px`;
     } else {
         // ウィンドウの高さが高い場合
@@ -36,13 +38,20 @@ function resizeCanvas() {
         const newHeight = newWidth / aspectRatio;
         canvas.style.width = `${newWidth}px`;
         canvas.style.height = `${newHeight}px`;
-        canvas.style.margin = `${(window.innerHeight - newHeight) / 2}px 0`;
+        canvas.style.margin = `${(windowHeight - newHeight) / 2}px 0`;
     }
 }
+
 // 初回ロード時 と 画面のサイズ変更時 に resizeCanvas を実行する
 document.addEventListener("DOMContentLoaded", resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
 
+// ピンチズーム無効化
+document.addEventListener('touchstart', (event) => {
+    if (event.touches.length > 1) { event.preventDefault(); }
+}, {
+    passive: false
+});
 
 
 

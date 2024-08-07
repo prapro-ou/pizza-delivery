@@ -195,4 +195,3 @@ export const endingMessage = {
     [endings.社員エンド]:
         "社員エンドのテキストです",
 }
-

@@ -107,7 +107,10 @@ export class DriveScene extends Scene {
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
 
-        this.drawRoad(max_x, max_y, ctx);        
+        this.drawRoad(max_x, max_y, ctx);
+        if (this.stage.nightMode) {
+            this.drawLamp(max_x, max_y, ctx);
+        }
         this.drawObstacle(max_x, max_y, ctx);
         this.drawIngredients(max_x, max_y, ctx);
         this.drawCars(max_x, max_y, ctx);
@@ -256,18 +259,34 @@ export class DriveScene extends Scene {
     }
 
     drawShadow(max_x, max_y, ctx) {
-        const px = this.player.x;
-        const pd = this.player.d;
-        const cos = Math.cos(-this.player.theta);
-        const sin = Math.sin(-this.player.theta);
+        const shadowPoint = [
+            {
+                x: this.player.x,
+                d: this.player.d,
+                cos: Math.cos(-this.player.theta),
+                sin: Math.sin(-this.player.theta),
+                coefficient: 1 / 2,
+                r: 15.2
+            }
+        ]
+        const lampDistance = 40;
+        const firstD = Math.floor(this.cameraDistance / lampDistance) * lampDistance;
+        for (let d = firstD; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize) + lampDistance; d += lampDistance) {
+            const { left, right } = this.roadX(d);
+            shadowPoint.push(
+                { x: left, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
+                { x: right, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
+            )
+        }
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             for (let x = 0; x < max_x / this.pixelSize + 1; x++) {
-                const dx = (x - px);
-                const dd = (d - pd);
-                const alpha = Math.min(
-                    ((dx * cos + dd * sin)**2 + (-dx * sin + dd * cos)**2 / 2) / 16**2 * 0.9,
-                    0.9
-                )
+                // 個別の光源で計算された alpha の値
+                const alphas = shadowPoint.map((p) => {
+                    const dx = (x - p.x);
+                    const dd = (d - p.d);
+                    return ((dx * p.cos + dd * p.sin)**2 + (-dx * p.sin + dd * p.cos)**2 * p.coefficient) / p.r**2
+                })
+                const alpha = 0.9 - alphas.map((a) => Math.max(0.9 - a, 0)).reduce((sum, tmp) => sum + tmp, 0)
                 ctx.fillStyle = "rgba(" + [0, 0, 0, alpha] + ")";
                 ctx.fillRect(x * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
             }
@@ -353,6 +372,29 @@ export class DriveScene extends Scene {
         } else if (this.gameOverAnimationTime > 0.9) {
             ctx.fillStyle = "rgba(" + [0, 0, 0, (this.gameOverAnimationTime - 0.9) * 0.4 / (1.0 - 0.9)] + ")";;
             ctx.fillRect(0, 0, max_x, max_y);
+        }
+    }
+
+    drawOnPosition(ctx, x, d, image, scaleFactor = 1) {
+        const cy = ctx.canvas.height - (d - this.cameraDistance) * this.pixelSize;
+        const cx = x * this.pixelSize;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(
+            image,
+            cx - image.width * scaleFactor / 2,
+            cy - image.height * scaleFactor / 2,
+            image.width * scaleFactor,
+            image.height * scaleFactor,
+        );
+    }
+
+    drawLamp(max_x, max_y, ctx) {
+        const distance = 40;
+        const firstD = Math.floor(this.cameraDistance / distance) * distance
+        for (let d = firstD; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d += distance) {
+            const { left, right } = this.roadX(d);
+            this.drawOnPosition(ctx, left, d, resource.images.lampLeft, 2);
+            this.drawOnPosition(ctx, right, d, resource.images.lampRight, 2)
         }
     }
 

@@ -1,4 +1,5 @@
 import { pizzas } from "./pizzas.mjs"
+import { stages } from "../stage/stages.mjs"
 
 // エンディングの種類を列挙した連想配列
 export const endings = {
@@ -90,20 +91,52 @@ export const endingHint = {
 // エンディングを判定する
 export function judgeEnding(slot) {
     
-    const totalCollisionCount = slot.stageResults.reduce((total, result) => total + result.collisionCount, 0);
-    const totalGameOverCount = slot.stageResults.reduce((total, result) => total + result.gameOverCount, 0);
-    const totalStrangePizzaCount = slot.stageResults.reduce((count, result) => {
-        return result.pizza === pizzas.strangePizza ? count + 1 : count;
+    const totalCollisionCount = slot.stageResults.reduce((total, result) => {
+        total + result.collisionCount
     }, 0);
+    const totalGameOverCount = slot.stageResults.reduce((total, result) => {
+        total + result.gameOverCount
+    }, 0);
+    const totalStrangePizzaCount = totalPizzaCount(slot, pizzas.strangePizza);
     
-    
+    const isEveryExceedTargetTime = slot.stageResults.length >= 1 && //一回もプレイしていない状態でエンディングを見るとピザ生地冷めちゃったエンドになる現象を回避
+    slot.stageResults.every(result => {
+        const stage = stages[result.stage];
+        return stage && result.goalTime > stage.targetTime;
+    })
+
+    const totalDoughCount = totalPizzaCount(slot, pizzas.strangePizza);
+    const totalSeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
+    const totalSpicySeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
+    const totalMargheritaCount = totalPizzaCount(slot, pizzas.margherita);
+    const totalMarinaraCount = totalPizzaCount(slot, pizzas.marinara);
+    const totalQuattroFormaggiCount = totalPizzaCount(slot, pizzas.quattroFormaggi);
+    const AuthenticPizzaCount = totalMargheritaCount + totalMarinaraCount + totalQuattroFormaggiCount;
+    console.log(AuthenticPizzaCount);
+
     if (totalCollisionCount >= 5 || totalGameOverCount >= 10) {
         return endings.後遺症エンド;
     } else if(totalStrangePizzaCount >= 4){
         return endings.入院エンド;
+    } else if(isEveryExceedTargetTime){
+        return endings.ピザ生地冷めちゃったエンド;
+    // TODO:パーフェクトエンド
+    } else if(totalDoughCount >= 4){
+        return endings.素材の味エンド;
+    } else if(totalSeafoodCount + totalSpicySeafoodCount >= 1){
+        return endings.海の家エンド;
+    } else if(slot.stageResults.length >= 1 && AuthenticPizzaCount === 0){
+        return endings.イタリア人ぶち切れエンド;
+    // TODO:イタリア修行エンド
     } else {
         return endings.クビエンド;
     }
+}
+
+function totalPizzaCount(slot, pizza){
+    return slot.stageResults.reduce((count, result) => {
+        return result.pizza === pizza ? count + 1 : count;
+    }, 0);
 }
 
 // エンディング画面で表示するテキスト
@@ -133,3 +166,4 @@ export const endingMessage = {
     [endings.社員エンド]:
         "社員エンドのテキストです",
 }
+

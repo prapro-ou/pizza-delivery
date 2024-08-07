@@ -1,6 +1,7 @@
 import { pizzas } from "./pizzas.mjs"
 import { stages } from "../stage/stages.mjs"
 
+
 // エンディングの種類を列挙した連想配列
 export const endings = {
     後遺症エンド: "endings.後遺症エンド",
@@ -97,38 +98,46 @@ export function judgeEnding(slot) {
     const totalGameOverCount = slot.stageResults.reduce((total, result) => {
         total + result.gameOverCount
     }, 0);
-    const totalStrangePizzaCount = totalPizzaCount(slot, pizzas.strangePizza);
     
-    const isEveryExceedTargetTime = slot.stageResults.length >= 1 && //一回もプレイしていない状態でエンディングを見るとピザ生地冷めちゃったエンドになる現象を回避
+    const isEveryExceedTargetTime  = 
     slot.stageResults.every(result => {
         const stage = stages[result.stage];
         return stage && result.goalTime > stage.targetTime;
     })
-
+    
+    const totalStrangePizzaCount = totalPizzaCount(slot, pizzas.strangePizza);
     const totalDoughCount = totalPizzaCount(slot, pizzas.strangePizza);
     const totalSeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
     const totalSpicySeafoodCount = totalPizzaCount(slot, pizzas.strangePizza);
     const totalMargheritaCount = totalPizzaCount(slot, pizzas.margherita);
     const totalMarinaraCount = totalPizzaCount(slot, pizzas.marinara);
     const totalQuattroFormaggiCount = totalPizzaCount(slot, pizzas.quattroFormaggi);
+    //本場のピザ(マルゲリータ・マリナーラ・クアトロフォルマッジ)の合計
     const AuthenticPizzaCount = totalMargheritaCount + totalMarinaraCount + totalQuattroFormaggiCount;
-    console.log(AuthenticPizzaCount);
+
+    const pizzasType = (new Set(slot.stageResults.map(result => result.pizza))).size;
 
     if (totalCollisionCount >= 5 || totalGameOverCount >= 10) {
         return endings.後遺症エンド;
     } else if(totalStrangePizzaCount >= 4){
         return endings.入院エンド;
-    } else if(isEveryExceedTargetTime){
+    } else if(slot.stageResults.length >= 1 && isEveryExceedTargetTime){
         return endings.ピザ生地冷めちゃったエンド;
     // TODO:パーフェクトエンド
     } else if(totalDoughCount >= 4){
         return endings.素材の味エンド;
-    } else if(totalSeafoodCount + totalSpicySeafoodCount >= 1){
+    } else if(totalSeafoodCount + totalSpicySeafoodCount >= 3){
         return endings.海の家エンド;
     } else if(slot.stageResults.length >= 1 && AuthenticPizzaCount === 0){
         return endings.イタリア人ぶち切れエンド;
     // TODO:イタリア修行エンド
-    } else {
+    } else if(pizzasType >= 4){
+        return endings.ピザ博士エンド;
+    } else if(slot.stageResults.length >= 4){
+        return endings.満腹エンド;
+    }
+    // TODO:社員エンド
+    else {
         return endings.クビエンド;
     }
 }

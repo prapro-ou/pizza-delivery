@@ -107,10 +107,10 @@ export class DriveScene extends Scene {
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
 
-        this.drawRoad(max_x, max_y, ctx);
+        this.drawRoad(max_x, max_y, ctx);        
         this.drawObstacle(max_x, max_y, ctx);
-        this.drawCars(max_x, max_y, ctx);
         this.drawIngredients(max_x, max_y, ctx);
+        this.drawCars(max_x, max_y, ctx);
         if (this.stage.nightMode) {
             this.drawShadow(max_x, max_y, ctx);
         }
@@ -119,7 +119,7 @@ export class DriveScene extends Scene {
         ctx.fillStyle = this.textColor;
         ctx.font = "20px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("STAGE 1", 50, 50);
+        ctx.fillText(`STAGE${this.stage.stageNumber}`, 50, 50);
 
         this.drawTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);

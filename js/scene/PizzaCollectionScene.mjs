@@ -8,14 +8,16 @@ import { resource } from '../resource.mjs';
 // ピザコレクション画面
 export class PizzaCollectionScene extends Scene {
     sceneWillAppear() {
-        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+        this.previousScene = this.sharedData.previousScene;
+        const bgm = this.previousScene == scenes.cooking ?
+                    resource.bgm.MusMusBGM146 : resource.bgm.MusMusBGM103;
+        console.log(bgm);
+        this.sceneRouter.setBGM(bgm);
         this.backButtonArea = null;
         this.nextPageButtonArea = null;
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.pizzaFrame = [];
-
-        this.previousScene = this.sharedData.previousScene;
     }
 
     updateStates(deltaTime) {}

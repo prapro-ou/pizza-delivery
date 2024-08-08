@@ -11,7 +11,6 @@ export class PizzaCollectionScene extends Scene {
         this.previousScene = this.sharedData.previousScene;
         const bgm = this.previousScene == scenes.cooking ?
                     resource.bgm.MusMusBGM146 : resource.bgm.MusMusBGM103;
-        console.log(bgm);
         this.sceneRouter.setBGM(bgm);
         this.backButtonArea = null;
         this.nextPageButtonArea = null;

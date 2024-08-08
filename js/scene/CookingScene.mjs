@@ -13,16 +13,10 @@ export class CookingScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM146);
         this.collectedIngredients = this.sharedData.collectedIngredients;
-        // this.collectedIngredients = [
-        //                                 ingredientType.bacon, 
-        //                                 ingredientType.basil, 
-        //                                 ingredientType.cheese,
-        //                                 ingredientType.tomato,
-        //                                 ingredientType.natto
-        //                             ];
-        this.selectedIndices = [];
+        this.selectedIndices = (this.sharedData.previousScene == scenes.cooking) ? 
+            this.sharedData.selectedIndices : []; 
         this.errorShowing = false;
-        this.pizza = getPizza([]);
+        this.pizza = getPizza(this.selectedIndices.map((i) => this.collectedIngredients[i]));
     }
 
     updateStates(deltaTime) {}
@@ -161,6 +155,7 @@ export class CookingScene extends Scene {
         let r = this.PizzaRecipeArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.sharedData.previousScene = scenes.cooking;
+            this.sharedData.selectedIndices = this.selectedIndices;
             this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.pizzaCollection);
         }

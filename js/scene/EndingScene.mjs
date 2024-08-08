@@ -1,6 +1,6 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { EndingInfo } from '../dataObject/EndingInfo.mjs';
 import { endingName, judgeEnding, endingMessage } from '../gameObject/endings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
@@ -12,18 +12,18 @@ export class EndingScene extends Scene {
     sceneWillAppear() {
         this.goToTitleButtonArea = null;
 
-        const slots = this.sceneRouter.load(cookieKeys.slots);
+        const slots = this.sceneRouter.load(dataKeys.slots);
         const slotIndex = this.sharedData.playingSlotIndex;
         let slot = slots[slotIndex] ?? new Slot();
 
         this.ending = slot.ending ?? judgeEnding(slot);
         slot.ending = this.ending;
         slots[slotIndex] = slot;
-        this.sceneRouter.save(cookieKeys.slots, slots);
+        this.sceneRouter.save(dataKeys.slots, slots);
 
-        const ending = this.sceneRouter.load(cookieKeys.endingInfo) ?? new EndingInfo();
+        const ending = this.sceneRouter.load(dataKeys.endingInfo) ?? new EndingInfo();
         ending.unlock(this.ending);
-        this.sceneRouter.save(cookieKeys.endingInfo,ending);
+        this.sceneRouter.save(dataKeys.endingInfo,ending);
 
         this.endingMessage = endingMessage[this.ending];
         this.showsResult = false;

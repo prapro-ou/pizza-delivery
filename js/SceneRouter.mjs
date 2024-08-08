@@ -1,24 +1,24 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
-import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cookieKeysSettings.mjs";
+import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/dataKeysSettings.mjs";
 import { resource } from "./resource.mjs";
-import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
+import { dataKeys } from "./dataObject/dataKeysSettings.mjs";
 
 // LocalStorageの操作をするためのクラス
 class LocalDBHandler {
     // LocalStorageに保存する関数
-    save(cookieKey, value) {
-        const key = convertToKey(cookieKey);
+    save(dataKey, value) {
+        const key = convertToKey(dataKey);
         let jsonData = JSON.stringify(value);
         localStorage.setItem(key, jsonData);
     }
 
     // LocalStorageから読み込む。データがない場合はnullを返す
-    load(cookieKey) {
-        const key = convertToKey(cookieKey);
+    load(dataKey) {
+        const key = convertToKey(dataKey);
         const jsonData = localStorage.getItem(key);
         if (jsonData) {
             const data = JSON.parse(jsonData);
-            return parseJSONData(cookieKey, data);
+            return parseJSONData(dataKey, data);
         }
         return null;
     }
@@ -95,20 +95,20 @@ export class SceneRouter {
     }
 
     // LocalStorageに書き込み
-    save(cookieKey, value) {
-        if (cookieKey == cookieKeys.userConfig) {
+    save(dataKey, value) {
+        if (dataKey == dataKeys.userConfig) {
             this.setBGMVolume(value.bgmVolume);
         }
-        this.localDBHandler.save(cookieKey, value)
+        this.localDBHandler.save(dataKey, value)
     }
 
     // LocalStorageから読み込み。データがない場合はデフォルトのデータを保存して返す
-    load(cookieKey) {
-        let value = this.localDBHandler.load(cookieKey);
+    load(dataKey) {
+        let value = this.localDBHandler.load(dataKey);
         if (value == null) {
             // LocalStorageにデータが存在しなかった場合はデフォルトの値をセーブ
-            value = defaultValueFor(cookieKey);
-            this.save(cookieKey, value);
+            value = defaultValueFor(dataKey);
+            this.save(dataKey, value);
         }
         return value
     }
@@ -119,7 +119,7 @@ export class SceneRouter {
             this.stopBGM();
         } else if (bgm != this.currentBGM) {
             this.stopBGM();
-            const volume = this.load(cookieKeys.userConfig).bgmVolume;
+            const volume = this.load(dataKeys.userConfig).bgmVolume;
             bgm.currentTime = 0;
             bgm.loop = true;
             bgm.volume = volume * 0.1;
@@ -146,7 +146,7 @@ export class SceneRouter {
     playSE(se, loop = false) {
         se.currentTime = 0;
         se.loop = loop;
-        se.volume = this.load(cookieKeys.userConfig).seVolume * 0.1;
+        se.volume = this.load(dataKeys.userConfig).seVolume * 0.1;
         se.play();
     }
 

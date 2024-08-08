@@ -1,7 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 
 const sliders = {
     bgm: "sliders.bgm",
@@ -18,7 +18,7 @@ export class ConfigScene extends Scene {
         this.bgmSliderArea = null; // { x: 100, y: 200, w: 300, h: 20 };
         this.seSliderArea = null; // { x: 100, y: 300, w: 300, h: 20 };
         this.draggingSlider = null; // 現在ドラッグ中のスライダー
-        this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
+        this.userConfig = this.sceneRouter.load(dataKeys.userConfig);
     }
 
     updateStates(deltaTime, mouse) {
@@ -117,14 +117,14 @@ export class ConfigScene extends Scene {
             value = Math.min(Math.max(value, 0.0), 1.0);
             value = Math.round(value * 100) / 100;
             this.userConfig.bgmVolume = value;
-            this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
 
         } else if (slider === sliders.se) {
             let value = (x - this.seSliderArea.x) / this.seSliderArea.w;
             value = Math.min(Math.max(value, 0.0), 1.0);
             value = Math.round(value * 100) / 100;
             this.userConfig.seVolume = value;
-            this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         }
     }
 

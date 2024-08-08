@@ -66,7 +66,7 @@ export class WhichSlotToSaveScene extends Scene{
     didTapSlot(slotIndex) {
         this.sceneRouter.playSE(resource.se.clickEffect);
         const stageResult = new StageResult(
-            this.sharedData.stage.stageNumber,
+            this.sharedData.stage,
             this.sharedData.score,
             this.sharedData.cookedPizza,
             this.sharedData.goalTime,

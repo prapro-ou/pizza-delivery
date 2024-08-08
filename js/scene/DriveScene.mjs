@@ -157,6 +157,9 @@ export class DriveScene extends Scene {
                 if (this.player.onMud) {
                     this.sceneRouter.playSE(resource.se.mudEffect);
                     this.player.onMud = false;
+                } else if (this.player.collisionIce) {
+                    this.sceneRouter.playSE(resource.se.freezeEffect);
+                    this.player.collisionIce = false;
                 } else if (this.player.onSpeedingBoard) {
                     this.sceneRouter.playSE(resource.se.speedUpEffect);
                     this.player.onSpeedingBoard = false;

@@ -2,7 +2,7 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 import { endingName } from '../gameObject/endings.mjs';
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
 
 // セーブデータ選択画面
@@ -56,7 +56,7 @@ export class SlotSelectionScene extends Scene {
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
 
-            const slots = this.sceneRouter.load(cookieKeys.slots);
+            const slots = this.sceneRouter.load(dataKeys.slots);
             let slot = slots[i + 1] ?? new Slot();
             const endingNameToDisplay = endingName[slot.ending] ?? "";
             ctx.fillText(endingNameToDisplay, r.x + r.w / 2 + 130, r.y + r.h / 2);

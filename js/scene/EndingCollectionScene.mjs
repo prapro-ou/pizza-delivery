@@ -1,7 +1,7 @@
 import { endingHint, endingName, endingOrder } from '../gameObject/endings.mjs';
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { resource } from '../resource.mjs';
 
 // ピザコレクション画面
@@ -13,7 +13,7 @@ export class EndingCollectionScene extends Scene {
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.endingFrame = [];
-        this.endingInfo = this.sceneRouter.load(cookieKeys.endingInfo);
+        this.endingInfo = this.sceneRouter.load(dataKeys.endingInfo);
     }
 
     updateStates(deltaTime) {}

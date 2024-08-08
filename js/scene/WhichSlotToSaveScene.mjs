@@ -1,7 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { StageResult } from '../dataObject/StageResult.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
 
@@ -74,14 +74,14 @@ export class WhichSlotToSaveScene extends Scene{
             this.sharedData.collisionCount,
             this.sharedData.collectedIngredients,
         )
-        const slots = this.sceneRouter.load(cookieKeys.slots);
+        const slots = this.sceneRouter.load(dataKeys.slots);
         const playingIndex = this.sharedData.playingSlotIndex;
         let slot = slots[playingIndex] ?? new Slot();
         slots[slotIndex] = slot.withAddedStageResult(stageResult);
 
         this.sharedData.playingSlotIndex = slotIndex;
         
-        this.sceneRouter.save(cookieKeys.slots, slots);
+        this.sceneRouter.save(dataKeys.slots, slots);
         this.sceneRouter.changeScene(scenes.stageSelection);
     }
 }

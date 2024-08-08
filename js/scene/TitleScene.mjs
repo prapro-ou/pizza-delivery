@@ -1,21 +1,21 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
-import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { UserConfig } from '../dataObject/UserConfig.mjs';
 
 let appearsFirstTime = true;
 
 export class TitleScene extends Scene {
     sceneWillAppear() {
-        const endingInfo = this.sceneRouter.load(cookieKeys.endingInfo);
+        const endingInfo = this.sceneRouter.load(dataKeys.endingInfo);
         this.endingUnlocked = endingInfo.getEndingCount() >= 1;
 
         if (appearsFirstTime) {
             this.userConfig = new UserConfig(0, 0);
-            this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         } else {
-            this.userConfig = this.sceneRouter.load(cookieKeys.userConfig);
+            this.userConfig = this.sceneRouter.load(dataKeys.userConfig);
             this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
         appearsFirstTime = false;
@@ -131,7 +131,7 @@ export class TitleScene extends Scene {
         const volume = (this.userConfig.bgmVolume == 0) ? 1.0 : 0.0;
         this.userConfig.bgmVolume = volume;
         this.userConfig.seVolume = volume;
-        this.sceneRouter.save(cookieKeys.userConfig, this.userConfig);
+        this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         if (!this.sceneRouter.currentBGM) {
             this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }

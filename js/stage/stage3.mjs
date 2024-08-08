@@ -144,4 +144,4 @@ export const stage3 =
     speedMode: speedModes.fast,
     nCars: 3,
     bgm: resource.bgm.MusMusBGM122,
-}
+};

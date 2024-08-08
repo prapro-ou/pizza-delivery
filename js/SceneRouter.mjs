@@ -3,26 +3,22 @@ import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cooki
 import { resource } from "./resource.mjs";
 import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
 
-// Cookie操作をするためのクラス
-class CookieHandler {
-    // Cookieに保存する関数
+// LocalStorageの操作をするためのクラス
+class LocalDBHandler {
+    // LocalStorageに保存する関数
     save(cookieKey, value) {
         const key = convertToKey(cookieKey);
         let jsonData = JSON.stringify(value);
-        jsonData = encodeURIComponent(jsonData);
-        document.cookie = `${key}=${jsonData}; path=/;`;
+        localStorage.setItem(key, jsonData);
     }
 
-    // Cookieから読み込む。データがない場合はnullを返す
+    // LocalStorageから読み込む。データがない場合はnullを返す
     load(cookieKey) {
-        const cookieArray = document.cookie.split(';');
-        for (let i = 0; i < cookieArray.length; i++) {
-            const [key, value] = cookieArray[i].trim().split('=');
-            if (key == convertToKey(cookieKey)) {
-                const jsonData = decodeURIComponent(value);
-                const data = JSON.parse(jsonData);
-                return parseJSONData(cookieKey, data);
-            }
+        const key = convertToKey(cookieKey);
+        const jsonData = localStorage.getItem(key);
+        if (jsonData) {
+            const data = JSON.parse(jsonData);
+            return parseJSONData(cookieKey, data);
         }
         return null;
     }
@@ -81,7 +77,7 @@ export class SceneRouter {
             this.pressedKeys.delete(e.key)
         }.bind(this));
 
-        this.cookieHandler = new CookieHandler();
+        this.localDBHandler = new LocalDBHandler();
 
         resource.startLoadingAllImages();
     }
@@ -98,19 +94,19 @@ export class SceneRouter {
         this.currentScene.sceneWillAppear();
     }
 
-    // Cookieに読み込み
+    // LocalStorageに書き込み
     save(cookieKey, value) {
         if (cookieKey == cookieKeys.userConfig) {
             this.setBGMVolume(value.bgmVolume);
         }
-        this.cookieHandler.save(cookieKey, value)
+        this.localDBHandler.save(cookieKey, value)
     }
 
-    // Cookieから読み込み。データがない場合はデフォルトのデータを保存して返す
+    // LocalStorageから読み込み。データがない場合はデフォルトのデータを保存して返す
     load(cookieKey) {
-        let value = this.cookieHandler.load(cookieKey);
+        let value = this.localDBHandler.load(cookieKey);
         if (value == null) {
-            // Cookieにデータが存在しなかった場合はデフォルトの値をセーブ
+            // LocalStorageにデータが存在しなかった場合はデフォルトの値をセーブ
             value = defaultValueFor(cookieKey);
             this.save(cookieKey, value);
         }

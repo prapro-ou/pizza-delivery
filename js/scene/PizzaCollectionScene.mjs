@@ -14,11 +14,8 @@ export class PizzaCollectionScene extends Scene {
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.pizzaFrame = [];
-        // //仮
-        // this.sharedData.previousScene = scenes.title;
-        // //仮終わり
+
         this.previousScene = this.sharedData.previousScene;
-        console.log(this.previousScene);
     }
 
     updateStates(deltaTime) {}

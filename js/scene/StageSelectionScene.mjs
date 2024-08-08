@@ -28,8 +28,8 @@ export class StageSelectionScene extends Scene {
         ctx.fillText("ステージ選択画面", 50, 50);
 
         this.stageButtonAreas = [];
-        for (let i = 0; i < 4; i++) {
-            let r = { x: 150, y: 150+100*i, w: 100, h: 50 };
+        for (let i = 0; i < 5; i++) {
+            let r = { x: 150, y: 100*(i+1), w: 100, h: 50 };
             this.stageButtonAreas.push(r);
             ctx.fillStyle = "blue";
             ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -58,7 +58,7 @@ export class StageSelectionScene extends Scene {
     }
 
     didTap(x, y) {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 5; i++) {
             const r = this.stageButtonAreas[i];
             if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
                 this.didTapStage(i + 1);

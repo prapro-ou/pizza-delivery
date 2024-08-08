@@ -12,14 +12,14 @@ import { ingredientType } from '../gameObject/ingredients.mjs';
 export class CookingScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM146);
-        // this.collectedIngredients = this.sharedData.collectedIngredients;
-        this.collectedIngredients = [
-                                        ingredientType.bacon, 
-                                        ingredientType.basil, 
-                                        ingredientType.cheese,
-                                        ingredientType.tomato,
-                                        ingredientType.natto
-                                    ];
+        this.collectedIngredients = this.sharedData.collectedIngredients;
+        // this.collectedIngredients = [
+        //                                 ingredientType.bacon, 
+        //                                 ingredientType.basil, 
+        //                                 ingredientType.cheese,
+        //                                 ingredientType.tomato,
+        //                                 ingredientType.natto
+        //                             ];
         this.selectedIndices = [];
         this.errorShowing = false;
         this.pizza = getPizza([]);
@@ -160,6 +160,7 @@ export class CookingScene extends Scene {
         
         let r = this.PizzaRecipeArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sharedData.previousScene = scenes.cooking;
             this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.pizzaCollection);
         }

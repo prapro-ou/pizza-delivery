@@ -111,6 +111,7 @@ export class TitleScene extends Scene {
         }
         r = this.PizzaCollectionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
+            this.sharedData.previousScene = scenes.title;
             this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.changeScene(scenes.pizzaCollection);
         }

@@ -14,6 +14,11 @@ export class PizzaCollectionScene extends Scene {
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.pizzaFrame = [];
+        // //仮
+        // this.sharedData.previousScene = scenes.title;
+        // //仮終わり
+        this.previousScene = this.sharedData.previousScene;
+        console.log(this.previousScene);
     }
 
     updateStates(deltaTime) {}
@@ -43,7 +48,22 @@ export class PizzaCollectionScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
+        let buttonText;
+        switch(this.previousScene){
+            case "scene-title":
+                buttonText = "タイトルに戻る";
+                break;
+            case "scene-cooking":
+                buttonText = "調理に戻る";
+                break;
+            case "scene-stageSelection":
+                buttonText = "ステージ選択に戻る";
+                break;
+            default:
+                console.error("想定していないシーンからの遷移");
+
+        }
+        ctx.fillText(buttonText, r.x + r.w / 2, r.y + r.h / 2);
 
         this.renderPage(ctx, this.page);
 
@@ -129,10 +149,10 @@ export class PizzaCollectionScene extends Scene {
         }
     }
 
-    // 「タイトルに戻る」ボタンがタップされた
+    // 「○○に戻る」ボタンがタップされた
     didTapBack() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.title);
+        this.sceneRouter.changeScene(this.previousScene);
     }
 
     // 「→」がタップされた

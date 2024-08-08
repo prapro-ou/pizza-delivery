@@ -12,6 +12,7 @@ export class StageSelectionScene extends Scene {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.stageButtonAreas = null;
         this.goToEndingButtonArea = null;
+        this.pizzaCollectionArea = null;
     }
 
     updateStates(deltaTime) {}
@@ -50,6 +51,16 @@ export class StageSelectionScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("エンディングへ", r.x + r.w / 2, r.y + r.h / 2);
 
+        r = { x: 500, y: 150, w: 240, h: 50 };
+        this.pizzaCollectionArea = r;
+        ctx.fillStyle = "pink";
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("ピザコレクション画面へ", r.x + r.w / 2, r.y + r.h / 2);
+
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
         ctx.textAlign = "right";
@@ -65,9 +76,17 @@ export class StageSelectionScene extends Scene {
             }
         }
 
-        const r = this.goToEndingButtonArea;
+        let r = this.goToEndingButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.didTapEnding();
+        }
+        
+        r = this.pizzaCollectionArea;
+        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
+            this.sharedData.previousScene = scenes.stageSelection;
+            this.sceneRouter.changeScene(scenes.pizzaCollection);
+            
         }
 
     }

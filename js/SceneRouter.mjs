@@ -1,28 +1,24 @@
 import { makeScene } from "./scene/special/sceneSettings.mjs";
-import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/cookieKeysSettings.mjs";
+import { convertToKey, parseJSONData, defaultValueFor } from "./dataObject/dataKeysSettings.mjs";
 import { resource } from "./resource.mjs";
-import { cookieKeys } from "./dataObject/cookieKeysSettings.mjs";
+import { dataKeys } from "./dataObject/dataKeysSettings.mjs";
 
-// Cookie操作をするためのクラス
-class CookieHandler {
-    // Cookieに保存する関数
-    save(cookieKey, value) {
-        const key = convertToKey(cookieKey);
+// LocalStorageの操作をするためのクラス
+class LocalDBHandler {
+    // LocalStorageに保存する関数
+    save(dataKey, value) {
+        const key = convertToKey(dataKey);
         let jsonData = JSON.stringify(value);
-        jsonData = encodeURIComponent(jsonData);
-        document.cookie = `${key}=${jsonData}; path=/;`;
+        localStorage.setItem(key, jsonData);
     }
 
-    // Cookieから読み込む。データがない場合はnullを返す
-    load(cookieKey) {
-        const cookieArray = document.cookie.split(';');
-        for (let i = 0; i < cookieArray.length; i++) {
-            const [key, value] = cookieArray[i].trim().split('=');
-            if (key == convertToKey(cookieKey)) {
-                const jsonData = decodeURIComponent(value);
-                const data = JSON.parse(jsonData);
-                return parseJSONData(cookieKey, data);
-            }
+    // LocalStorageから読み込む。データがない場合はnullを返す
+    load(dataKey) {
+        const key = convertToKey(dataKey);
+        const jsonData = localStorage.getItem(key);
+        if (jsonData) {
+            const data = JSON.parse(jsonData);
+            return parseJSONData(dataKey, data);
         }
         return null;
     }
@@ -81,7 +77,7 @@ export class SceneRouter {
             this.pressedKeys.delete(e.key)
         }.bind(this));
 
-        this.cookieHandler = new CookieHandler();
+        this.localDBHandler = new LocalDBHandler();
 
         resource.startLoadingAllImages();
     }
@@ -98,21 +94,21 @@ export class SceneRouter {
         this.currentScene.sceneWillAppear();
     }
 
-    // Cookieに読み込み
-    save(cookieKey, value) {
-        if (cookieKey == cookieKeys.userConfig) {
+    // LocalStorageに書き込み
+    save(dataKey, value) {
+        if (dataKey == dataKeys.userConfig) {
             this.setBGMVolume(value.bgmVolume);
         }
-        this.cookieHandler.save(cookieKey, value)
+        this.localDBHandler.save(dataKey, value)
     }
 
-    // Cookieから読み込み。データがない場合はデフォルトのデータを保存して返す
-    load(cookieKey) {
-        let value = this.cookieHandler.load(cookieKey);
+    // LocalStorageから読み込み。データがない場合はデフォルトのデータを保存して返す
+    load(dataKey) {
+        let value = this.localDBHandler.load(dataKey);
         if (value == null) {
-            // Cookieにデータが存在しなかった場合はデフォルトの値をセーブ
-            value = defaultValueFor(cookieKey);
-            this.save(cookieKey, value);
+            // LocalStorageにデータが存在しなかった場合はデフォルトの値をセーブ
+            value = defaultValueFor(dataKey);
+            this.save(dataKey, value);
         }
         return value
     }
@@ -123,7 +119,7 @@ export class SceneRouter {
             this.stopBGM();
         } else if (bgm != this.currentBGM) {
             this.stopBGM();
-            const volume = this.load(cookieKeys.userConfig).bgmVolume;
+            const volume = this.load(dataKeys.userConfig).bgmVolume;
             bgm.currentTime = 0;
             bgm.loop = true;
             bgm.volume = volume * 0.1;
@@ -150,7 +146,7 @@ export class SceneRouter {
     playSE(se, loop = false) {
         se.currentTime = 0;
         se.loop = loop;
-        se.volume = this.load(cookieKeys.userConfig).seVolume * 0.1;
+        se.volume = this.load(dataKeys.userConfig).seVolume * 0.1;
         se.play();
     }
 

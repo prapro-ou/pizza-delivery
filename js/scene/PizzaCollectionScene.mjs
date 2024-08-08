@@ -115,7 +115,7 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillText(pizzaName[pizza], x + 100, y + 25);
 
         // ピザ画像
-        const isUnlocked = this.sceneRouter.load(cookieKeys.pizzaInfo).isUnlocked(pizza) || true;
+        const isUnlocked = this.sceneRouter.load(cookieKeys.pizzaInfo).isUnlocked(pizza);
         const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(pizzaImage, x, y, 90, 90);

@@ -1,6 +1,7 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { pizzas, pizzaName, pizzaScore,imageForPizza } from "../gameObject/pizzas.mjs";
+import { cookieKeys } from '../dataObject/cookieKeysSettings.mjs';
 import { ingredientType, ingredientName, ingredientScore, imageForIngredient } from "../gameObject/ingredients.mjs"
 import { resource } from '../resource.mjs';
 
@@ -22,6 +23,10 @@ export class ResultScene extends Scene {
         this.goalTime = this.sharedData.goalTime;
         this.targetTime = this.sharedData.stage.targetTime;
 
+        const pizzaInfo = this.sceneRouter.load(cookieKeys.pizzaInfo) ?? new PizzaInfo();
+        pizzaInfo.unlock(this.pizza);
+        this.sceneRouter.save(cookieKeys.pizzaInfo, pizzaInfo);
+
         const collectedIngredients = this.sharedData.collectedIngredients;
         this.ingredientCounts = collectedIngredients.reduce((obj, ingredient) => {
             if (obj[ingredient]) {
@@ -37,6 +42,7 @@ export class ResultScene extends Scene {
 
         this.scoreDetail = this.calculateScoreDetail();
         this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;
+        this.sharedData.score = this.totalScore;
 
         console.log('トータルスコア : ' + this.totalScore);
     }

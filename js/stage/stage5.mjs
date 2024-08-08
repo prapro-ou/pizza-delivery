@@ -111,4 +111,4 @@ export const stage5 =
     speedMode: speedModes.normal,
     nCars: 0,
     bgm: resource.bgm.MusMusBGM095,
-}
+};

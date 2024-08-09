@@ -7,6 +7,7 @@ const imagePaths = {
     speedup:    "resource/image/speedup.png",
     lampRight:  "resource/image/lamp_right.png",
     lampLeft:   "resource/image/lamp_left.png",
+    ice:        "resource/image/ice.png",
 
     // 食材
     bacon:      "resource/image/ingredient/bacon_kari.png",
@@ -79,6 +80,7 @@ const sePaths = {
     speedUpEffect:  "resource/se/speedUp.mp3",
     goalEffect:    "resource/se/goal.mp3",
     bikeEngineEffect:    "resource/se/bikeEngine.mp3",
+    freezeEffect:   "resource/se/freeze.mp3",
 }
 
 class Resource {

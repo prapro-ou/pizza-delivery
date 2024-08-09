@@ -7,6 +7,7 @@ import { randomIngredientType, imageForIngredient } from '../gameObject/ingredie
 import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
 import { resource } from '../resource.mjs';
+import { Joystick } from '../component/Joystick.mjs';
 
 // ステージ選択画面
 // - 入力
@@ -30,6 +31,7 @@ export class DriveScene extends Scene {
         } else {
             this.player = new Player(playerX, this.speedSetting);
         }
+        this.joystick = new Joystick()
         this.collectedIngredients = [];
         this.goalFlg = false;
         this.elapsedTime = 0.0;
@@ -67,10 +69,11 @@ export class DriveScene extends Scene {
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
-        const leftPressed = pressedKeys.has("ArrowLeft");
-        const rightPressed = pressedKeys.has("ArrowRight");
-        const upPressed = pressedKeys.has("ArrowUp");
-        const downPressed = pressedKeys.has("ArrowDown");
+        this.joystick.updateStates(mouse);
+        const leftPressed = pressedKeys.has("ArrowLeft") || this.joystick.leftPressed;
+        const rightPressed = pressedKeys.has("ArrowRight") || this.joystick.rightPressed;
+        const upPressed = pressedKeys.has("ArrowUp") || this.joystick.upPressed;
+        const downPressed = pressedKeys.has("ArrowDown") || this.joystick.downPressed;
         if (!this.goalFlg && !this.gameOverFlg && !this.startFlg) {
             this.elapsedTime += deltaTime / 1000;
         }
@@ -131,6 +134,9 @@ export class DriveScene extends Scene {
         }
         if (this.startAnimationFlg) {
             this.drawStartAnimation(max_x, max_y, ctx);
+        }
+        if (!this.gameOverFlg) {
+            this.joystick.draw(ctx, this.stage.nightMode);
         }
     }
 

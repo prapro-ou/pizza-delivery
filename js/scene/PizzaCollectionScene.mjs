@@ -67,13 +67,13 @@ export class PizzaCollectionScene extends Scene {
         ctx.textBaseline = "middle";
         let buttonText;
         switch(this.previousScene){
-            case "scene-title":
+            case scenes.title:
                 buttonText = "タイトルに戻る";
                 break;
-            case "scene-cooking":
+            case scenes.cooking:
                 buttonText = "調理に戻る";
                 break;
-            case "scene-stageSelection":
+            case scenes.stageSelection:
                 buttonText = "ステージ選択に戻る";
                 break;
             default:

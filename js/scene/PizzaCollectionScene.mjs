@@ -4,16 +4,38 @@ import { pizzaName, recipe, pizzaOrder, imageForPizza } from '../gameObject/pizz
 import { imageForIngredient } from '../gameObject/ingredients.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { resource } from '../resource.mjs';
+import { PizzaInfo } from '../dataObject/PizzaInfo.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
+
 
 // ピザコレクション画面
 export class PizzaCollectionScene extends Scene {
     sceneWillAppear() {
-        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+        this.previousScene = this.sharedData.previousScene;
+        const bgm = this.previousScene == scenes.cooking ?
+                    resource.bgm.MusMusBGM146 : resource.bgm.MusMusBGM103;
+        this.sceneRouter.setBGM(bgm);
         this.backButtonArea = null;
         this.nextPageButtonArea = null;
         this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.pizzaFrame = [];
+
+        if (this.previousScene === scenes.cooking || this.previousScene === scenes.stageSelection) {
+            this.pizzaInfo = new PizzaInfo();
+            const slots = this.sceneRouter.load(dataKeys.slots);
+            const slot = slots[this.sharedData.playingSlotIndex];
+            
+            if (slot && slot.stageResults) {
+                for (const stageResult of slot.stageResults) {
+                    const pizza = stageResult.pizza;
+                    this.pizzaInfo.unlock(pizza);
+                }
+            } 
+
+        } else {
+            this.pizzaInfo = this.sceneRouter.load(dataKeys.pizzaInfo);
+        }
     }
 
     updateStates(deltaTime) {}
@@ -43,7 +65,31 @@ export class PizzaCollectionScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
+        let buttonText;
+        switch(this.previousScene){
+            case scenes.title:
+                buttonText = "タイトルに戻る";
+                break;
+            case scenes.cooking:
+                buttonText = "調理に戻る";
+                break;
+            case scenes.stageSelection:
+                buttonText = "ステージ選択に戻る";
+                break;
+            default:
+                console.error("想定していないシーンからの遷移");
+
+        }
+        ctx.fillText(buttonText, r.x + r.w / 2, r.y + r.h / 2);
+
+        
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        const slotInformationText = (this.sharedData.previousScene == scenes.title) ? 
+        "これまでに集めたピザ(スロット問わず)" : `スロット${this.sharedData.playingSlotIndex}で作ったピザ`;
+        ctx.fillText(slotInformationText, max_x - 20, 13);
 
         this.renderPage(ctx, this.page);
 
@@ -115,7 +161,7 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillText(pizzaName[pizza], x + 100, y + 25);
 
         // ピザ画像
-        const isUnlocked = this.sceneRouter.load(dataKeys.pizzaInfo).isUnlocked(pizza);
+        const isUnlocked = this.pizzaInfo.isUnlocked(pizza);
         const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(pizzaImage, x, y, 90, 90);
@@ -129,10 +175,10 @@ export class PizzaCollectionScene extends Scene {
         }
     }
 
-    // 「タイトルに戻る」ボタンがタップされた
+    // 「○○に戻る」ボタンがタップされた
     didTapBack() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.title);
+        this.sceneRouter.changeScene(this.previousScene);
     }
 
     // 「→」がタップされた

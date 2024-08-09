@@ -17,4 +17,14 @@ export class Slot {
     withAddedStageResult(stageResult) {
         return new Slot([...this.stageResults, stageResult], this.ending);
     }
+
+    maxStageNumber(){
+        if(this.stageResults.length === 0){
+            return 1;
+        } else {
+            return this.stageResults.reduce((max, result) => {
+                return Math.max(max,result.stage.stageNumber);
+            }, 1);
+        }
+    }
 }

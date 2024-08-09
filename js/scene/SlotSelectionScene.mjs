@@ -56,10 +56,17 @@ export class SlotSelectionScene extends Scene {
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
 
+            let slotOverViewText;
             const slots = this.sceneRouter.load(dataKeys.slots);
-            let slot = slots[i + 1] ?? new Slot();
-            const endingNameToDisplay = endingName[slot.ending] ?? "";
-            ctx.fillText(endingNameToDisplay, r.x + r.w / 2 + 130, r.y + r.h / 2);
+            const slot = slots[i + 1];
+            if(!slot){
+                slotOverViewText = "空きスロット"
+            } else if(slot.ending){ 
+                slotOverViewText = endingName[slot.ending];
+            } else {
+                slotOverViewText = `ステージ${slot.maxStageNumber()}までクリア`;
+            }
+            ctx.fillText(slotOverViewText, r.x + r.w / 2 + 130, r.y + r.h / 2);
 
         }
     }

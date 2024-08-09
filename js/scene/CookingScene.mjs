@@ -163,6 +163,7 @@ export class CookingScene extends Scene {
         r = this.decisionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.sceneRouter.playSE(resource.se.clickEffect);
+            this.sharedData.selectedIndices = [];
             this.sharedData.cookedPizza = this.pizza;
             this.sceneRouter.changeScene(scenes.result);
         }

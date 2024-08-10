@@ -104,10 +104,7 @@ export class SlotSelectionScene extends Scene {
                 delete slots[this.sharedData.playingSlotIndex];
                 this.sceneRouter.save(dataKeys.slots,slots);
                 this.sceneRouter.changeScene(scenes.stageSelection);
-            } else {
-                this.sceneRouter.changeScene(scenes.slotSelection);
-            }
-                
+            }              
         } else {
             this.sceneRouter.changeScene(scenes.stageSelection);
         }

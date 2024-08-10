@@ -113,9 +113,4 @@ export class SlotSelectionScene extends Scene {
         }
     }
 
-    canInitializeSlot(){
-        return ;
-    }
-
-
 }

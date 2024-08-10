@@ -38,6 +38,7 @@ export class SlotSelectionScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
 
+        const slots = this.sceneRouter.load(dataKeys.slots);
 
         for( let i = 0; i < 4 ; i++ ){   
             let r = { x: max_x/2 -100, y: max_y/2 -200 + 100*i, w: 200, h: 50 };
@@ -57,7 +58,6 @@ export class SlotSelectionScene extends Scene {
             ctx.textBaseline = "middle";
 
             let slotOverViewText;
-            const slots = this.sceneRouter.load(dataKeys.slots);
             const slot = slots[i + 1];
             if(!slot){
                 slotOverViewText = "空きスロット"
@@ -96,6 +96,18 @@ export class SlotSelectionScene extends Scene {
     didTapSlot(slotIndex) {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sharedData.playingSlotIndex = slotIndex;
-        this.sceneRouter.changeScene(scenes.stageSelection);
+        let slots = this.sceneRouter.load(dataKeys.slots);
+        let slot = slots[this.sharedData.playingSlotIndex];
+
+        if(this.sharedData.playFromBeginning && slot){
+            if(window.confirm("スロットにデータがあります。初期化して最初から始めますか？")){
+                delete slots[this.sharedData.playingSlotIndex];
+                this.sceneRouter.save(dataKeys.slots,slots);
+                this.sceneRouter.changeScene(scenes.stageSelection);
+            }              
+        } else {
+            this.sceneRouter.changeScene(scenes.stageSelection);
+        }
     }
+
 }

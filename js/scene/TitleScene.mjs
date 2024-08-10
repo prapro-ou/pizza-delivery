@@ -97,11 +97,13 @@ export class TitleScene extends Scene {
         let r = this.startFromBeginningButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
             this.sceneRouter.playSE(resource.se.clickEffect);
+            this.sharedData.playFromBeginning = true;
             this.sceneRouter.changeScene(scenes.arasuji);
         }
         r = this.continueButtonArea;
         if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) { 
             this.sceneRouter.playSE(resource.se.clickEffect);
+            this.sharedData.playFromBeginning = false;
             this.sceneRouter.changeScene(scenes.slotSelection);
         }
         r = this.configButtonArea;

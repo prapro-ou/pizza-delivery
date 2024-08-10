@@ -20,7 +20,7 @@ export class Slot {
 
     maxStageNumber(){
         if(this.stageResults.length === 0){
-            return 1;
+            return 0;
         } else {
             return this.stageResults.reduce((max, result) => {
                 return Math.max(max,result.stage.stageNumber);

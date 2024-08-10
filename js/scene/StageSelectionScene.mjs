@@ -2,6 +2,8 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 import { stages } from '../stage/stages.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
 
 // ステージ選択画面
 // - 出力
@@ -13,6 +15,11 @@ export class StageSelectionScene extends Scene {
         this.stageButtonAreas = null;
         this.goToEndingButtonArea = null;
         this.pizzaCollectionArea = null;
+        this.errorShowing = false;
+
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
+        this.unlockedStageNumber = slot.maxStageNumber();
     }
 
     updateStates(deltaTime) {}
@@ -32,7 +39,7 @@ export class StageSelectionScene extends Scene {
         for (let i = 0; i < 5; i++) {
             let r = { x: 150, y: 100*(i+1), w: 100, h: 50 };
             this.stageButtonAreas.push(r);
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = (i <= this.unlockedStageNumber) ? "blue" : "gray";
             ctx.fillRect(r.x, r.y, r.w, r.h);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
@@ -60,6 +67,14 @@ export class StageSelectionScene extends Scene {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("ピザコレクション画面へ", r.x + r.w / 2, r.y + r.h / 2);
+
+        if(this.errorShowing){
+            ctx.fillStyle = "red";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "right";
+            ctx.textBaseline = "middle";
+            ctx.fillText("そのステージは未開放です", 330, max_y - 40);
+        }
 
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
@@ -97,7 +112,11 @@ export class StageSelectionScene extends Scene {
         this.sharedData.stage = stages[stageIndex];
         this.sharedData.gameOverCount = 0;
         if (this.sharedData.stage) {
-            this.sceneRouter.changeScene(scenes.drive);
+            if(stageIndex <= this.unlockedStageNumber + 1){
+                this.sceneRouter.changeScene(scenes.drive);
+            } else {
+                this.errorShowing = true;
+            }
         } else {
             console.error(`未実装のstageです: ${stageIndex}`)
         }

@@ -108,6 +108,7 @@ export const stage5 =
     targetTime: 32,
     inertia: true,
     nightMode: false,
+    background: resource.images.bg1,
     speedMode: speedModes.normal,
     nCars: 0,
     bgm: resource.bgm.MusMusBGM095,

@@ -11,7 +11,6 @@ export const ingredientType = {
     mayonnaise: "ingredientType.mayonnaise",
     mysteriousMushroom: "ingredientType.mysteriousMushroom",
     natto: "ingredientType.natto",
-    octopus: "ingredientType.octopus",
     onion: "ingredientType.onion",
     redPepper: "ingredientType.redPepper",
     rottenEgg: "ingredientType.rottenEgg",

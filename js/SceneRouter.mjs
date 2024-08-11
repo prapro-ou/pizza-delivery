@@ -67,6 +67,25 @@ export class SceneRouter {
             this.mouse.x = pos.x;
             this.mouse.y = pos.y;
         }.bind(this));
+        // タッチイベント
+        this.canvas.addEventListener("touchstart", function(e) {
+            this.mouse.isDown = true;
+            const pos = this.getCanvasTouchPosition(e);
+            this.mouse.startX = pos.x;
+            this.mouse.startY = pos.y;
+        }.bind(this));
+        this.canvas.addEventListener("touchend", function(e) {
+            this.mouse.isDown = false;
+        }.bind(this));
+        this.canvas.addEventListener("touchcancel", function(e) {
+            this.mouse.isDown = false;
+        }.bind(this));
+        this.canvas.addEventListener("touchmove", function(e) {
+            if (!this.mouse.isDown) return;
+            const pos = this.getCanvasTouchPosition(e);
+            this.mouse.x = pos.x;
+            this.mouse.y = pos.y;
+        }.bind(this));
 
         // キーに関する情報を追跡する
         this.pressedKeys = new Set();
@@ -180,5 +199,10 @@ export class SceneRouter {
         const y = (event.clientY - rect.top) * scaleY;
 
         return { x, y };
+    }
+
+    // マウスの位置を計算する
+    getCanvasTouchPosition(event) {
+        return this.getCanvasMousePosition(event.changedTouches[0]);
     }
 }

@@ -4,6 +4,7 @@ import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mj
 import { getPizza, imageForPizza, pizzaName } from '../gameObject/pizzas.mjs';
 import { resource } from '../resource.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
+import { PizzaInfo } from '../dataObject/PizzaInfo.mjs';
 
 import { ingredientType } from '../gameObject/ingredients.mjs';
 
@@ -18,8 +19,17 @@ export class CookingScene extends Scene {
             this.sharedData.selectedIndices : []; 
         this.errorShowing = false;
         this.pizza = getPizza(this.selectedIndices.map((i) => this.collectedIngredients[i]));
-        this.pizzaInfo = this.sceneRouter.load(dataKeys.pizzaInfo);
 
+        this.pizzaInfo = new PizzaInfo();
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        const slot = slots[this.sharedData.playingSlotIndex];
+
+        if (slot && slot.stageResults) {
+            for (const stageResult of slot.stageResults) {
+                const pizza = stageResult.pizza;
+                this.pizzaInfo.unlock(pizza);
+            }
+        }
     }
 
     updateStates(deltaTime) {}

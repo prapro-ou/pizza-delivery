@@ -105,6 +105,7 @@ export const stage2 =
     targetTime: 35,
     inertia: false,
     nightMode: true,
+    background: resource.images.bg1,
     speedMode: speedModes.normal,
     nCars: 2,
     bgm: resource.bgm.MusMusBGM143,

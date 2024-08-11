@@ -44,5 +44,6 @@ export const stage1 =
     nightMode: false,
     speedMode: speedModes.normal,
     nCars: 2,
+    background: resource.images.bg1,
     bgm: resource.bgm.MusMusBGM154,
 };

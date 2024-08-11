@@ -11,7 +11,6 @@ export const ingredientType = {
     mayonnaise: "ingredientType.mayonnaise",
     mysteriousMushroom: "ingredientType.mysteriousMushroom",
     natto: "ingredientType.natto",
-    octopus: "ingredientType.octopus",
     onion: "ingredientType.onion",
     redPepper: "ingredientType.redPepper",
     rottenEgg: "ingredientType.rottenEgg",
@@ -32,7 +31,6 @@ export const ingredientName = {
     [ingredientType.mayonnaise]: "マヨネーズ",
     [ingredientType.mysteriousMushroom]: "ふしぎなきのこ",
     [ingredientType.natto]: "納豆",
-    [ingredientType.octopus]: "タコ",
     [ingredientType.onion]: "玉ねぎ",
     [ingredientType.redPepper]: "唐辛子",
     [ingredientType.rottenEgg]: "腐った卵",
@@ -53,7 +51,6 @@ export const ingredientScore = {
     [ingredientType.mayonnaise]: 50,
     [ingredientType.mysteriousMushroom]: 800,
     [ingredientType.natto]: 10,
-    [ingredientType.octopus]: 200,
     [ingredientType.onion]: 50,
     [ingredientType.redPepper]: 100,
     [ingredientType.rottenEgg]: 10,
@@ -99,9 +96,6 @@ export function imageForIngredient(type) {
 
         case ingredientType.natto:
             return resource.images.natto
-
-        case ingredientType.octopus:
-            return resource.images.octopus
 
         case ingredientType.onion:
             return resource.images.onion

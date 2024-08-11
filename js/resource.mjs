@@ -20,7 +20,6 @@ const imagePaths = {
     mysteriousMushroom:
                 "resource/image/ingredient/mysterious_mushroom.png",
     natto:      "resource/image/ingredient/natto.png",
-    octopus:    "resource/image/ingredient/octopus.png",
     onion:      "resource/image/ingredient/onion.png",
     redPepper:  "resource/image/ingredient/red_pepper.png",
     rottenEgg:  "resource/image/ingredient/rotten_egg_kari.png",

@@ -110,6 +110,8 @@ export class DriveScene extends Scene {
         ctx.fillStyle = "silver";
         ctx.fillRect(0, 0, max_x, max_y);
 
+        this.drawBackground(max_x, max_y, ctx);
+
         this.drawRoad(max_x, max_y, ctx);
         if (this.stage.nightMode) {
             this.drawLamp(max_x, max_y, ctx);
@@ -219,6 +221,18 @@ export class DriveScene extends Scene {
         }
     }
 
+    drawBackground(max_x, max_y, ctx){
+
+        const imageHeight = this.stage.background.height * 2;
+        const imageIteration = Math.max(0, Math.floor(this.cameraDistance / imageHeight));
+
+        let y1 = (this.cameraDistance + 10 - imageHeight * imageIteration);
+        let y2 = (-imageHeight + y1);
+        
+        ctx.drawImage(this.stage.background, 0, y1, max_x, max_y);
+        ctx.drawImage(this.stage.background, 0, y2, max_x, max_y);
+    }
+
     drawRoad(max_x, max_y, ctx) {
         const whiteLineSpacing = 10;
         const nWhiteLine = 2;
@@ -227,8 +241,8 @@ export class DriveScene extends Scene {
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             const { center, left, right } = this.roadX(d);
             // 道路の外側
-            ctx.fillStyle = "green";
-            ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
+            // ctx.fillStyle = "green";
+            // ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
             // 道路の内側
             ctx.fillStyle = "gray";
             ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize);

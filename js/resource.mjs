@@ -48,6 +48,10 @@ const imagePaths = {
     unknownPizza:       "resource/image/pizza/unknown.png",
     vegetablePizza:     "resource/image/pizza/vegetable.png",
 
+    //背景
+    bg1:    "resource/image/background/1_noon.png",
+    bg2:    "resource/image/background/4_desert.png",
+
     // UI
     soundOn:    "resource/image/soundOn.png",
     soundOff:   "resource/image/soundOff.png",

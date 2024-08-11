@@ -70,6 +70,8 @@ class MouseHandler {
         this.canvas.addEventListener("touchstart", function(e) {
             this.mouse.isDown = true;
             const pos = this.getCanvasTouchPosition(e);
+            this.mouse.x = pos.x;
+            this.mouse.y = pos.y;
             this.mouse.startX = pos.x;
             this.mouse.startY = pos.y;
         }.bind(this));

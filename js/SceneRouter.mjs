@@ -24,24 +24,10 @@ class LocalDBHandler {
     }
 }
 
-// シーンの生成と画面遷移を行うクラス
-export class SceneRouter {
+// タッチやマウスの操作を読み取ってデータに変換するクラス
+class MouseHandler {
     constructor(canvas) {
-        this.currentScene = null;
-        this.currentBGM = null;
         this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.canvas.width = canvas.clientWidth;
-        this.canvas.height = canvas.clientHeight;
-        this.sharedData = {}; // 状態を保持するオブジェクト
-
-        // Canvas内がクリックされたら didTap を呼び出す
-        this.canvas.addEventListener("click", function(e) {
-            if (this.currentScene && this.currentScene.didTap) {
-                const pos = this.getCanvasMousePosition(e);
-                this.currentScene.didTap(pos.x, pos.y);
-            }
-        }.bind(this));
 
         // マウスに関する情報を追跡する
         this.mouse = {
@@ -51,6 +37,18 @@ export class SceneRouter {
             y: 0,
             isDown: false
         };
+        this.startTrackingMouse();
+    }
+
+    listenClick(callback) {
+        this.canvas.addEventListener("click", function(e) {
+            const pos = this.getCanvasMousePosition(e);
+            callback(pos.x, pos.y);
+        }.bind(this));
+    }
+
+    startTrackingMouse() {
+        // マウス操作
         this.canvas.addEventListener("mousedown", function(e) {
             this.mouse.isDown = true;
             this.mouse.startX = this.mouse.x;
@@ -67,7 +65,8 @@ export class SceneRouter {
             this.mouse.x = pos.x;
             this.mouse.y = pos.y;
         }.bind(this));
-        // タッチイベント
+
+        // タッチ操作
         this.canvas.addEventListener("touchstart", function(e) {
             this.mouse.isDown = true;
             const pos = this.getCanvasTouchPosition(e);
@@ -86,17 +85,64 @@ export class SceneRouter {
             this.mouse.x = pos.x;
             this.mouse.y = pos.y;
         }.bind(this));
+    }
 
-        // キーに関する情報を追跡する
+    // マウスの位置を計算する
+    getCanvasMousePosition(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+
+        return { x, y };
+    }
+
+    // タッチの位置を計算する
+    getCanvasTouchPosition(event) {
+        return this.getCanvasMousePosition(event.changedTouches[0]);
+    }
+}
+
+// キー操作を読み取ってデータに変換するクラス
+class KeyHandler {
+    constructor() {
+        // 現在押されているキーの集合
         this.pressedKeys = new Set();
+        this.startTrackingKeys();
+    }
+
+    startTrackingKeys() {
         document.addEventListener("keydown", function(e) {
             this.pressedKeys.add(e.key)
         }.bind(this));
         document.addEventListener("keyup", function(e) {
             this.pressedKeys.delete(e.key)
         }.bind(this));
+    }
+}
 
+// シーンの生成と画面遷移を行うクラス
+export class SceneRouter {
+    constructor(canvas) {
+        this.currentScene = null;
+        this.currentBGM = null;
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.canvas.width = canvas.clientWidth;
+        this.canvas.height = canvas.clientHeight;
+        this.sharedData = {}; // 状態を保持するオブジェクト
+
+        this.mouseHandler = new MouseHandler(canvas);
+        this.keyHandler = new KeyHandler()
         this.localDBHandler = new LocalDBHandler();
+
+        this.mouseHandler.listenClick(function(x, y) {
+            if (this.currentScene && this.currentScene.didTap) {
+                this.currentScene.didTap(x, y);
+            }
+        }.bind(this));
 
         resource.startLoadingAllImages();
     }
@@ -178,7 +224,7 @@ export class SceneRouter {
     // 内部状態などの更新処理。フレームごとに呼び出される
     updateStates(deltaTime) {
         if (this.currentScene) {
-            this.currentScene.updateStates(deltaTime, this.mouse, this.pressedKeys);
+            this.currentScene.updateStates(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
         }
     }
 
@@ -187,22 +233,5 @@ export class SceneRouter {
         if (this.currentScene) {
             this.currentScene.render(this.ctx);
         }
-    }
-
-    // マウスの位置を計算する
-    getCanvasMousePosition(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-
-        const x = (event.clientX - rect.left) * scaleX;
-        const y = (event.clientY - rect.top) * scaleY;
-
-        return { x, y };
-    }
-
-    // マウスの位置を計算する
-    getCanvasTouchPosition(event) {
-        return this.getCanvasMousePosition(event.changedTouches[0]);
     }
 }

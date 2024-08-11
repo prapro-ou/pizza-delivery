@@ -224,9 +224,8 @@ export class DriveScene extends Scene {
     drawBackground(max_x, max_y, ctx){
 
         const imageHeight = this.stage.background.height * 2;
-        const imageIteration = Math.max(0, Math.floor(this.cameraDistance / imageHeight));
-
-        let y1 = (this.cameraDistance + 10 - imageHeight * imageIteration);
+        const imageIteration = Math.max(0, Math.floor((this.cameraDistance + 10) * this.pixelSize / imageHeight));
+        let y1 = ((this.cameraDistance + 10) * this.pixelSize - imageHeight * imageIteration)
         let y2 = (-imageHeight + y1);
         
         ctx.drawImage(this.stage.background, 0, y1, max_x, max_y);

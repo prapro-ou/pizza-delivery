@@ -15,12 +15,12 @@ export class Joystick {
          */
         this.position = null;
 
-        this.radius = 40
-        this.stickRadius = 25
+        this.radius = 50
+        this.stickRadius = 30
         this.alpha = 0.4
         this.stickAlpha = 0.8
-        this.maxSr = 25 // スティックの可動域
-        this.deadZoneSr = 15 // この半径以上動かさないと反応しない
+        this.maxSr = 35 // スティックの可動域
+        this.deadZoneSr = 35 // この半径以上動かさないと反応しない
     }
 
     /**

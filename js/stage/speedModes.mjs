@@ -18,4 +18,9 @@ export const speedSettings = {
         playerDSpeed: 100,
         carDSpeed: 60,
     },
+    [speedModes.slow]: {
+        playerXControlSpeed: 5,
+        playerDControlSpeed: 20,
+        playerDSpeed: 30,
+    }
 }

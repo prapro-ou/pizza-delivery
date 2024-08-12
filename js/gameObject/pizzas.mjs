@@ -118,8 +118,8 @@ export const pizzaPriorityOrder = [
     pizzas.diabola,
     pizzas.teriyakiPizza,
     pizzas.mayoCorn,
-    pizzas.baconPizza,
     pizzas.meatPizza,
+    pizzas.baconPizza,
     pizzas.uniquePizza,
 ]
 

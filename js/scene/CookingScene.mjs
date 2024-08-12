@@ -3,6 +3,8 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { imageForIngredient, ingredientName } from '../gameObject/ingredients.mjs';
 import { getPizza, imageForPizza, pizzaName } from '../gameObject/pizzas.mjs';
 import { resource } from '../resource.mjs';
+import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
+import { PizzaInfo } from '../dataObject/PizzaInfo.mjs';
 
 import { ingredientType } from '../gameObject/ingredients.mjs';
 
@@ -17,6 +19,17 @@ export class CookingScene extends Scene {
             this.sharedData.selectedIndices : []; 
         this.errorShowing = false;
         this.pizza = getPizza(this.selectedIndices.map((i) => this.collectedIngredients[i]));
+
+        this.pizzaInfo = new PizzaInfo();
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        const slot = slots[this.sharedData.playingSlotIndex];
+
+        if (slot && slot.stageResults) {
+            for (const stageResult of slot.stageResults) {
+                const pizza = stageResult.pizza;
+                this.pizzaInfo.unlock(pizza);
+            }
+        }
     }
 
     updateStates(deltaTime) {}
@@ -105,13 +118,14 @@ export class CookingScene extends Scene {
     drawPizza(ctx, x, y, width, height) {
         if (!this.pizza) return;
         const name = pizzaName[this.pizza];
-        const image = imageForPizza(this.pizza);
+        const isUnlocked = this.pizzaInfo.isUnlocked(this.pizza);
+        const image = isUnlocked ? imageForPizza(this.pizza) : resource.images.unknownPizza;
         if (image.complete) {
             ctx.drawImage(image, x, y + height - width, width, width);
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
             ctx.fillStyle = "black";
-            ctx.fillText(`${name}`, x + width / 2, y + 20);
+            ctx.fillText(`${isUnlocked ? name : "???"}`, x + width / 2, y + 20);
 
         }
     }

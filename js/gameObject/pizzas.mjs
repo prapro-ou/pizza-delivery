@@ -67,19 +67,19 @@ export const pizzaScore = {
 export const recipe = {
     [pizzas.baconPizza]: [ingredientType.bacon],
     [pizzas.diabola]: [ingredientType.salami, ingredientType.chicken, ingredientType.redPepper],
-    [pizzas.dough]: [], // TODO: 特殊レシピ
+    [pizzas.dough]: [],
     [pizzas.margherita]: [ingredientType.tomato, ingredientType.cheese, ingredientType.basil],
     [pizzas.marinara]: [ingredientType.tomato, ingredientType.onion, ingredientType.basil],
     [pizzas.mayoCorn]: [ingredientType.cheese, ingredientType.corn, ingredientType.mayonnaise],
     [pizzas.meatPizza]: [ingredientType.bacon, ingredientType.salami, ingredientType.chicken],
-    [pizzas.quattroFormaggi]: [ingredientType.cheese, ingredientType.cheese, ingredientType.cheese, ingredientType.cheese], // TODO: 個数対応
+    [pizzas.quattroFormaggi]: [ingredientType.cheese, ingredientType.cheese, ingredientType.cheese, ingredientType.cheese],
     [pizzas.seafood]: [ingredientType.squid, ingredientType.shrimp],
     [pizzas.shiningMushroomPizza]: [ingredientType.mysteriousMushroom],
     [pizzas.spicySeafood]: [ingredientType.squid, ingredientType.shrimp, ingredientType.redPepper],
-    [pizzas.strangePizza]: [ingredientType.durian, ingredientType.natto, ingredientType.rottenEgg], // TODO: 特殊レシピ
+    [pizzas.strangePizza]: [ingredientType.durian, ingredientType.natto, ingredientType.rottenEgg],
     [pizzas.teriyakiPizza]: [ingredientType.chicken, ingredientType.onion, ingredientType.mayonnaise],
-    [pizzas.unfinishedPizza]: [], // TODO: 特殊レシピ
-    [pizzas.uniquePizza]: [], // TODO: 特殊レシピ
+    [pizzas.unfinishedPizza]: [],
+    [pizzas.uniquePizza]: [],
     [pizzas.vegetablePizza]: [ingredientType.tomato, ingredientType.onion, ingredientType.corn],
 }
 

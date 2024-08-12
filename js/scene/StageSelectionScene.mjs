@@ -15,7 +15,8 @@ export class StageSelectionScene extends Scene {
         this.stageButtonAreas = null;
         this.goToEndingButtonArea = null;
         this.pizzaCollectionArea = null;
-        this.errorShowing = false;
+        this.stageErrorShowing = false;
+        this.endingErrorShowing = false;
 
         const slots = this.sceneRouter.load(dataKeys.slots);
         const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
@@ -50,7 +51,7 @@ export class StageSelectionScene extends Scene {
 
         let r = { x: 600, y: 550, w: 150, h: 50 };
         this.goToEndingButtonArea = r;
-        ctx.fillStyle = "lightblue";
+        ctx.fillStyle = (this.unlockedStageNumber == 5) ? "lightblue" : "gray";
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.fillStyle = "black";
         ctx.font = "20px Arial";
@@ -68,12 +69,16 @@ export class StageSelectionScene extends Scene {
         ctx.textBaseline = "middle";
         ctx.fillText("ピザコレクション画面へ", r.x + r.w / 2, r.y + r.h / 2);
 
-        if(this.errorShowing){
+        if(this.stageErrorShowing || this.endingErrorShowing){
             ctx.fillStyle = "red";
             ctx.font = "20px Arial";
             ctx.textAlign = "right";
             ctx.textBaseline = "middle";
-            ctx.fillText("そのステージは未開放です", 330, max_y - 40);
+            if(this.stageErrorShowing){
+                ctx.fillText("そのステージは未開放です", 330, max_y - 40);
+            } else if(this.endingErrorShowing){
+                ctx.fillText("エンディングは未開放です", 330, max_y - 40);
+            }
         }
 
         ctx.fillStyle = "black";
@@ -115,7 +120,8 @@ export class StageSelectionScene extends Scene {
             if(stageIndex <= this.unlockedStageNumber + 1){
                 this.sceneRouter.changeScene(scenes.drive);
             } else {
-                this.errorShowing = true;
+                this.stageErrorShowing = true;
+                this.endingErrorShowing = false;
             }
         } else {
             console.error(`未実装のstageです: ${stageIndex}`)
@@ -123,6 +129,12 @@ export class StageSelectionScene extends Scene {
     }
 
     didTapEnding(){
-        this.sceneRouter.changeScene(scenes.ending);
+        if(this.unlockedStageNumber == 5){
+            this.sceneRouter.changeScene(scenes.ending);
+        } else {
+            this.stageErrorShowing = false;
+            this.endingErrorShowing = true;
+        }
     }
 }
+

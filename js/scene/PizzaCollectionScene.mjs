@@ -153,15 +153,16 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillStyle = "white";
         ctx.fillRect(x, y, 350, 90);
 
+        const isUnlocked = this.pizzaInfo.isUnlocked(pizza);
+
         // ピザ名
         const fontSize = Math.min(24, 240 / pizzaName[pizza].length)
         ctx.fillStyle = 'black';
         ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = "left";
-        ctx.fillText(pizzaName[pizza], x + 100, y + 25);
+        ctx.fillText(isUnlocked ? pizzaName[pizza] : "? ? ?", x + 100, y + 25);
 
         // ピザ画像
-        const isUnlocked = this.pizzaInfo.isUnlocked(pizza);
         const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(pizzaImage, x, y, 90, 90);

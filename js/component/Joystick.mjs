@@ -1,7 +1,6 @@
 // DriveSceneで自機を操作するためのUI
 export class Joystick {
     constructor() {
-        console.log(111, this)
         // キーボードの方向キーへの変換
         this.leftPressed = false;
         this.rightPressed = false;

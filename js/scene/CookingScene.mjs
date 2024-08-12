@@ -125,7 +125,7 @@ export class CookingScene extends Scene {
             ctx.font = "24px Arial";
             ctx.textAlign = "center";
             ctx.fillStyle = "black";
-            ctx.fillText(`${name}`, x + width / 2, y + 20);
+            ctx.fillText(`${isUnlocked ? name : "???"}`, x + width / 2, y + 20);
 
         }
     }

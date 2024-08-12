@@ -60,12 +60,47 @@ export const ingredientScore = {
     [ingredientType.tomato]: 100,
 }
 
+// 食材の出現重み
+export const ingredientWeight = {
+    // 3種類のピザに登場
+    [ingredientType.tomato]: 2,
+    [ingredientType.cheese]: 2,
+    [ingredientType.chicken]: 2,
+    [ingredientType.onion]: 2,
+    // 2種類のピザに登場
+    [ingredientType.bacon]: 1,
+    [ingredientType.basil]: 1,
+    [ingredientType.corn]: 1,
+    [ingredientType.mayonnaise]: 1,
+    [ingredientType.redPepper]: 1,
+    [ingredientType.salami]: 1,
+    [ingredientType.shrimp]: 1,
+    [ingredientType.squid]: 1,
+    // ゲテモノ食材
+    [ingredientType.durian]: 1/3,
+    [ingredientType.natto]: 1/3,
+    [ingredientType.rottenEgg]: 1/3,
+    // キノコ
+    [ingredientType.mysteriousMushroom]: 1/10,
+}
+
+// 重み付きランダム
+function weightedRandom(choices, weights) {
+    let totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+    let random = Math.random() * totalWeight;
+    for (let i = 0; i < choices.length; i++) {
+        if (random < weights[i]) {
+            return choices[i];
+        }
+        random -= weights[i];
+    }
+}
 
 // ランダムなingredientTypeを返す関数
 export function randomIngredientType() {
-    const ingredientTypes = Object.values(ingredientType);
-    const randomIndex = Math.floor(Math.random() * ingredientTypes.length);
-    return ingredientTypes[randomIndex];
+    const ingredients = Object.values(ingredientType);
+    const weights = ingredients.map((ingredient) => ingredientWeight[ingredient]);
+    return weightedRandom(ingredients, weights);
 }
 
 export function imageForIngredient(type) {

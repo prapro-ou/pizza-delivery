@@ -50,6 +50,26 @@ export const endingOrder = [
     endings.クビエンド,
 ]
 
+export const goodEnding = [
+    endings.パーフェクトエンド,
+    endings.素材の味エンド,
+    endings.海の家エンド,
+    endings.イタリア修行エンド,
+    endings.ピザ博士エンド,
+    endings.満腹エンド,
+    endings.社員エンド
+]
+
+export const badEnding = [
+    endings.後遺症エンド,
+    endings.入院エンド,
+    endings.ピザ生地冷めちゃったエンド,
+    endings.イタリア人ぶち切れエンド,
+    endings.クビエンド,
+]
+
+
+
 // エンディングの解放方法についてのヒント
 export const endingHint = {
     [endings.後遺症エンド]:

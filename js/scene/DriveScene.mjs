@@ -264,10 +264,9 @@ export class DriveScene extends Scene {
             // ゴール線
             const gd = Math.round(d) - (this.stage.goalDistance - 4)
             if (gd >= 0 && gd < 3) {
-                goalSquareSize = (right - left) / Math.floor((right - left) / goalSquareSize);
-                let i = 0;
-                for (let x = left; x < right; x += goalSquareSize) {
-                    i += 1;
+                const nGoalSquares = Math.floor((right - left) / goalSquareSize);
+                for (let i = 0; i < nGoalSquares; i += 1) {
+                    const x = left + (right - left) * i / nGoalSquares;
                     ctx.fillStyle = ((i + gd) % 2 == 0) ? "black" : "white";
                     ctx.fillRect(
                         x * this.pixelSize,

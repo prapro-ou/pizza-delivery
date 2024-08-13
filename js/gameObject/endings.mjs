@@ -68,8 +68,6 @@ export const badEnding = [
     endings.クビエンド,
 ]
 
-
-
 // エンディングの解放方法についてのヒント
 export const endingHint = {
     [endings.後遺症エンド]:

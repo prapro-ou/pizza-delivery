@@ -12,8 +12,12 @@ export class Ice extends Obstacle {
         this.collisionCountUp = true;
     }
 
-    checkCollision(x, d) {
-        return (this.x - x)**2 + (this.d - d)**2 <= 3**2;
+    checkCollision(x, d, pixelSize) {
+        const px2d = this.scaleFactor / pixelSize;
+        const inWidth = Math.abs(this.x - x) <= this.image.width * px2d / 2;
+        const bottom = (this.d - d) <= this.image.height * px2d / 2;
+        const underTriangle = (d - this.d) < -3/2 * Math.abs(x - this.x) + 32 * px2d;
+        return inWidth && bottom && underTriangle;
     }
 
     handleCollision(player, roadX) {

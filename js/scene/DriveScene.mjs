@@ -240,27 +240,27 @@ export class DriveScene extends Scene {
         const nWhiteLine = 2;
         const whiteLineWidth = this.pixelSize * 0.8;
         let goalSquareSize = 1.7;
-        for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
+        for (let d = Math.floor(this.cameraDistance); d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize) + 1; d++) {
             const { center, left, right } = this.roadX(d);
             // 道路の外側
             // ctx.fillStyle = "green";
             // ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
             // 道路の内側
             ctx.fillStyle = "gray";
-            ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize);
+            ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize + 1);
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
                 ctx.fillStyle = "white";
                 for (let i = 0; i < nWhiteLine; i++) {
                     const ratio = (i + 1) / (nWhiteLine + 1)
                     const x = left * (1 - ratio) + right * ratio
-                    ctx.fillRect(x * this.pixelSize - whiteLineWidth / 2, max_y - ((d - this.cameraDistance) * this.pixelSize), whiteLineWidth, this.pixelSize);
+                    ctx.fillRect(x * this.pixelSize - whiteLineWidth / 2, max_y - ((d - this.cameraDistance) * this.pixelSize), whiteLineWidth, this.pixelSize + 2);
                 }
             }
             // 道路の境界
             ctx.fillStyle = "black";
-            ctx.fillRect((left - 1) * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
-            ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize);
+            ctx.fillRect((left - 1) * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
+            ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
             // ゴール線
             const gd = Math.round(d) - (this.stage.goalDistance - 4)
             if (gd >= 0 && gd < 3) {

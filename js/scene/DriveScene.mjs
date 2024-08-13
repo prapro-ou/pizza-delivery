@@ -246,11 +246,23 @@ export class DriveScene extends Scene {
             // ctx.fillStyle = "green";
             // ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
             // 道路の内側
+            if (this.stage.stageNumber == 4) {
+                ctx.fillStyle = "khaki";
+            } else if (this.stage.stageNumber == 5) {
+                ctx.fillStyle = "white";
+            } else {
             ctx.fillStyle = "gray";
+            }
             ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize + 1);
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
+                if (this.stage.stageNumber == 4) {
+                    ctx.fillStyle = "lightyellow";
+                } else if (this.stage.stageNumber == 5) {
+                    ctx.fillStyle = "gray";
+                } else {
                 ctx.fillStyle = "white";
+                }
                 for (let i = 0; i < nWhiteLine; i++) {
                     const ratio = (i + 1) / (nWhiteLine + 1)
                     const x = left * (1 - ratio) + right * ratio
@@ -258,7 +270,13 @@ export class DriveScene extends Scene {
                 }
             }
             // 道路の境界
-            ctx.fillStyle = "black";
+            if (this.stage.stageNumber == 4) {
+                ctx.fillStyle = "lightyellow";
+            } else if (this.stage.stageNumber == 5) {
+                ctx.fillStyle = "gray";
+            } else {
+                ctx.fillStyle = "black";
+            }
             ctx.fillRect((left - 1) * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
             ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
             // ゴール線

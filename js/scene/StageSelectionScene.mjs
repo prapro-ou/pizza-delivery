@@ -129,7 +129,9 @@ export class StageSelectionScene extends Scene {
     }
 
     didTapEnding(){
-        if(this.unlockedStageNumber == 5){
+        if (this.unlockedStageNumber == 5) {
+            this.sceneRouter.playSE(resource.se.clickEffect);
+            this.sceneRouter.stopBGM();
             this.sceneRouter.changeScene(scenes.ending);
         } else {
             this.stageErrorShowing = false;

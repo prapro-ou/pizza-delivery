@@ -1,8 +1,9 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
+import { resource } from '../resource.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { EndingInfo } from '../dataObject/EndingInfo.mjs';
-import { endingName, judgeEnding, endingMessage } from '../gameObject/endings.mjs';
+import { endingName, judgeEnding, endingMessage, goodEnding} from '../gameObject/endings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
 
 // エンディング画面
@@ -84,12 +85,21 @@ export class EndingScene extends Scene {
     }
 
     didTap(x, y) {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        let endingBGM;
+        if (goodEnding.includes(this.ending)) {
+            endingBGM = resource.bgm.MusMusBGM155;
+        } else { 
+            endingBGM = resource.bgm.MusMusBGM144;
+        }
+        this.sceneRouter.setBGM(endingBGM);
         this.showsResult = true;
 
         const r = this.goToTitleButtonArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapDelivery();
-        }
+            this.sceneRouter.playSE(resource.se.clickEffect);
+            this.didTapDelivery();    
+        }    
     }
 
     didTapDelivery() {

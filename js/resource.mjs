@@ -8,6 +8,7 @@ const imagePaths = {
     lampRight:  "resource/image/lamp_right.png",
     lampLeft:   "resource/image/lamp_left.png",
     ice:        "resource/image/ice.png",
+    cactus:     "resource/image/cactus.png",
 
     // 食材
     bacon:      "resource/image/ingredient/bacon_kari.png",
@@ -84,6 +85,7 @@ const sePaths = {
     goalEffect:    "resource/se/goal.mp3",
     bikeEngineEffect:    "resource/se/bikeEngine.mp3",
     freezeEffect:   "resource/se/freeze.mp3",
+    cactusEffect:      "resource/se/cactus.mp3",
 }
 
 class Resource {

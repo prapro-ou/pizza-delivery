@@ -17,7 +17,7 @@ export class Button {
 
         this.onClick = () => {};
         this.scaleFactor = 1.0;
-        this.mirror = false;
+        this.mirror = false; // 左右反転して表示する
 
         this.x = null;
         this.y = null;
@@ -54,10 +54,19 @@ export class Button {
         const image = this.image;
         const [columnWidth, rowHeight] = [this.columnWidth, this.rowHeight]
         const [column, row] = [this.column, this.state];
+        // ミラーの場合は反転
+        if (this.mirror) {
+            ctx.scale(-1, 1);
+            x = -x - columnWidth * this.scaleFactor
+        }
         ctx.drawImage(
             image,
             columnWidth * column, rowHeight * row, columnWidth, rowHeight,
             x, y, columnWidth * this.scaleFactor, rowHeight * this.scaleFactor
         );
+        // 元に戻す
+        if (this.mirror) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
     }
 }

@@ -45,8 +45,8 @@ export class Button {
     }
 
     isInside(x, y) {
-        return (x > this.x && x < this.x + this.columnWidth)
-            && (y > this.y && y < this.y + this.rowHeight);
+        return (x > this.x && x < this.x + this.columnWidth * this.scaleFactor)
+            && (y > this.y && y < this.y + this.rowHeight * this.scaleFactor);
     }
 
     draw(ctx, x, y) {
@@ -57,7 +57,7 @@ export class Button {
         ctx.drawImage(
             image,
             columnWidth * column, rowHeight * row, columnWidth, rowHeight,
-            x, y, columnWidth, rowHeight
+            x, y, columnWidth * this.scaleFactor, rowHeight * this.scaleFactor
         );
     }
 }

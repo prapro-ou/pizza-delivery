@@ -4,6 +4,8 @@ import { resource } from '../resource.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { UserConfig } from '../dataObject/UserConfig.mjs';
 import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
+import { PizzaRecipeButton } from '../component/PizzaRecipeButton.mjs';
+import { EndingButton } from '../component/EndingButton.mjs';
 
 let appearsFirstTime = true;
 
@@ -35,12 +37,20 @@ export class TitleScene extends Scene {
         this.configButton = new SquareButton(sqbColors.white);
         this.configButton.text = "音量設定";
         this.configButton.onClick = this.onClickConfig.bind(this);
+
+        this.recipeButton = new PizzaRecipeButton();
+        this.recipeButton.onClick = this.onClickRecipe.bind(this);
+
+        this.endingButton = new EndingButton();
+        this.endingButton.onClick = this.onClickEnding.bind(this);
     }
 
     updateStates(deltaTime, mouse) {
         this.startFromBeginningButton.updateStates(mouse);
         this.continueButton.updateStates(mouse);
         this.configButton.updateStates(mouse);
+        this.recipeButton.updateStates(mouse);
+        this.endingButton.updateStates(mouse);
     }
 
     render(ctx) {
@@ -50,35 +60,14 @@ export class TitleScene extends Scene {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(resource.images.titleBackground, 0, 0, max_x, max_y);
 
-        this.startFromBeginningButton.draw(ctx, 449, 266);
-        this.continueButton.draw(ctx, 449, 266 + 110);
-        this.configButton.draw(ctx, 449, 266 + 220);
-
-        let r = { x: max_x / 2 - 250, y: max_y / 2 + 225, w: 200, h: 50 };
-        this.PizzaCollectionArea = r;
-
-        // ctx.fillStyle = "blue";
-        // ctx.fillRect(r.x, r.y, r.w, r.h);
-        // ctx.fillStyle = "white";
-        // ctx.font = "20px Arial";
-        // ctx.textAlign = "center";
-        // ctx.textBaseline = "middle";
-        // ctx.fillText("ピザコレクション", r.x + r.w / 2, r.y + r.h / 2);
-
-        // if (this.endingUnlocked) {
-        //     r = { x: max_x / 2 + 100, y: max_y / 2 + 225, w: 200, h: 50 };
-        //     this.endingCollectionButtonArea = r;
-        //     ctx.fillStyle = "blue";
-        //     ctx.fillRect(r.x, r.y, r.w, r.h);
-        //     ctx.fillStyle = "white";
-        //     ctx.font = "20px Arial";
-        //     ctx.textAlign = "center";
-        //     ctx.textBaseline = "middle";
-        //     ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
-        // }
+        this.startFromBeginningButton.draw(ctx, 450, 265);
+        this.continueButton.draw(ctx, 450, 265 + 110);
+        this.configButton.draw(ctx, 450, 265 + 220);
+        this.recipeButton.draw(ctx, 25, 385);
+        this.endingButton.draw(ctx, 130, 320);
 
         const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
-        r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
+        let r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
         this.switchSoundArea = r;
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
     }
@@ -100,21 +89,19 @@ export class TitleScene extends Scene {
         this.sceneRouter.changeScene(scenes.config);
     }
 
+    onClickRecipe() {
+        this.sharedData.previousScene = scenes.title;
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.pizzaCollection);
+    }
+
+    onClickEnding() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.endingCollection);
+    }
+
     didTap(x, y) {
-        let r = this.PizzaCollectionArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
-            this.sharedData.previousScene = scenes.title;
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.pizzaCollection);
-        }
-
-        r = this.endingCollectionButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.endingCollection);
-        }
-
-        r = this.switchSoundArea;
+        let r = this.switchSoundArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
             this.didTapSoundIcon()
         }

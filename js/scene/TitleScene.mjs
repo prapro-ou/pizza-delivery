@@ -12,6 +12,10 @@ export class TitleScene extends Scene {
         this.endingUnlocked = endingInfo.getEndingCount() >= 1;
 
         if (appearsFirstTime) {
+            this.sharedData.soundOn = false;
+            this.sharedData.storedBgmVolume = 1;
+            this.sharedData.storedSeVolume = 1;
+
             this.userConfig = new UserConfig(0, 0);
             this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         } else {
@@ -87,7 +91,7 @@ export class TitleScene extends Scene {
             ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
         }
 
-        const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
+        const soundImage = (this.sharedData.soundOn) ? resource.images.soundOn : resource.images.soundOff;
         r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
         this.switchSoundArea = r;
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
@@ -131,9 +135,9 @@ export class TitleScene extends Scene {
     }
 
     didTapSoundIcon() {
-        const volume = (this.userConfig.bgmVolume == 0) ? 1.0 : 0.0;
-        this.userConfig.bgmVolume = volume;
-        this.userConfig.seVolume = volume;
+        this.sharedData.soundOn = !this.sharedData.soundOn;
+        this.userConfig.bgmVolume = this.sharedData.soundOn ? this.sharedData.storedBgmVolume : 0;
+        this.userConfig.seVolume = this.sharedData.soundOn ? this.sharedData.storedSeVolume : 0;
         this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         if (!this.sceneRouter.currentBGM) {
             this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);

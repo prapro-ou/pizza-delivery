@@ -63,7 +63,7 @@ export class TitleScene extends Scene {
         this.startFromBeginningButton.draw(ctx, 450, 265);
         this.continueButton.draw(ctx, 450, 265 + 110);
         this.configButton.draw(ctx, 450, 265 + 220);
-        this.recipeButton.draw(ctx, 25, 385);
+        this.recipeButton.draw(ctx, 22, 380);
         this.endingButton.draw(ctx, 130, 320);
 
         const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;

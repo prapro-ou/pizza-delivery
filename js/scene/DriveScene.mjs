@@ -399,12 +399,11 @@ export class DriveScene extends Scene {
             }
         }
         if (this.player.life == 0) {
-            if (this.player.gameOverCountFlg) {
+            if (!this.gameOverFlg) {
                 this.sharedData.gameOverCount += 1;
-                this.player.gameOverCountFlg = false;
+                this.gameOverFlg = true;
                 this.sceneRouter.playSE(resource.se.gameOverEffect);
             }
-            this.gameOverFlg = true;
         }
     }
 

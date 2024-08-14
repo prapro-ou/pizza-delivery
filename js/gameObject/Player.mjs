@@ -21,7 +21,6 @@ export class Player {
         this.collideAnimationFromX = 0;
         this.collideAnimationToX = 0;
         this.life = 3;
-        this.gameOverCountFlg = false;
         }
 
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
@@ -104,10 +103,7 @@ export class Player {
     collideAndBackToCenter(roadX) {
         this.inCollision = true;
         this.life -= 1;
-        if (this.life == 0) {
-            this.gameOverCountFlg = true;
-            return;
-        }
+        if (this.life == 0) return;
         const { center } = roadX(this.d);
         setTimeout(() => {
             this.collideAnimating = true;

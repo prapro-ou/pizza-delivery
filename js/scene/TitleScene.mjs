@@ -27,12 +27,8 @@ export class TitleScene extends Scene {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
 
-        ctx.fillStyle = "silver";
-        ctx.fillRect(0, 0, max_x, max_y);
-        ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("タイトル画面", 50, 50);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(resource.images.titleBackground, 0, 0, max_x, max_y);
 
         let r = { x: max_x / 2 - 100, y: max_y / 2 - 75, w: 200, h: 50 };
         this.startFromBeginningButtonArea = r;

@@ -51,6 +51,7 @@ const imagePaths = {
     //背景
     bg1:    "resource/image/background/1_noon.png",
     bg4:    "resource/image/background/4_desert.png",
+    titleBackground:    "resource/image/background/title_background.png",
 
     // UI
     soundOn:    "resource/image/soundOn.png",

@@ -140,6 +140,7 @@ export class DriveScene extends Scene {
         if (!this.gameOverFlg) {
             this.joystick.draw(ctx, this.stage.nightMode);
         }
+        this.drawHeart(ctx);
     }
 
     transitToNextScene() {
@@ -147,7 +148,7 @@ export class DriveScene extends Scene {
         this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sharedData.gameOverCount = this.gameOverCount;
         this.sharedData.collisionCount = this.collisionCount;
-        console.log(this.sharedData)
+        console.log(this.sharedData);
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
@@ -181,10 +182,8 @@ export class DriveScene extends Scene {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
                 this.sceneRouter.playSE(resource.se.crashEffect);
-                this.sceneRouter.stopBGM();
-                this.gameOverFlg = true;
-                this.sharedData.gameOverCount += 1;
-                car.handleCollision(this.player, this.roadX.bind(this));
+                this.player.collideAndBackToCenter(this.roadX.bind(this));
+                this.collisionCount += 1;
             }
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
@@ -381,7 +380,36 @@ export class DriveScene extends Scene {
         ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
     }
 
+    drawHeart(ctx) {
+        ctx.fillStyle = this.textColor;
+        ctx.font = "25px Arial";
+        ctx.textAlign = "left";
+        let image = resource.images.redHeart;
+        for (let i = 0; i < this.player.life; i++) {
+            if (image.complete) {
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(image, 40 * i + 30, 600, 30, 30);
+            }
+        }
+        image = resource.images.blackHeart;
+        for (let i = 3; i > this.player.life; i--) {
+            if (image.complete) {
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(image, 40 * (i-1) + 30, 600, 30, 30);
+            }
+        }
+        if (this.player.life == 0) {
+            if (!this.gameOverFlg) {
+                this.sharedData.gameOverCount += 1;
+                this.gameOverFlg = true;
+                this.sceneRouter.playSE(resource.se.gameOverEffect);
+            }
+        }
+    }
+
     drawGameOver(ctx, max_x, max_y) {
+        this.sceneRouter.stopBGM();
+        this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
         if (this.gameOverAnimationTime >= 1.0) {
             ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
             ctx.fillRect(0, 0, max_x, max_y);

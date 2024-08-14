@@ -3,6 +3,7 @@ import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { UserConfig } from '../dataObject/UserConfig.mjs';
+import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
 
 let appearsFirstTime = true;
 
@@ -19,9 +20,28 @@ export class TitleScene extends Scene {
             this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
         appearsFirstTime = false;
+        this.setUpUI();
     }
 
-    updateStates(deltaTime) {}
+    setUpUI() {
+        this.startFromBeginningButton = new SquareButton(sqbColors.yellow);
+        this.startFromBeginningButton.text = "はじめから";
+        this.startFromBeginningButton.onClick = this.onClickStartFromBeginning.bind(this);
+
+        this.continueButton = new SquareButton(sqbColors.green);
+        this.continueButton.text = "続きから";
+        this.continueButton.onClick = this.onClickContinue.bind(this);
+
+        this.configButton = new SquareButton(sqbColors.white);
+        this.configButton.text = "音量設定";
+        this.configButton.onClick = this.onClickConfig.bind(this);
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.startFromBeginningButton.updateStates(mouse);
+        this.continueButton.updateStates(mouse);
+        this.configButton.updateStates(mouse);
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;
@@ -30,58 +50,32 @@ export class TitleScene extends Scene {
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(resource.images.titleBackground, 0, 0, max_x, max_y);
 
-        let r = { x: max_x / 2 - 100, y: max_y / 2 - 75, w: 200, h: 50 };
-        this.startFromBeginningButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("最初から始める", r.x + r.w / 2, r.y + r.h / 2);
+        this.startFromBeginningButton.draw(ctx, 449, 266);
+        this.continueButton.draw(ctx, 449, 266 + 110);
+        this.configButton.draw(ctx, 449, 266 + 220);
 
-        r = { x: max_x / 2 - 100, y: max_y / 2 + 25, w: 200, h: 50 };
-        this.continueButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("続きから始める", r.x + r.w / 2, r.y + r.h / 2);
-
-        r = { x: max_x / 2 - 100, y: max_y / 2 + 125, w: 200, h: 50 };
-        this.configButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("設定画面", r.x + r.w / 2, r.y + r.h / 2);
-
-        r = { x: max_x / 2 - 250, y: max_y / 2 + 225, w: 200, h: 50 };
+        let r = { x: max_x / 2 - 250, y: max_y / 2 + 225, w: 200, h: 50 };
         this.PizzaCollectionArea = r;
 
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("ピザコレクション", r.x + r.w / 2, r.y + r.h / 2);
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(r.x, r.y, r.w, r.h);
+        // ctx.fillStyle = "white";
+        // ctx.font = "20px Arial";
+        // ctx.textAlign = "center";
+        // ctx.textBaseline = "middle";
+        // ctx.fillText("ピザコレクション", r.x + r.w / 2, r.y + r.h / 2);
 
-        if (this.endingUnlocked) {
-            r = { x: max_x / 2 + 100, y: max_y / 2 + 225, w: 200, h: 50 };
-            this.endingCollectionButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
-        }
+        // if (this.endingUnlocked) {
+        //     r = { x: max_x / 2 + 100, y: max_y / 2 + 225, w: 200, h: 50 };
+        //     this.endingCollectionButtonArea = r;
+        //     ctx.fillStyle = "blue";
+        //     ctx.fillRect(r.x, r.y, r.w, r.h);
+        //     ctx.fillStyle = "white";
+        //     ctx.font = "20px Arial";
+        //     ctx.textAlign = "center";
+        //     ctx.textBaseline = "middle";
+        //     ctx.fillText("エンディング集", r.x + r.w / 2, r.y + r.h / 2);
+        // }
 
         const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
         r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
@@ -89,25 +83,25 @@ export class TitleScene extends Scene {
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
     }
 
+    onClickStartFromBeginning() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sharedData.playFromBeginning = true;
+        this.sceneRouter.changeScene(scenes.arasuji);
+    }
+
+    onClickContinue() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sharedData.playFromBeginning = false;
+        this.sceneRouter.changeScene(scenes.slotSelection);
+    }
+
+    onClickConfig() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.config);
+    }
+
     didTap(x, y) {
-        let r = this.startFromBeginningButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sharedData.playFromBeginning = true;
-            this.sceneRouter.changeScene(scenes.arasuji);
-        }
-        r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) { 
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sharedData.playFromBeginning = false;
-            this.sceneRouter.changeScene(scenes.slotSelection);
-        }
-        r = this.configButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.config);
-        }
-        r = this.PizzaCollectionArea;
+        let r = this.PizzaCollectionArea;
         if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) { 
             this.sharedData.previousScene = scenes.title;
             this.sceneRouter.playSE(resource.se.clickEffect);

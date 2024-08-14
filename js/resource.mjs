@@ -54,8 +54,11 @@ const imagePaths = {
     titleBackground:    "resource/image/background/title_background.png",
 
     // UI
-    soundOn:    "resource/image/soundOn.png",
-    soundOff:   "resource/image/soundOff.png",
+    soundOn:        "resource/image/ui/sound_on.png",
+    soundOff:       "resource/image/ui/sound_off.png",
+    squareButton:   "resource/image/ui/square_button.png",
+    recipeButton:   "resource/image/ui/recipe_button.png",
+    bookButton:     "resource/image/ui/book_button.png",
 }
 
 // BGMのパス一覧

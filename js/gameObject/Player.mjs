@@ -20,7 +20,9 @@ export class Player {
         this.collideAnimationTime = 0; // 秒 アニメーション開始からの経過時間
         this.collideAnimationFromX = 0;
         this.collideAnimationToX = 0;
-    }
+        this.life = 3;
+        this.gameOverCountFlg = false;
+        }
 
     draw(max_x, max_y, ctx, pixelSize, cameraDistance) {
         const y = max_y - (this.d - cameraDistance) * pixelSize;
@@ -101,6 +103,11 @@ export class Player {
 
     collideAndBackToCenter(roadX) {
         this.inCollision = true;
+        this.life -= 1;
+        if (this.life == 0) {
+            this.gameOverCountFlg = true;
+            return;
+        }
         const { center } = roadX(this.d);
         setTimeout(() => {
             this.collideAnimating = true;

@@ -51,6 +51,8 @@ const imagePaths = {
     //背景
     bg1:    "resource/image/background/1_noon.png",
     bg4:    "resource/image/background/4_desert.png",
+    redHeart:  "resource/image/max_heart.png",
+    blackHeart:  "resource/image/empty_heart.png",
 
     // UI
     soundOn:    "resource/image/soundOn.png",
@@ -76,7 +78,8 @@ const bgmPaths = {
 const sePaths = {
     clickEffect:    "resource/se/click.mp3",
     startEffect:   "resource/se/start.mp3",
-    crashEffect:    "resource/se/crash.wav",
+    crashEffect:    "resource/se/crash.mp3",
+    gameOverEffect:    "resource/se/crash.wav",
     mudEffect:      "resource/se/mud.mp3",
     getIngredientEffect:    "resource/se/getIngredient.wav",
     courseOutEffect:    "resource/se/courseOut.wav",

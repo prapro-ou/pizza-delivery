@@ -8,6 +8,7 @@ const imagePaths = {
     lampRight:  "resource/image/lamp_right.png",
     lampLeft:   "resource/image/lamp_left.png",
     ice:        "resource/image/ice.png",
+    cactus:     "resource/image/cactus.png",
 
     // 食材
     bacon:      "resource/image/ingredient/bacon_kari.png",
@@ -53,10 +54,14 @@ const imagePaths = {
     bg4:    "resource/image/background/4_desert.png",
     redHeart:  "resource/image/max_heart.png",
     blackHeart:  "resource/image/empty_heart.png",
+    titleBackground:    "resource/image/background/title_background.png",
 
     // UI
-    soundOn:    "resource/image/soundOn.png",
-    soundOff:   "resource/image/soundOff.png",
+    soundOn:        "resource/image/ui/sound_on.png",
+    soundOff:       "resource/image/ui/sound_off.png",
+    squareButton:   "resource/image/ui/square_button.png",
+    recipeButton:   "resource/image/ui/recipe_button.png",
+    bookButton:     "resource/image/ui/book_button.png",
 }
 
 // BGMのパス一覧
@@ -87,6 +92,7 @@ const sePaths = {
     goalEffect:    "resource/se/goal.mp3",
     bikeEngineEffect:    "resource/se/bikeEngine.mp3",
     freezeEffect:   "resource/se/freeze.mp3",
+    cactusEffect:      "resource/se/cactus.mp3",
 }
 
 class Resource {

@@ -1,6 +1,7 @@
 import { Mud } from "./Mud.mjs";
 import { Ice } from "./Ice.mjs";
 import { Car } from "./Car.mjs";
+import { Cactus } from "./Cactus.mjs";
 import { SpeedingBoard } from "./SpeedingBoard.mjs";
 
 // 障害物の種類の列挙した連想配列
@@ -8,6 +9,7 @@ export const obstacleType = {
     mud: "obstacleType.mud",
     ice: "obstacleType.ice",
     car: "obstacleType.car",
+    cactus: "obstacleType.cactus",
     speedingBoard: "obstacleType.speedingBoard",
 }
 
@@ -23,6 +25,9 @@ export function makeObstacle(type, x, d) {
         case obstacleType.car:
             console.error(`makeObstacleに${type}が渡されました。このタイプはmakeObstacleで生成できません。`)
             break;
+
+        case obstacleType.cactus:
+            return new Cactus(x, d);
 
         case obstacleType.speedingBoard:
             return new SpeedingBoard(x, d);

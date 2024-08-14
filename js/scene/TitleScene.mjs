@@ -67,7 +67,7 @@ export class TitleScene extends Scene {
         this.endingButton.draw(ctx, 130, 320);
 
         const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
-        let r = { x: max_x - soundImage.width - 20, y: 20, w: soundImage.width, h: soundImage.height };
+        let r = { x: max_x - 86, y: 16, w: 63, h: 56 };
         this.switchSoundArea = r;
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
     }

@@ -1,4 +1,4 @@
-import { Button } from "./Button.mjs";
+import { ImgaeButton } from "./Button.mjs";
 import { resource } from "../resource.mjs";
 
 export const sqbColors = {
@@ -14,7 +14,7 @@ const strokeColors = {
     [sqbColors.white]: "#7f7b72",
 }
 
-export class SquareButton extends Button {
+export class SquareButton extends ImgaeButton {
     constructor(sqbColor) {
         if (!Object.values(sqbColors).includes(sqbColor)) console.error("無効なsqbColor:", sqbColor);
         super(resource.images.squareButton, 288, 88);
@@ -24,8 +24,8 @@ export class SquareButton extends Button {
 
     draw(ctx, x, y) {
         super.draw(ctx, x, y);
-        const tx = x + this.columnWidth / 2;
-        const ty = y + this.rowHeight / 2 + 14;
+        const tx = x + this.width / 2;
+        const ty = y + this.height / 2 + 14;
         ctx.font = "bold 36px Arial";
         ctx.lineWidth = 5;
         ctx.lineJoin = "round";

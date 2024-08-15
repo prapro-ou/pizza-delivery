@@ -29,7 +29,7 @@ export class RuleScene extends Scene {
         ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("セーブ画面に進む", r.x + r.w / 2, r.y + r.h / 2);
+        ctx.fillText("ステージ選択画面に進む", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     didTap(x, y) {
@@ -41,7 +41,7 @@ export class RuleScene extends Scene {
 
     didTapSave() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.slotSelection);
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 
 

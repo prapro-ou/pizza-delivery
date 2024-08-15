@@ -129,6 +129,7 @@ class KeyHandler {
 export class SceneRouter {
     constructor(canvas) {
         this.currentScene = null;
+        this.presentingModal = null; // currentSceneの上に覆い被さって表示されるScene
         this.currentBGM = null;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
@@ -141,8 +142,10 @@ export class SceneRouter {
         this.localDBHandler = new LocalDBHandler();
 
         this.mouseHandler.listenClick(function(x, y) {
-            if (this.currentScene && this.currentScene.didTap) {
-                this.currentScene.didTap(x, y);
+            if (this.presentingModal) {
+                this.presentingModal.didTap?.(x, y);
+            } else if (this.currentScene) {
+                this.currentScene.didTap?.(x, y);
             }
         }.bind(this));
 
@@ -150,15 +153,27 @@ export class SceneRouter {
     }
 
     // 画面遷移の処理
-    changeScene(newScene, data = {}) {
+    changeScene(newScene) {
         if (this.currentScene) {
             this.currentScene.sceneWillDisappear();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
-
-        this.sharedData = { ...this.sharedData, ...data };
-        this.currentScene = makeScene(newScene, this, this.sharedData)
+        this.dismissModal()
+        this.currentScene = makeScene(newScene, this, this.sharedData);
         this.currentScene.sceneWillAppear();
+    }
+
+    // モーダル画面の表示
+    presentModal(scene) {
+        this.presentingModal = makeScene(scene, this, this.sharedData);
+        this.presentingModal.sceneWillAppear();
+    }
+
+    // 開いているモーダルを閉じる
+    dismissModal() {
+        if (!this.presentingModal) return;
+        this.presentingModal.sceneWillDisappear();
+        this.presentingModal = null;
     }
 
     // LocalStorageに書き込み
@@ -225,7 +240,9 @@ export class SceneRouter {
 
     // 内部状態などの更新処理。フレームごとに呼び出される
     updateStates(deltaTime) {
-        if (this.currentScene) {
+        if (this.presentingModal) {
+            this.presentingModal.updateStates(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
+        } else if (this.currentScene) {
             this.currentScene.updateStates(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
         }
     }
@@ -234,6 +251,9 @@ export class SceneRouter {
     render() {
         if (this.currentScene) {
             this.currentScene.render(this.ctx);
+        }
+        if (this.presentingModal) {
+            this.presentingModal.render(this.ctx);
         }
     }
 }

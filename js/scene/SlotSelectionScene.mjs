@@ -4,96 +4,104 @@ import { resource } from '../resource.mjs';
 import { endingName } from '../gameObject/endings.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
+import { buttonStates, ColorButton } from '../component/Button.mjs';
+
 
 // セーブデータ選択画面
+// - 入力
+//   - this.sharedData.onSelectSlot: スロットを選択してこの画面が閉じるときに行う処理
+//   - this.sharedData.playFromBeginning: trueなら、空でないスロットを選択した場合にアラートを出してスロットを初期化する
 // - 出力
 //   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
-        this.slotButtonAreas = [];
+        this.setUpUI();
     }
 
-    updateStates(deltaTime){}
+    setUpUI() {
+        this.closeButton = new ColorButton({
+            [buttonStates.normal]: "rgba(179, 9, 33, 0.75)",
+            [buttonStates.hovered]: "rgba(179, 9, 33, 1.0)",
+            [buttonStates.clicked]: "rgba(127, 6, 22, 1.0)",
+        });
+        this.closeButton.onClick = this.onClickClose.bind(this);
+
+        this.slotButtons = [];
+        for (let i = 0; i < 4; i++) {
+            const slotButton = new ColorButton({
+                [buttonStates.normal]: "rgba(255, 255, 255, 0.7)",
+                [buttonStates.hovered]: "rgba(255, 255, 255, 0.8)",
+                [buttonStates.clicked]: "rgba(207, 207, 207, 0.7)",
+            });
+            slotButton.onClick = function() {
+                this.onClickSlot(i + 1);
+            }.bind(this);
+            this.slotButtons.push(slotButton);
+        }
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.closeButton.updateStates(mouse);
+        this.slotButtons.forEach((btn) => btn.updateStates(mouse));
+    }
 
     render(ctx) {
-        const max_x = ctx.canvas.width;
-        const max_y = ctx.canvas.height;
+        ctx.fillStyle = "rgba(30, 30, 102, 0.7)";
+        ctx.fillRect(39, 74, 722, 503);
 
-        ctx.fillStyle = "pink";
-        ctx.fillRect(0, 0, max_x, max_y);
-        ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("セーブ選択画面", 50, 50);
-
-        //タイトルに戻る
-        let r = { x: max_x / 2 - 100, y: max_y - 100, w: 200, h: 50 };
-        this.backButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
+        this.closeButton.draw(ctx, 690, 74, 71, 71);
         ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
+        ctx.font = "100px Arial";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText("×", 696, 145);
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.fillRect(53, 86, 631, 59);
+        ctx.fillStyle = "black";
+        ctx.font = "36px Arial";
+        ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
+        ctx.fillText("セーブデータを選択してください。", 63, 120);
 
         const slots = this.sceneRouter.load(dataKeys.slots);
 
-        for( let i = 0; i < 4 ; i++ ){   
-            let r = { x: max_x/2 -100, y: max_y/2 -200 + 100*i, w: 200, h: 50 };
-            this.slotButtonAreas.push(r);
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(`セーブデータ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
+        for(let i = 0; i < 4; i++){
+            const [x, y, w, h] = [53, 152 + 105 * i, 694, 98];
+            this.slotButtons[i].draw(ctx, x, y, w, h);
 
-            r = { x: max_x/2 -100, y: max_y/2 -200 + 100*i, w: 200, h: 50 };
             ctx.fillStyle = "black";
-            ctx.font = "20px Arial";
+            ctx.font = "28px Arial";
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
+            ctx.fillText(`セーブデータ ${i+1}`, x + 5, y + 24);
 
-            let slotOverViewText;
-            const slot = slots[i + 1];
-            if(!slot){
-                slotOverViewText = "空きスロット"
-            } else if(slot.ending){ 
-                slotOverViewText = endingName[slot.ending];
-            } else {
-                slotOverViewText = `ステージ${slot.maxStageNumber()}までクリア`;
-            }
-            ctx.fillText(slotOverViewText, r.x + r.w / 2 + 130, r.y + r.h / 2);
-
+            ctx.fillStyle = "black";
+            ctx.font = "36px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            let overViewText = this.slotOverViewText(slots[i + 1]);
+            ctx.fillText(overViewText, x + w / 2, y + h / 2 + 16);
         }
     }
 
-    didTap(x, y){
-        //タイトルに戻る
-        let r = this.backButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapBack();
+    slotOverViewText(slot) {
+        if(!slot){
+            return "空きスロット"
+        } else if(slot.ending){
+            return endingName[slot.ending];
+        } else {
+            return `ステージ${slot.maxStageNumber()}までクリア`;
         }
-        //各セーブデータ
-        for ( let i = 0; i < 4; i++ ){
-            let r = this.slotButtonAreas[i];
-            if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-                this.didTapSlot(i + 1);
-            }
-        }   
     }
 
-    //タイトルに戻るが押されたとき
-    didTapBack(){
+    onClickClose(){
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.title);
+        this.sceneRouter.dismissModal();
     }
 
-    //各セーブデータが押されたとき
-    didTapSlot(slotIndex) {
+    onClickSlot(slotIndex) {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sharedData.playingSlotIndex = slotIndex;
         let slots = this.sceneRouter.load(dataKeys.slots);
@@ -103,10 +111,12 @@ export class SlotSelectionScene extends Scene {
             if(window.confirm("スロットにデータがあります。初期化して最初から始めますか？")){
                 delete slots[this.sharedData.playingSlotIndex];
                 this.sceneRouter.save(dataKeys.slots,slots);
-                this.sceneRouter.changeScene(scenes.stageSelection);
-            }              
+                this.sharedData.onSelectSlot(slotIndex);
+                this.sceneRouter.dismissModal();
+            }
         } else {
-            this.sceneRouter.changeScene(scenes.stageSelection);
+            this.sharedData.onSelectSlot(slotIndex);
+            this.sceneRouter.dismissModal();
         }
     }
 

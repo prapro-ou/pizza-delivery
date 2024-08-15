@@ -75,13 +75,24 @@ export class TitleScene extends Scene {
     onClickStartFromBeginning() {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sharedData.playFromBeginning = true;
-        this.sceneRouter.changeScene(scenes.arasuji);
+        this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
+        this.sceneRouter.presentModal(scenes.slotSelection);
     }
 
     onClickContinue() {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sharedData.playFromBeginning = false;
-        this.sceneRouter.changeScene(scenes.slotSelection);
+        this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
+        this.sceneRouter.presentModal(scenes.slotSelection);
+    }
+
+    onSelectSlot() {
+        this.sharedData.onSelectSlot = null;
+        if (this.sharedData.playFromBeginning) {
+            this.sceneRouter.changeScene(scenes.arasuji);
+        } else {
+            this.sceneRouter.changeScene(scenes.stageSelection);
+        }
     }
 
     onClickConfig() {

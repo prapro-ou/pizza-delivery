@@ -47,6 +47,17 @@ export class Button {
     draw(ctx, x, y) {
         [this.x, this.y] = [x, y];
     }
+
+    // ボタンを無効化
+    disable() {
+        this.state = buttonStates.disabled
+    }
+
+    // ボタンの無効化を解除
+    enable() {
+        if (this.state != buttonStates.disabled) return;
+        this.state = buttonStates.normal;
+    }
 }
 
 // スプライトシートの画像素材のボタンの親クラス

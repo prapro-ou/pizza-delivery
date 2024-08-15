@@ -10,9 +10,6 @@ import { buttonStates, ColorButton } from '../component/Button.mjs';
 // セーブデータ選択画面
 // - 入力
 //   - this.sharedData.onSelectSlot: スロットを選択してこの画面が閉じるときに行う処理
-//   - this.sharedData.playFromBeginning: trueなら、空でないスロットを選択した場合にアラートを出してスロットを初期化する
-// - 出力
-//   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
@@ -103,21 +100,7 @@ export class SlotSelectionScene extends Scene {
 
     onClickSlot(slotIndex) {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sharedData.playingSlotIndex = slotIndex;
-        let slots = this.sceneRouter.load(dataKeys.slots);
-        let slot = slots[this.sharedData.playingSlotIndex];
-
-        if(this.sharedData.playFromBeginning && slot){
-            if(window.confirm("スロットにデータがあります。初期化して最初から始めますか？")){
-                delete slots[this.sharedData.playingSlotIndex];
-                this.sceneRouter.save(dataKeys.slots,slots);
-                this.sharedData.onSelectSlot(slotIndex);
-                this.sceneRouter.dismissModal();
-            }
-        } else {
-            this.sharedData.onSelectSlot(slotIndex);
-            this.sceneRouter.dismissModal();
-        }
+        this.sharedData.onSelectSlot(slotIndex);
     }
 
 }

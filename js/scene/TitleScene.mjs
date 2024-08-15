@@ -9,6 +9,8 @@ import { EndingButton } from '../component/EndingButton.mjs';
 
 let appearsFirstTime = true;
 
+// - 出力
+//   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class TitleScene extends Scene {
     sceneWillAppear() {
         const endingInfo = this.sceneRouter.load(dataKeys.endingInfo);
@@ -74,21 +76,39 @@ export class TitleScene extends Scene {
 
     onClickStartFromBeginning() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sharedData.playFromBeginning = true;
+        this.playFromBeginning = true;
         this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
         this.sceneRouter.presentModal(scenes.slotSelection);
     }
 
     onClickContinue() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sharedData.playFromBeginning = false;
+        this.playFromBeginning = false;
         this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
         this.sceneRouter.presentModal(scenes.slotSelection);
     }
 
-    onSelectSlot() {
+    onSelectSlot(slotIndex) {
+        let slots = this.sceneRouter.load(dataKeys.slots);
+        let slot = slots[slotIndex];
+        if(this.playFromBeginning && slot){
+            if(!window.confirm(`セーブデータ ${slotIndex} にはデータがあります。\n初期化して最初から始めますか？`)) {
+                this.sceneRouter.presentModal(scenes.slotSelection);
+                return;
+            }
+            delete slots[slotIndex];
+            this.sceneRouter.save(dataKeys.slots,slots);
+        } else if (!this.playFromBeginning && !slot) {
+            if(!window.confirm(`セーブデータ ${slotIndex} にはデータがありません。\n最初から始めますか？`)) {
+                this.sceneRouter.presentModal(scenes.slotSelection);
+                return;
+            }
+            this.playFromBeginning = true;
+        }
+
         this.sharedData.onSelectSlot = null;
-        if (this.sharedData.playFromBeginning) {
+        this.sharedData.playingSlotIndex = slotIndex;
+        if (this.playFromBeginning) {
             this.sceneRouter.changeScene(scenes.arasuji);
         } else {
             this.sceneRouter.changeScene(scenes.stageSelection);

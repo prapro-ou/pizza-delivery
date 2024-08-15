@@ -158,6 +158,7 @@ export class SceneRouter {
             this.currentScene.sceneWillDisappear();
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
+        this.dismissModal()
         this.currentScene = makeScene(newScene, this, this.sharedData);
         this.currentScene.sceneWillAppear();
     }

@@ -15,28 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-
-import { ingredientType } from "./gameObject/ingredients.mjs";
-import { stages } from "./stage/stages.mjs";
-sceneRouter.sharedData = {
-    "onSelectSlot": null,
-    "playingSlotIndex": 4,
-    "gameOverCount": 0,
-    "goalTime": 38.06660000000077,
-    "collectedIngredients": [
-        ingredientType.chicken,
-        ingredientType.chicken,
-        ingredientType.onion,
-        ingredientType.squid,
-        ingredientType.shrimp,
-        ingredientType.corn,
-        ingredientType.shrimp,
-        ingredientType.mayonnaise,
-    ],
-    "collisionCount": 0,
-    "stage": stages[3],
-}
-sceneRouter.changeScene(scenes.cooking);
+sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 

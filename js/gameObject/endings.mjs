@@ -43,8 +43,8 @@ export const endingOrder = [
     endings.素材の味エンド,
     endings.海の家エンド,
     endings.本場リスペクトエンド,
-    endings.イタリア修行エンド,
     endings.ピザ博士エンド,
+    endings.イタリア修行エンド,
     endings.満腹エンド,
     endings.社員エンド,
     endings.ピザ見習いエンド,
@@ -54,6 +54,7 @@ export const goodEnding = [
     endings.パーフェクトエンド,
     endings.素材の味エンド,
     endings.海の家エンド,
+    endings.本場リスペクトエンド,
     endings.イタリア修行エンド,
     endings.ピザ博士エンド,
     endings.満腹エンド,
@@ -64,7 +65,6 @@ export const badEnding = [
     endings.重症エンド,
     endings.入院エンド,
     endings.ピザ生地の冷めた日エンド,
-    endings.本場リスペクトエンド,
     endings.ピザ見習いエンド,
 ]
 
@@ -89,7 +89,7 @@ export const endingHint = {
         "シーフードピザ または\nスパイシーシーフードピザを3回作る",
 
     [endings.本場リスペクトエンド]:
-        "本場のピザを作らずにエンディングを見る",
+        "本場のピザばかり作る",
 
     [endings.イタリア修行エンド]:
         "高いスコアでエンディングを見る",
@@ -165,7 +165,7 @@ export function judgeEnding(slot) {
         return endings.素材の味エンド;
     } else if(totalSeafoodCount + totalSpicySeafoodCount >= 3){
         return endings.海の家エンド;
-    } else if(slot.stageResults && authenticPizzaCount == 0){
+    } else if(slot.stageResults && authenticPizzaCount >= 4){
         return endings.本場リスペクトエンド;
     } else if(totalScore >= 10000){
         return endings.イタリア修行エンド;

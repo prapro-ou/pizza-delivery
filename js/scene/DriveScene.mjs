@@ -210,14 +210,16 @@ export class DriveScene extends Scene {
     }
 
     putCars(max_y) {
-        const d = this.cameraDistance + max_y / this.pixelSize + 10;
+        const d = this.cameraDistance + max_y / this.pixelSize;
         const x = Math.random() * this.stage.roadWidth + this.roadX(d).left;
         if (this.stage.cars.length < this.stage.nCars) {
             const car = new Car(x, d, this.speedSetting);
+            car.d += car.image.height * car.scaleFactor / this.pixelSize + 1;
             this.stage.cars.push(car);
         }
 
-        this.stage.cars = this.stage.cars.filter((car) => car.d >= this.cameraDistance - 10);
+        this.stage.cars = this.stage.cars.filter((car) =>
+            car.d >= this.cameraDistance - car.image.height * car.scaleFactor / this.pixelSize - 4);
     }
 
     moveCars(deltaTime) {

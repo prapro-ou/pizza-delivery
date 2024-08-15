@@ -140,6 +140,7 @@ export class DriveScene extends Scene {
         if (!this.gameOverFlg) {
             this.joystick.draw(ctx, this.stage.nightMode);
         }
+        this.drawHeart(ctx);
     }
 
     transitToNextScene() {
@@ -147,7 +148,7 @@ export class DriveScene extends Scene {
         this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sharedData.gameOverCount = this.gameOverCount;
         this.sharedData.collisionCount = this.collisionCount;
-        console.log(this.sharedData)
+        console.log(this.sharedData);
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
@@ -165,6 +166,9 @@ export class DriveScene extends Scene {
                 if (this.player.onMud) {
                     this.sceneRouter.playSE(resource.se.mudEffect);
                     this.player.onMud = false;
+                } else if (this.player.collisionCactus) {
+                    this.sceneRouter.playSE(resource.se.cactusEffect);
+                    this.player.collisionCactus = false;
                 } else if (this.player.collisionIce) {
                     this.sceneRouter.playSE(resource.se.freezeEffect);
                     this.player.collisionIce = false;
@@ -178,10 +182,8 @@ export class DriveScene extends Scene {
             const car = this.stage.cars[i];
             if (car.checkCollision(this.player.x, this.player.d, this.pixelSize)) {
                 this.sceneRouter.playSE(resource.se.crashEffect);
-                this.sceneRouter.stopBGM();
-                this.gameOverFlg = true;
-                this.sharedData.gameOverCount += 1;
-                car.handleCollision(this.player, this.roadX.bind(this));
+                this.player.collideAndBackToCenter(this.roadX.bind(this));
+                this.collisionCount += 1;
             }
         }
         for (let i = 0; i < this.stage.ingredients.length; i++) {
@@ -208,14 +210,16 @@ export class DriveScene extends Scene {
     }
 
     putCars(max_y) {
-        const d = this.cameraDistance + max_y / this.pixelSize + 10;
+        const d = this.cameraDistance + max_y / this.pixelSize;
         const x = Math.random() * this.stage.roadWidth + this.roadX(d).left;
         if (this.stage.cars.length < this.stage.nCars) {
             const car = new Car(x, d, this.speedSetting);
+            car.d += car.image.height * car.scaleFactor / this.pixelSize + 1;
             this.stage.cars.push(car);
         }
 
-        this.stage.cars = this.stage.cars.filter((car) => car.d >= this.cameraDistance - 10);
+        this.stage.cars = this.stage.cars.filter((car) =>
+            car.d >= this.cameraDistance - car.image.height * car.scaleFactor / this.pixelSize - 4);
     }
 
     moveCars(deltaTime) {
@@ -246,11 +250,23 @@ export class DriveScene extends Scene {
             // ctx.fillStyle = "green";
             // ctx.fillRect(0, max_y - ((d - this.cameraDistance) * this.pixelSize), max_x, this.pixelSize);
             // 道路の内側
+            if (this.stage.stageNumber == 4) {
+                ctx.fillStyle = "khaki";
+            } else if (this.stage.stageNumber == 5) {
+                ctx.fillStyle = "white";
+            } else {
             ctx.fillStyle = "gray";
+            }
             ctx.fillRect(left * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), (right - left) * this.pixelSize, this.pixelSize + 1);
             // 白線
             if (d % (whiteLineSpacing * 2) < whiteLineSpacing) {
+                if (this.stage.stageNumber == 4) {
+                    ctx.fillStyle = "lightyellow";
+                } else if (this.stage.stageNumber == 5) {
+                    ctx.fillStyle = "gray";
+                } else {
                 ctx.fillStyle = "white";
+                }
                 for (let i = 0; i < nWhiteLine; i++) {
                     const ratio = (i + 1) / (nWhiteLine + 1)
                     const x = left * (1 - ratio) + right * ratio
@@ -258,7 +274,13 @@ export class DriveScene extends Scene {
                 }
             }
             // 道路の境界
-            ctx.fillStyle = "black";
+            if (this.stage.stageNumber == 4) {
+                ctx.fillStyle = "lightyellow";
+            } else if (this.stage.stageNumber == 5) {
+                ctx.fillStyle = "gray";
+            } else {
+                ctx.fillStyle = "black";
+            }
             ctx.fillRect((left - 1) * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
             ctx.fillRect(right * this.pixelSize, max_y - ((d - this.cameraDistance) * this.pixelSize), this.pixelSize, this.pixelSize + 1);
             // ゴール線
@@ -360,7 +382,36 @@ export class DriveScene extends Scene {
         ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
     }
 
+    drawHeart(ctx) {
+        ctx.fillStyle = this.textColor;
+        ctx.font = "25px Arial";
+        ctx.textAlign = "left";
+        let image = resource.images.redHeart;
+        for (let i = 0; i < this.player.life; i++) {
+            if (image.complete) {
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(image, 40 * i + 30, 600, 30, 30);
+            }
+        }
+        image = resource.images.blackHeart;
+        for (let i = 3; i > this.player.life; i--) {
+            if (image.complete) {
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(image, 40 * (i-1) + 30, 600, 30, 30);
+            }
+        }
+        if (this.player.life == 0) {
+            if (!this.gameOverFlg) {
+                this.sharedData.gameOverCount += 1;
+                this.gameOverFlg = true;
+                this.sceneRouter.playSE(resource.se.gameOverEffect);
+            }
+        }
+    }
+
     drawGameOver(ctx, max_x, max_y) {
+        this.sceneRouter.stopBGM();
+        this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
         if (this.gameOverAnimationTime >= 1.0) {
             ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
             ctx.fillRect(0, 0, max_x, max_y);

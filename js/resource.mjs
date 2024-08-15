@@ -1,29 +1,36 @@
 // リソース画像のパス一覧
 const imagePaths = {
     // 自機・障害物
-    carRed:     "resource/image/car_red.png",
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",
     lampRight:  "resource/image/lamp_right.png",
     lampLeft:   "resource/image/lamp_left.png",
     ice:        "resource/image/ice.png",
+    cactus:     "resource/image/cactus.png",
+
+    //車
+    blueCar:    "resource/image/car/car_blue.png",
+    redCar:     "resource/image/car/car_red.png",
+    sportCar:   "resource/image/car/sport_car.png",
+    bigTruck:   "resource/image/car/truck_big.png",
+    blueTruck:  "resource/image/car/truck_blue.png",
 
     // 食材
-    bacon:      "resource/image/ingredient/bacon_kari.png",
+    bacon:      "resource/image/ingredient/bacon.png",
     basil:      "resource/image/ingredient/basil.png",
     cheese:     "resource/image/ingredient/cheese.png",
     chicken:    "resource/image/ingredient/chicken.png",
-    corn:       "resource/image/ingredient/corn_kari.png",
-    durian:     "resource/image/ingredient/durian_kari.png",
-    mayonnaise: "resource/image/ingredient/mayonnaise_kari.png",
+    corn:       "resource/image/ingredient/corn.png",
+    durian:     "resource/image/ingredient/durian.png",
+    mayonnaise: "resource/image/ingredient/mayonnaise.png",
     mysteriousMushroom:
                 "resource/image/ingredient/mysterious_mushroom.png",
     natto:      "resource/image/ingredient/natto.png",
     onion:      "resource/image/ingredient/onion.png",
     redPepper:  "resource/image/ingredient/red_pepper.png",
-    rottenEgg:  "resource/image/ingredient/rotten_egg_kari.png",
-    salami:     "resource/image/ingredient/salami_kari.png",
+    rottenEgg:  "resource/image/ingredient/rotten_egg.png",
+    salami:     "resource/image/ingredient/salami.png",
     shrimp:     "resource/image/ingredient/shrimp.png",
     squid:      "resource/image/ingredient/squid.png",
     tomato:     "resource/image/ingredient/tomato.png",
@@ -50,11 +57,18 @@ const imagePaths = {
 
     //背景
     bg1:    "resource/image/background/1_noon.png",
+    bg3:    "resource/image/background/3_highway.png",
     bg4:    "resource/image/background/4_desert.png",
+    redHeart:  "resource/image/max_heart.png",
+    blackHeart:  "resource/image/empty_heart.png",
+    titleBackground:    "resource/image/background/title_background.png",
 
     // UI
-    soundOn:    "resource/image/soundOn.png",
-    soundOff:   "resource/image/soundOff.png",
+    soundOn:        "resource/image/ui/sound_on.png",
+    soundOff:       "resource/image/ui/sound_off.png",
+    squareButton:   "resource/image/ui/square_button.png",
+    recipeButton:   "resource/image/ui/recipe_button.png",
+    bookButton:     "resource/image/ui/book_button.png",
 }
 
 // BGMのパス一覧
@@ -76,7 +90,8 @@ const bgmPaths = {
 const sePaths = {
     clickEffect:    "resource/se/click.mp3",
     startEffect:   "resource/se/start.mp3",
-    crashEffect:    "resource/se/crash.wav",
+    crashEffect:    "resource/se/crash.mp3",
+    gameOverEffect:    "resource/se/crash.wav",
     mudEffect:      "resource/se/mud.mp3",
     getIngredientEffect:    "resource/se/getIngredient.wav",
     courseOutEffect:    "resource/se/courseOut.wav",
@@ -84,6 +99,7 @@ const sePaths = {
     goalEffect:    "resource/se/goal.mp3",
     bikeEngineEffect:    "resource/se/bikeEngine.mp3",
     freezeEffect:   "resource/se/freeze.mp3",
+    cactusEffect:      "resource/se/cactus.mp3",
 }
 
 class Resource {

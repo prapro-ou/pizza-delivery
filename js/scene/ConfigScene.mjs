@@ -112,30 +112,19 @@ export class ConfigScene extends Scene {
     }
 
     updateSlider(x, slider) {
-        if(this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0){
-            this.sharedData.storedBgmVolume = 0;
-            this.sharedData.storedSeVolume = 0;
-            this.sharedData.soundOn = true;
-        }
         if (slider === sliders.bgm) {
             let value = (x - this.bgmSliderArea.x) / this.bgmSliderArea.w;
             value = Math.min(Math.max(value, 0.0), 1.0);
             value = Math.round(value * 100) / 100;
-            this.sharedData.storedBgmVolume = value;
-            if(this.sharedData.soundOn){
-                this.userConfig.bgmVolume = value;
-                this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-            }
+            this.userConfig.bgmVolume = value;
+            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
 
         } else if (slider === sliders.se) {
             let value = (x - this.seSliderArea.x) / this.seSliderArea.w;
             value = Math.min(Math.max(value, 0.0), 1.0);
             value = Math.round(value * 100) / 100;
-            this.sharedData.storedSeVolume = value;
-            if(this.sharedData.soundOn){
-                this.userConfig.seVolume = value;
-                this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-            }
+            this.userConfig.seVolume = value;
+            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
         }
     }
 

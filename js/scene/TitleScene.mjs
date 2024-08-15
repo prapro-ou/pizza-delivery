@@ -13,16 +13,12 @@ export class TitleScene extends Scene {
 
         if (appearsFirstTime) {
             this.sharedData.soundOn = false;
-            this.sharedData.storedBgmVolume = 1;
-            this.sharedData.storedSeVolume = 1;
-
-            this.userConfig = new UserConfig(0, 0);
-            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-        } else {
-            this.userConfig = this.sceneRouter.load(dataKeys.userConfig);
-            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
         appearsFirstTime = false;
+
+        this.userConfig = this.sceneRouter.load(dataKeys.userConfig) ?? new UserConfig(1, 1);
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+
     }
 
     updateStates(deltaTime) {}
@@ -136,12 +132,6 @@ export class TitleScene extends Scene {
 
     didTapSoundIcon() {
         this.sharedData.soundOn = !this.sharedData.soundOn;
-        this.userConfig.bgmVolume = this.sharedData.soundOn ? this.sharedData.storedBgmVolume : 0;
-        this.userConfig.seVolume = this.sharedData.soundOn ? this.sharedData.storedSeVolume : 0;
-        this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-        if (!this.sceneRouter.currentBGM) {
-            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
-        }
-        this.sceneRouter.currentBGM.currentTime = 0;
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
     }
 }

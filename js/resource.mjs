@@ -1,7 +1,6 @@
 // リソース画像のパス一覧
 const imagePaths = {
     // 自機・障害物
-    carRed:     "resource/image/car_red.png",
     mud:        "resource/image/mud.png",
     rider:      "resource/image/rider.png",
     speedup:    "resource/image/speedup.png",
@@ -9,6 +8,13 @@ const imagePaths = {
     lampLeft:   "resource/image/lamp_left.png",
     ice:        "resource/image/ice.png",
     cactus:     "resource/image/cactus.png",
+
+    //車
+    blueCar:    "resource/image/car/car_blue.png",
+    redCar:     "resource/image/car/car_red.png",
+    sportCar:   "resource/image/car/sport_car.png",
+    bigTruck:   "resource/image/car/truck_big.png",
+    blueTruck:  "resource/image/car/truck_blue.png",
 
     // 食材
     bacon:      "resource/image/ingredient/bacon.png",

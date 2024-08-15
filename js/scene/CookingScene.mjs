@@ -105,8 +105,10 @@ export class CookingScene extends Scene {
             if (!this.selectedIndices.includes(i)) {
                 this.itemButtons[i].enable();
                 const ingredient = this.collectedIngredients[i];
-                const image = imageForIngredient(ingredient);
-                ctx.drawImage(image, x + 5, y + 5, 68, 68);
+                if (ingredient) {
+                    const image = imageForIngredient(ingredient);
+                    ctx.drawImage(image, x + 5, y + 5, 68, 68);
+                }
             } else {
                 this.itemButtons[i].disable();
             }

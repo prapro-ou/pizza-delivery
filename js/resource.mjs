@@ -59,6 +59,7 @@ const imagePaths = {
     bg1:    "resource/image/background/1_noon.png",
     bg3:    "resource/image/background/3_highway.png",
     bg4:    "resource/image/background/4_desert.png",
+    bg5:    "resource/image/background/5_ice.png",
     redHeart:  "resource/image/max_heart.png",
     blackHeart:  "resource/image/empty_heart.png",
     titleBackground:    "resource/image/background/title_background.png",

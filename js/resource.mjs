@@ -68,6 +68,7 @@ const imagePaths = {
     goldFrame:          "resource/image/background/gold_frame.png",
     itemBackGround:     "resource/image/background/item_background.png",
     itemBackGroundBig:  "resource/image/background/item_background_big.png",
+    notebookBackground: "resource/image/background/notebook_background.png",
 
     // UI
     soundOn:        "resource/image/ui/sound_on.png",

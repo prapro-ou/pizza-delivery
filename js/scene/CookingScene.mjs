@@ -103,13 +103,11 @@ export class CookingScene extends Scene {
         for (let i = 0; i < 8; i++) {
             const [x, y] = [58 + 78 * (i % 4), 386 + 78 * Math.floor(i / 4)];
             this.itemButtons[i].draw(ctx, x, y);
-            if (!this.selectedIndices.includes(i)) {
+            const ingredient = this.collectedIngredients[i];
+            if (ingredient && !this.selectedIndices.includes(i)) {
                 this.itemButtons[i].enable();
-                const ingredient = this.collectedIngredients[i];
-                if (ingredient) {
-                    const image = imageForIngredient(ingredient);
-                    ctx.drawImage(image, x + 5, y + 5, 68, 68);
-                }
+                const image = imageForIngredient(ingredient);
+                ctx.drawImage(image, x + 5, y + 5, 68, 68);
             } else {
                 this.itemButtons[i].disable();
             }
@@ -164,6 +162,7 @@ export class CookingScene extends Scene {
 
     onClickItemButton(index) {
         if (this.selectedIndices.includes(index) || this.selectedIndices.length == 4) return;
+        if (index >= this.collectedIngredients.length) return;
         this.selectedIndices.push(index);
         const selectedIngredients = this.selectedIndices.map((i) => this.collectedIngredients[i]);
         this.pizza = getPizza(selectedIngredients);

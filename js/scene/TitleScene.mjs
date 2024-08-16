@@ -17,14 +17,15 @@ export class TitleScene extends Scene {
         this.endingUnlocked = endingInfo.getEndingCount() >= 1;
 
         if (appearsFirstTime) {
-            this.userConfig = new UserConfig(0, 0);
-            this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-        } else {
-            this.userConfig = this.sceneRouter.load(dataKeys.userConfig);
-            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+            this.sharedData.soundOn = false;
         }
         appearsFirstTime = false;
+        
+        this.userConfig = this.sceneRouter.load(dataKeys.userConfig) ?? new UserConfig(1, 1);
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+
         this.setUpUI();
+
     }
 
     setUpUI() {
@@ -68,7 +69,7 @@ export class TitleScene extends Scene {
         this.recipeButton.draw(ctx, 22, 380);
         this.endingButton.draw(ctx, 130, 320);
 
-        const soundImage = (this.userConfig.bgmVolume == 0 && this.userConfig.seVolume == 0) ? resource.images.soundOff : resource.images.soundOn;
+        const soundImage = (this.sharedData.soundOn) ? resource.images.soundOn : resource.images.soundOff;
         let r = { x: max_x - 86, y: 16, w: 63, h: 56 };
         this.switchSoundArea = r;
         ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
@@ -139,13 +140,7 @@ export class TitleScene extends Scene {
     }
 
     didTapSoundIcon() {
-        const volume = (this.userConfig.bgmVolume == 0) ? 1.0 : 0.0;
-        this.userConfig.bgmVolume = volume;
-        this.userConfig.seVolume = volume;
-        this.sceneRouter.save(dataKeys.userConfig, this.userConfig);
-        if (!this.sceneRouter.currentBGM) {
-            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
-        }
-        this.sceneRouter.currentBGM.currentTime = 0;
+        this.sharedData.soundOn = !this.sharedData.soundOn;
+        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
     }
 }

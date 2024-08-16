@@ -197,16 +197,20 @@ export class SceneRouter {
 
     // BGMをセットする
     setBGM(bgm) {
-        if (!bgm) {
+        if(this.sharedData.soundOn){
+            if (!bgm) {
+                this.stopBGM();
+            } else if (bgm != this.currentBGM) {
+                this.stopBGM();
+                const volume = this.load(dataKeys.userConfig).bgmVolume;
+                bgm.currentTime = 0;
+                bgm.loop = true;
+                bgm.volume = volume * 0.1;
+                bgm.play();
+                this.currentBGM = bgm;
+            }
+        } else {
             this.stopBGM();
-        } else if (bgm != this.currentBGM) {
-            this.stopBGM();
-            const volume = this.load(dataKeys.userConfig).bgmVolume;
-            bgm.currentTime = 0;
-            bgm.loop = true;
-            bgm.volume = volume * 0.1;
-            bgm.play();
-            this.currentBGM = bgm;
         }
     }
 
@@ -226,10 +230,12 @@ export class SceneRouter {
 
     // SEを流す
     playSE(se, loop = false) {
-        se.currentTime = 0;
-        se.loop = loop;
-        se.volume = this.load(dataKeys.userConfig).seVolume * 0.1;
-        se.play();
+        if(this.sharedData.soundOn){
+            se.currentTime = 0;
+            se.loop = loop;
+            se.volume = this.load(dataKeys.userConfig).seVolume * 0.1;
+            se.play();
+        }
     }
 
     // SEを止める

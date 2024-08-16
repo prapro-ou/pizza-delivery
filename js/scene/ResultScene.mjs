@@ -113,11 +113,18 @@ export class ResultScene extends Scene {
     }
 
     onClickSave() {
+        this.sharedData.slotSelectionMessage = "セーブ先を選択してください。";
         this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
         this.sceneRouter.presentModal(scenes.slotSelection);
     }
 
     onSelectSlot(slotIndex) {
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        if (slotIndex != this.sharedData.playingSlotIndex && slots[slotIndex] &&
+            !window.confirm(`セーブデータ ${slotIndex} には既にデータがあります。\n上書きしますか？`)) {
+            this.sceneRouter.presentModal(scenes.slotSelection);
+            return;
+        }
         const stageResult = new StageResult(
             this.sharedData.stage,
             this.totalScore,
@@ -127,7 +134,6 @@ export class ResultScene extends Scene {
             this.sharedData.collisionCount,
             this.sharedData.collectedIngredients,
         )
-        const slots = this.sceneRouter.load(dataKeys.slots);
         let slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
         slots[slotIndex] = slot.withAddedStageResult(stageResult);
         this.sceneRouter.save(dataKeys.slots, slots);

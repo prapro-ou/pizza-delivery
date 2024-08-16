@@ -9,7 +9,9 @@ import { buttonStates, ColorButton } from '../component/Button.mjs';
 
 // セーブデータ選択画面
 // - 入力
+//   - this.sharedData.slotSelectionMessage: メッセージ
 //   - this.sharedData.onSelectSlot: スロットを選択してこの画面が閉じるときに行う処理
+//   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
@@ -26,11 +28,17 @@ export class SlotSelectionScene extends Scene {
 
         this.slotButtons = [];
         for (let i = 0; i < 4; i++) {
-            const slotButton = new ColorButton({
-                [buttonStates.normal]: "rgba(255, 255, 255, 0.7)",
-                [buttonStates.hovered]: "rgba(255, 255, 255, 0.8)",
-                [buttonStates.clicked]: "rgba(207, 207, 207, 0.7)",
-            });
+            const slotButton = (i + 1 == this.sharedData.playingSlotIndex) ?
+                new ColorButton({
+                    [buttonStates.normal]: "rgba(255, 255, 127, 0.7)",
+                    [buttonStates.hovered]: "rgba(255, 255, 127, 0.8)",
+                    [buttonStates.clicked]: "rgba(204, 204, 102, 0.7)",
+                }) :
+                new ColorButton({
+                    [buttonStates.normal]: "rgba(255, 255, 255, 0.7)",
+                    [buttonStates.hovered]: "rgba(255, 255, 255, 0.8)",
+                    [buttonStates.clicked]: "rgba(207, 207, 207, 0.7)",
+                });
             slotButton.onClick = function() {
                 this.onClickSlot(i + 1);
             }.bind(this);
@@ -57,10 +65,10 @@ export class SlotSelectionScene extends Scene {
         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
         ctx.fillRect(53, 86, 631, 59);
         ctx.fillStyle = "black";
-        ctx.font = "36px Arial";
+        ctx.font = "34px Arial";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        ctx.fillText("セーブデータを選択してください。", 63, 120);
+        ctx.fillText(this.sharedData.slotSelectionMessage, 63, 120);
 
         const slots = this.sceneRouter.load(dataKeys.slots);
 
@@ -73,6 +81,14 @@ export class SlotSelectionScene extends Scene {
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
             ctx.fillText(`セーブデータ ${i+1}`, x + 5, y + 24);
+
+            if (i + 1 == this.sharedData.playingSlotIndex) {
+                ctx.fillStyle = "#7c7c00";
+                ctx.font = "bold 28px Arial";
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.fillText("プレイ中", x + w - 6, y + 24);
+            }
 
             ctx.fillStyle = "black";
             ctx.font = "36px Arial";

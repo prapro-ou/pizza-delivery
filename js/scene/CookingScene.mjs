@@ -10,8 +10,11 @@ import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
 import { ItemButton } from '../component/ItemButton.mjs';
 
 // ピザを作る画面
+// - 入力
+//   - this.sharedData.collectedIngredients: 集めた食材
 // - 出力
 //   - this.sharedData.cookedPizza: 作ったピザ
+//   - this.sharedData.selectedIndices: 集めた食材の中で、選択した食材のインデックスの配列
 export class CookingScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM146);
@@ -81,8 +84,6 @@ export class CookingScene extends Scene {
         ctx.drawImage(image, 48, 155, image.width * 4, image.height * 4);
         image = resource.images.brownArrow
         ctx.drawImage(image, 373, 184, image.width * 3, image.height * 3);
-        image = resource.images.goldFrame
-        ctx.drawImage(image, 390, 317, image.width, image.height);
 
         ctx.fillStyle = "black";
         ctx.font = "52px Arial";
@@ -141,12 +142,14 @@ export class CookingScene extends Scene {
     }
 
     drawPizzaDetail(ctx, x, y) {
+        const image = resource.images.goldFrame
+        ctx.drawImage(image, x, y, image.width, image.height);
         ctx.fillStyle = "black";
         ctx.font = "30px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         const isUnlocked = this.pizzaInfo.isUnlocked(this.pizza);
-        ctx.fillText(`${isUnlocked ? pizzaName[this.pizza] : "？？？"}`, 578, 360, 350);
+        ctx.fillText(`${isUnlocked ? pizzaName[this.pizza] : "？？？"}`, x + 188, y + 43, 350);
 
         let lines = ["ー 使用した食材 ー", "", ""];
         for (let i = 0; i < this.selectedIndices.length; i++) {
@@ -155,7 +158,7 @@ export class CookingScene extends Scene {
         }
         ctx.font = "20px Arial";
         for (let i = 0; i < lines.length; i++) {
-            ctx.fillText(lines[i], 578, 395 + i * 30, 350);
+            ctx.fillText(lines[i], x + 188, y + 78 + i * 30, 350);
         }
     }
 
@@ -183,7 +186,7 @@ export class CookingScene extends Scene {
 
     onClickComplete() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sharedData.selectedIndices = [];
+        this.sharedData.selectedIndices = this.selectedIndices;
         this.sharedData.cookedPizza = this.pizza;
         this.sceneRouter.changeScene(scenes.result);
     }

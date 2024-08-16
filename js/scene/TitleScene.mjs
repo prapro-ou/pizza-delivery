@@ -13,6 +13,7 @@ let appearsFirstTime = true;
 //   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class TitleScene extends Scene {
     sceneWillAppear() {
+        this.sharedData.playingSlotIndex = null;
         const endingInfo = this.sceneRouter.load(dataKeys.endingInfo);
         this.endingUnlocked = endingInfo.getEndingCount() >= 1;
 
@@ -78,6 +79,7 @@ export class TitleScene extends Scene {
     onClickStartFromBeginning() {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.playFromBeginning = true;
+        this.sharedData.slotSelectionMessage = "セーブデータを選択してください。";
         this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
         this.sceneRouter.presentModal(scenes.slotSelection);
     }
@@ -85,6 +87,7 @@ export class TitleScene extends Scene {
     onClickContinue() {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.playFromBeginning = false;
+        this.sharedData.slotSelectionMessage = "セーブデータを選択してください。";
         this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
         this.sceneRouter.presentModal(scenes.slotSelection);
     }

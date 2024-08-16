@@ -1,9 +1,15 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
-import { stages } from '../stage/stages.mjs';
+import { stageDescriptions, stages } from '../stage/stages.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
+import { StageButton, stgbColors } from '../component/StageButton.mjs';
+import { PizzaRecipeButton } from '../component/PizzaRecipeButton.mjs';
+import { SquareButton, sqbColors } from '../component/SquareButton.mjs';
+import { endingName } from '../gameObject/endings.mjs';
+import { TopButton } from '../component/TopButton.mjs';
+import { buttonStates } from '../component/Button.mjs';
 
 // ステージ選択画面
 // - 出力
@@ -21,97 +27,93 @@ export class StageSelectionScene extends Scene {
         const slots = this.sceneRouter.load(dataKeys.slots);
         const slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
         this.unlockedStageNumber = slot.maxStageNumber();
+        this.ending = slot.ending;
+
+        this.setUpUI();
     }
 
-    updateStates(deltaTime) {}
+    setUpUI() {
+        this.recipeButton = new PizzaRecipeButton();
+        this.recipeButton.scaleFactor = 2;
+        this.recipeButton.onClick = this.onClickRecipe.bind(this);
+
+        this.topButton = new TopButton();
+        this.topButton.onClick = this.onClickTop.bind(this);
+
+        this.endingButton = new SquareButton(this.ending ? sqbColors.white : sqbColors.green);
+        this.endingButton.text = "エンディング";
+        this.endingButton.onClick = this.onClickEnding.bind(this);
+
+        this.stageButtons = [];
+        const colors = [stgbColors.green, stgbColors.purple, stgbColors.pink, stgbColors.orange, stgbColors.blue];
+        for (let i = 0; i < 5; i++) {
+            const stageButton = new StageButton(colors[i]);
+            stageButton.onClick = function() {
+                this.onClickStage(i + 1);
+            }.bind(this);
+            this.stageButtons.push(stageButton);
+        }
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.recipeButton.updateStates(mouse);
+        this.topButton.updateStates(mouse);
+        this.endingButton.updateStates(mouse);
+        this.stageButtons.forEach((btn) => btn.updateStates(mouse));
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
 
-        ctx.fillStyle = "silver";
-        ctx.fillRect(0, 0, max_x, max_y);
-        ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("ステージ選択画面", 50, 50);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(resource.images.woodBackground, 0, 0, max_x, max_y);
+        this.recipeButton.draw(ctx, max_x - 185, 14);
+        this.topButton.draw(ctx, max_x - 95, 14)
 
-        this.stageButtonAreas = [];
+        ctx.fillStyle = "black";
+        ctx.font = "49px Arial";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("ステージを選択", 30, 60);
+
+        const colors = ["#099023", "#3f3185", "#b7304f", "#ed5308", "#0642A6"];
         for (let i = 0; i < 5; i++) {
-            let r = { x: 150, y: 100*(i+1), w: 100, h: 50 };
-            this.stageButtonAreas.push(r);
-            ctx.fillStyle = (i <= this.unlockedStageNumber) ? "blue" : "gray";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
+            const [x, y] = [[20, 405][i % 2], 115 + 170 * Math.floor(i / 2)];
+            const unlocked = i <= this.unlockedStageNumber;
+            this.stageButtons[i].draw(ctx, x, y);
+            if (!unlocked) this.stageButtons[i].state = buttonStates.disabled;
+
+            ctx.fillStyle = unlocked ? colors[i] : "gray";
+            ctx.font = "bold 36px Baskerville";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillText(`STAGE ${i+1}`, x + 140, y + 30);
+
+            ctx.fillStyle = "black";
+            ctx.font = "22px Arial";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            const lines = stageDescriptions[i+1].split("\n");
+            for (let j = 0; j < lines.length; j++) {
+                ctx.fillText(lines[j], x + 142, y + 70 + 35 * j);
+            }
+        }
+
+        if (this.ending) {
+            ctx.fillStyle = "black";
+            ctx.font = "26px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(`ステージ${i+1}`, r.x + r.w / 2, r.y + r.h / 2);
+            ctx.fillText(endingName[this.ending], 600, 480);
         }
-
-        let r = { x: 600, y: 550, w: 150, h: 50 };
-        this.goToEndingButtonArea = r;
-        ctx.fillStyle = (this.unlockedStageNumber == 5) ? "lightblue" : "gray";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("エンディングへ", r.x + r.w / 2, r.y + r.h / 2);
-
-        r = { x: 500, y: 150, w: 240, h: 50 };
-        this.pizzaCollectionArea = r;
-        ctx.fillStyle = "pink";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("ピザコレクション画面へ", r.x + r.w / 2, r.y + r.h / 2);
-
-        if(this.stageErrorShowing || this.endingErrorShowing){
-            ctx.fillStyle = "red";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "right";
-            ctx.textBaseline = "middle";
-            if(this.stageErrorShowing){
-                ctx.fillText("そのステージは未開放です", 330, max_y - 40);
-            } else if(this.endingErrorShowing){
-                ctx.fillText("エンディングは未開放です", 330, max_y - 40);
-            }
+        if (this.unlockedStageNumber < 5) {
+            this.endingButton.state = buttonStates.disabled
         }
-
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "right";
-        ctx.textBaseline = "middle";
-        ctx.fillText("選択中のスロット : " + this.sharedData.playingSlotIndex, max_x - 20, 30);
+        this.endingButton.draw(ctx, 457, 505);
     }
 
-    didTap(x, y) {
-        for (let i = 0; i < 5; i++) {
-            const r = this.stageButtonAreas[i];
-            if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                this.didTapStage(i + 1);
-            }
-        }
-
-        let r = this.goToEndingButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapEnding();
-        }
-        
-        r = this.pizzaCollectionArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sharedData.previousScene = scenes.stageSelection;
-            this.sceneRouter.changeScene(scenes.pizzaCollection);
-            
-        }
-
-    }
-
-    didTapStage(stageIndex) {
+    onClickStage(stageIndex) {
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.stopBGM();
         this.sharedData.stage = stages[stageIndex];
@@ -128,7 +130,18 @@ export class StageSelectionScene extends Scene {
         }
     }
 
-    didTapEnding(){
+    onClickTop() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.title);
+    }
+
+    onClickRecipe() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sharedData.previousScene = scenes.stageSelection;
+        this.sceneRouter.changeScene(scenes.pizzaCollection);
+    }
+
+    onClickEnding(){
         if (this.unlockedStageNumber == 5) {
             this.sceneRouter.playSE(resource.se.clickEffect);
             this.sceneRouter.stopBGM();

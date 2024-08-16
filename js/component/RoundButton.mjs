@@ -1,25 +1,23 @@
 import { buttonStates, ImgaeButton } from "./Button.mjs";
 import { resource } from "../resource.mjs";
 
-export const sqbColors = {
-    yellow: 0,
-    green: 1,
-    white: 2,
+export const rndbColors = {
+    green: 0,
+    red: 1,
 }
 
-// タイトルの縁取りの色
+// テキストの縁取りの色
 const strokeColors = {
-    [sqbColors.yellow]: ["#7f5500", "#585858"],
-    [sqbColors.green]: ["#6c7f00", "#6b6b6b"],
-    [sqbColors.white]: ["#7f7b72", "#7b7b7b"],
+    [rndbColors.green]: ["#6c7f00", "#6b6b6b"],
+    [rndbColors.red]: ["#7f2630", "#424242"],
 }
 
-export class SquareButton extends ImgaeButton {
-    constructor(sqbColor) {
-        if (!Object.values(sqbColors).includes(sqbColor)) console.error("無効なsqbColor:", sqbColor);
-        super(resource.images.squareButton, 288, 88);
+export class RoundButton extends ImgaeButton {
+    constructor(rndbColor) {
+        if (!Object.values(rndbColors).includes(rndbColor)) console.error("無効なrndbColor:", rndbColor);
+        super(resource.images.roundButton, 249, 88);
         this.text = "";
-        this.column = sqbColor;
+        this.column = rndbColor;
     }
 
     draw(ctx, x, y) {

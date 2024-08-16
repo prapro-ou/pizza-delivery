@@ -62,13 +62,22 @@ const imagePaths = {
     redHeart:  "resource/image/max_heart.png",
     blackHeart:  "resource/image/empty_heart.png",
     titleBackground:    "resource/image/background/title_background.png",
+    woodBackground:     "resource/image/background/wood_backgrond.png",
+    brownArrow:         "resource/image/background/brown_arrow.png",
+    cooking:            "resource/image/background/cooking.png",
+    goldFrame:          "resource/image/background/gold_frame.png",
+    itemBackGround:     "resource/image/background/item_background.png",
+    itemBackGroundBig:  "resource/image/background/item_background_big.png",
 
     // UI
     soundOn:        "resource/image/ui/sound_on.png",
     soundOff:       "resource/image/ui/sound_off.png",
     squareButton:   "resource/image/ui/square_button.png",
+    roundButton:    "resource/image/ui/round_button.png",
+    stageButton:    "resource/image/ui/stage_button.png",
     recipeButton:   "resource/image/ui/recipe_button.png",
     bookButton:     "resource/image/ui/book_button.png",
+    topButton:      "resource/image/ui/top_button.png"
 }
 
 // BGMのパス一覧

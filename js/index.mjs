@@ -1,8 +1,5 @@
 import { SceneRouter } from "./SceneRouter.mjs";
-import { ingredientType } from "./gameObject/ingredients.mjs";
-import { pizzas } from "./gameObject/pizzas.mjs";
 import { scenes } from "./scene/special/sceneSettings.mjs";
-import { stage1 } from "./stage/stage1.mjs";
 
 const canvas = document.getElementById('screen');
 const sceneRouter = new SceneRouter(canvas);
@@ -18,29 +15,7 @@ function gameLoop(timestamp) {
 }
 
 let lastTimestamp = 0;
-sceneRouter.sharedData = {
-    "soundOn": false,
-    "onSelectSlot": null,
-    "playingSlotIndex": 1,
-    "stage": stage1,
-    "gameOverCount": 0,
-    "goalTime": 23.163200000000064,
-    "collectedIngredients": [
-        ingredientType.corn,
-        ingredientType.salami,
-        ingredientType.shrimp,
-        ingredientType.chicken,
-        ingredientType.mysteriousMushroom,
-        ingredientType.corn,
-        ingredientType.durian,
-        ingredientType.mysteriousMushroom,
-    ],
-    "collisionCount": 1,
-    "selectedIndices": [2, 5, 4, 6],
-    "cookedPizza": pizzas.shiningMushroomPizza,
-    "score": 2150
-}
-sceneRouter.changeScene(scenes.result);
+sceneRouter.changeScene(scenes.title);
 requestAnimationFrame(gameLoop);
 
 

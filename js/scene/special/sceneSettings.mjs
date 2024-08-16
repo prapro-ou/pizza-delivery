@@ -9,7 +9,6 @@ import { StageSelectionScene } from "../StageSelectionScene.mjs";
 import { DriveScene } from "../DriveScene.mjs";
 import { ResultScene } from "../ResultScene.mjs";
 import { CookingScene } from "../CookingScene.mjs";
-import { WhichSlotToSaveScene } from "../WhichSlotToSaveScene.mjs";
 import { EndingScene } from "../EndingScene.mjs";
 
 // すべてのシーンの列挙した連想配列
@@ -25,7 +24,6 @@ export const scenes = {
     drive: "scene-drive",
     result: "scene-result",
     cooking: "scene-cooking",
-    whichSlotToSave: "scene-slotToSave",
     ending: "scene-ending"
 }
 
@@ -64,9 +62,6 @@ export function makeScene(scene, sceneRouter, sharedData) {
         
         case scenes.result:
             return new ResultScene(sceneRouter, sharedData);
-
-        case scenes.whichSlotToSave:
-            return new WhichSlotToSaveScene(sceneRouter, sharedData);
         
         case scenes.ending:
             return new EndingScene(sceneRouter, sharedData);

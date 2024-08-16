@@ -5,6 +5,8 @@ import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { ingredientType, ingredientName, ingredientScore, imageForIngredient } from "../gameObject/ingredients.mjs"
 import { resource } from '../resource.mjs';
 import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
+import { StageResult } from '../dataObject/StageResult.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
 
 // リザルト画面
 // - 入力
@@ -18,7 +20,6 @@ import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
 export class ResultScene extends Scene {
     sceneWillAppear(){
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM115);
-        this.NextButton = null;
 
         this.pizza = this.sharedData.cookedPizza;
         this.stage = this.sharedData.stage;
@@ -45,7 +46,6 @@ export class ResultScene extends Scene {
 
         this.scoreDetail = this.calculateScoreDetail();
         this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;
-        this.sharedData.score = this.totalScore;
 
         this.setUpUI();
     }
@@ -56,6 +56,7 @@ export class ResultScene extends Scene {
         this.saveButton.onClick = this.onClickSave.bind(this);
         this.notSaveButton = new RoundButton(rndbColors.red);
         this.notSaveButton.text = "保存しない";
+        this.notSaveButton.onClick = this.onClickNotSave.bind(this);
     }
 
     updateStates(deltaTime, mouse) {
@@ -112,7 +113,33 @@ export class ResultScene extends Scene {
     }
 
     onClickSave() {
-        this.sceneRouter.changeScene(scenes.whichSlotToSave);
+        this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
+        this.sceneRouter.presentModal(scenes.slotSelection);
+    }
+
+    onSelectSlot(slotIndex) {
+        const stageResult = new StageResult(
+            this.sharedData.stage,
+            this.totalScore,
+            this.sharedData.cookedPizza,
+            this.sharedData.goalTime,
+            this.sharedData.gameOverCount,
+            this.sharedData.collisionCount,
+            this.sharedData.collectedIngredients,
+        )
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        let slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
+        slots[slotIndex] = slot.withAddedStageResult(stageResult);
+        this.sceneRouter.save(dataKeys.slots, slots);
+
+        this.sharedData.playingSlotIndex = slotIndex;
+        this.sharedData.selectedIndices = [];
+        this.sceneRouter.changeScene(scenes.stageSelection);
+    }
+
+    onClickNotSave() {
+        this.sharedData.selectedIndices = [];
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 
     drawScoreResult(ctx, x, y, width) {

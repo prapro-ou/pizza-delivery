@@ -9,6 +9,7 @@ import { Car } from '../gameObject/Car.mjs';
 import { resource } from '../resource.mjs';
 import { Joystick } from '../component/Joystick.mjs';
 import { TheStrongGamerLabel } from '../component/TheStrongGamerLabel.mjs';
+import { buttonStates, ColorButton } from '../component/Button.mjs';
 
 // ステージ選択画面
 // - 入力
@@ -67,10 +68,28 @@ export class DriveScene extends Scene {
         this.stage.cars = [];
         this.sceneRouter.setBGM(this.stage.bgm);
         this.sceneRouter.playSE(resource.se.startEffect);
+
+        this.setUpUI();
+    }
+
+    setUpUI() {
+        const styles = {
+            [buttonStates.normal]: "rgba(20, 20, 204, 0.5)",
+            [buttonStates.hovered]: "rgba(20, 20, 204, 0.9)",
+            [buttonStates.clicked]: "rgba(28, 28, 140, 1.0)",
+        }
+        this.retryButton = new ColorButton(styles);
+        this.retryButton.onClick = this.onClickRetry.bind(this);
+        this.retryButtonIsHidden = true;
+        this.retireButton = new ColorButton(styles);
+        this.retireButton.onClick = this.onClickRetire.bind(this);
+        this.retireButtonIsHidden = true;
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
         this.joystick.updateStates(mouse);
+        if (!this.retryButtonIsHidden) this.retryButton.updateStates(mouse);
+        if (!this.retireButtonIsHidden) this.retireButton.updateStates(mouse);
         const leftPressed = pressedKeys.has("ArrowLeft") || this.joystick.leftPressed;
         const rightPressed = pressedKeys.has("ArrowRight") || this.joystick.rightPressed;
         const upPressed = pressedKeys.has("ArrowUp") || this.joystick.upPressed;
@@ -403,30 +422,39 @@ export class DriveScene extends Scene {
             ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
             ctx.fillRect(0, 0, max_x, max_y);
 
-            ctx.fillStyle = "red";
+            const text = "GAME OVER!"
             ctx.font = "50px Arial";
+            ctx.lineJoin = "round";
             ctx.textAlign = "center";
-            ctx.fillText("GAME OVER!", max_x / 2, max_y / 2 - 90);
+            ctx.textBaseline = "middle"
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "rgba(229, 229, 255, 0.2)";
+            ctx.strokeText(text, max_x / 2, max_y / 2 - 90);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.6)";
+            ctx.strokeText(text, max_x / 2, max_y / 2 - 90);
+            ctx.fillStyle = "red";
+            ctx.fillText(text, max_x / 2, max_y / 2 - 90);
 
             let r = { x: max_x / 2 - 100, y: max_y / 2, w: 200, h: 50 };
-            this.retryButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
+            this.retryButton.scaleFactor = r.w / this.retryButton.width;
+            this.retryButtonIsHidden = false;
+            this.retryButton.draw(ctx, r.x, r.y, r.w, r.h);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2);
+            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2 + 1);
 
             r = { x: max_x / 2 - 100, y: max_y / 2 + 90, w: 200, h: 50 };
-            this.continueButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
+            this.retireButton.scaleFactor = r.w / this.retryButton.width;
+            this.retireButtonIsHidden = false;
+            this.retireButton.draw(ctx, r.x, r.y, r.w, r.h);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2);
+            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2 + 1);
 
         } else if (this.gameOverAnimationTime > 0.9) {
             ctx.fillStyle = "rgba(" + [0, 0, 0, (this.gameOverAnimationTime - 0.9) * 0.4 / (1.0 - 0.9)] + ")";;
@@ -457,17 +485,14 @@ export class DriveScene extends Scene {
         }
     }
 
-    didTap(x, y) {
-        let r = this.retryButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.drive);
-        }
-        r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.stageSelection);
-        }
+    onClickRetry() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.drive);
+    }
+
+    onClickRetire() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 
     drawStartAnimation(max_x, max_y, ctx) {

@@ -136,13 +136,6 @@ export class TitleScene extends Scene {
         this.sceneRouter.changeScene(scenes.endingCollection);
     }
 
-    didTap(x, y) {
-        let r = this.switchSoundArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapSoundIcon()
-        }
-    }
-
     onClickSound() {
         this.sharedData.soundOn = !this.sharedData.soundOn;
         this.soundButton.setSoundButtonState(this.sharedData.soundOn ? sndbStates.on : sndbStates.off)

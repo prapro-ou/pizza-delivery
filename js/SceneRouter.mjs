@@ -248,6 +248,7 @@ export class SceneRouter {
     updateStates(deltaTime) {
         if (this.presentingModal) {
             this.presentingModal.updateStates(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
+            this.currentScene.updateStatesWhileModalPresenting(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
         } else if (this.currentScene) {
             this.currentScene.updateStates(deltaTime, this.mouseHandler.mouse, this.keyHandler.pressedKeys);
         }

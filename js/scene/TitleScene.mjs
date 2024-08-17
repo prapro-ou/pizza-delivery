@@ -61,6 +61,10 @@ export class TitleScene extends Scene {
         this.soundButton.updateStates(mouse);
     }
 
+    updateStatesWhileModalPresenting(deltaTime) {
+        this.soundButton.setSoundButtonState(this.sharedData.soundOn ? sndbStates.on : sndbStates.off);
+    }
+
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;

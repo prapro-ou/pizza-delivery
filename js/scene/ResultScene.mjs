@@ -4,6 +4,9 @@ import { pizzas, pizzaName, pizzaScore,imageForPizza } from "../gameObject/pizza
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { ingredientType, ingredientName, ingredientScore, imageForIngredient } from "../gameObject/ingredients.mjs"
 import { resource } from '../resource.mjs';
+import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
+import { StageResult } from '../dataObject/StageResult.mjs';
+import { Slot } from '../dataObject/Slot.mjs';
 
 // リザルト画面
 // - 入力
@@ -11,24 +14,25 @@ import { resource } from '../resource.mjs';
 //   - this.sharedData.cookedPizza: 作ったピザ
 //   - this.sharedData.goalTime: タイム
 //   - this.sharedData.collectedIngredients: 集めた食材の配列
+//   - this.sharedData.selectedIndices: 集めた食材の中で、選択した食材のインデックスの配列
 // - 出力
 //   - this.sharedData.score: スコア
 export class ResultScene extends Scene {
     sceneWillAppear(){
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM115);
-        this.NextButton = null;
 
         this.pizza = this.sharedData.cookedPizza;
         this.stage = this.sharedData.stage;
         this.goalTime = this.sharedData.goalTime;
         this.targetTime = this.sharedData.stage.targetTime;
 
-        const pizzaInfo = this.sceneRouter.load(dataKeys.pizzaInfo) ?? new PizzaInfo();
+        const pizzaInfo = this.sceneRouter.load(dataKeys.pizzaInfo);
         pizzaInfo.unlock(this.pizza);
         this.sceneRouter.save(dataKeys.pizzaInfo, pizzaInfo);
 
-        const collectedIngredients = this.sharedData.collectedIngredients;
-        this.ingredientCounts = collectedIngredients.reduce((obj, ingredient) => {
+        this.collectedIngredients = this.sharedData.collectedIngredients;
+        this.selectedIndices = this.sharedData.selectedIndices;
+        this.ingredientCounts = this.collectedIngredients.reduce((obj, ingredient) => {
             if (obj[ingredient]) {
                 obj[ingredient]++;
             } else {
@@ -42,53 +46,184 @@ export class ResultScene extends Scene {
 
         this.scoreDetail = this.calculateScoreDetail();
         this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;
-        this.sharedData.score = this.totalScore;
 
-        console.log('トータルスコア : ' + this.totalScore);
+        this.setUpUI();
     }
 
-    updateStates(deltaTime){}
+    setUpUI() {
+        this.saveButton = new RoundButton(rndbColors.green);
+        this.saveButton.text = "セーブ";
+        this.saveButton.onClick = this.onClickSave.bind(this);
+        this.notSaveButton = new RoundButton(rndbColors.red);
+        this.notSaveButton.text = "保存しない";
+        this.notSaveButton.onClick = this.onClickNotSave.bind(this);
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.saveButton.updateStates(mouse);
+        this.notSaveButton.updateStates(mouse);
+    }
 
     render(ctx) {
-        const max_x = ctx.canvas.width;
-        const max_y = ctx.canvas.height;
+        const maxX = ctx.canvas.width;
+        const maxY = ctx.canvas.height;
 
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, max_x, max_y);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(resource.images.woodBackground, 0, 0, maxX, maxY);
+
         ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
+        ctx.font = "52px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("リザルト画面", 50, 60);
-
-        let r = { x: max_x - 300, y: max_y - 100, w: 200, h: 50 };
-        this.NextButton = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("次のシーンへ", r.x + r.w / 2, r.y + r.h / 2);
+        ctx.fillText("リザルト", 35, 70);
 
-        const IngredientsX = 45
-        const IngredientsW = 400
-        const centerX = IngredientsX + IngredientsW / 2
-        this.drawPizza(ctx, centerX - 140 / 2, 80, 140);
-        this.drawResultIngredients(ctx, IngredientsX, 270, IngredientsW);
-        this.drawTime(ctx, centerX, max_y - 60);
-        this.drawScore(ctx);
+        this.drawPizza(ctx, 147, 135);
+        this.drawPizzaDetail(ctx, 34, 317);
+        this.drawScoreResult(ctx, 443, 0, 303);
+        this.saveButton.draw(ctx, 522, 514);
+        this.notSaveButton.draw(ctx, 249, 514);
     }
 
-    didTap(x, y){
-        let r = this.NextButton;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y+r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.didTapNext();
+    drawPizza(ctx, x, y) {
+        let bg = resource.images.itemBackGroundBig;
+        const [width, height] = [bg.width * 3, bg.height * 3];
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(bg, x, y, width, height);
+        ctx.drawImage(imageForPizza(this.pizza), x, y + height - width, width, width);
+    }
+
+    drawPizzaDetail(ctx, x, y) {
+        const image = resource.images.goldFrame
+        ctx.drawImage(image, x, y, image.width, image.height);
+        ctx.fillStyle = "black";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(pizzaName[this.pizza], x + 188, y + 43, 350);
+
+        let lines = ["ー 使用した食材 ー", "", ""];
+        for (let i = 0; i < this.selectedIndices.length; i++) {
+            const ingredient = this.collectedIngredients[this.selectedIndices[i]];
+            lines[1 + Math.floor(i / 2)] += ((i % 2) ? "　" : "") + ingredientName[ingredient];
+        }
+        ctx.font = "20px Arial";
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], x + 188, y + 78 + i * 30, 350);
         }
     }
 
-    didTapNext() {
-        this.sceneRouter.changeScene(scenes.whichSlotToSave);
+    onClickSave() {
+        this.sharedData.slotSelectionMessage = "セーブ先を選択してください。";
+        this.sharedData.onSelectSlot = this.onSelectSlot.bind(this);
+        this.sceneRouter.presentModal(scenes.slotSelection);
+    }
+
+    onSelectSlot(slotIndex) {
+        const slots = this.sceneRouter.load(dataKeys.slots);
+        if (slotIndex != this.sharedData.playingSlotIndex && slots[slotIndex] &&
+            !window.confirm(`セーブデータ ${slotIndex} には既にデータがあります。\n上書きしますか？`)) {
+            this.sceneRouter.presentModal(scenes.slotSelection);
+            return;
+        }
+        const stageResult = new StageResult(
+            this.sharedData.stage,
+            this.totalScore,
+            this.sharedData.cookedPizza,
+            this.sharedData.goalTime,
+            this.sharedData.gameOverCount,
+            this.sharedData.collisionCount,
+            this.sharedData.collectedIngredients,
+        )
+        let slot = slots[this.sharedData.playingSlotIndex] ?? new Slot();
+        slots[slotIndex] = slot.withAddedStageResult(stageResult);
+        this.sceneRouter.save(dataKeys.slots, slots);
+
+        this.sharedData.playingSlotIndex = slotIndex;
+        this.sharedData.selectedIndices = [];
+        this.sceneRouter.changeScene(scenes.stageSelection);
+    }
+
+    onClickNotSave() {
+        this.sharedData.selectedIndices = [];
+        this.sceneRouter.changeScene(scenes.stageSelection);
+    }
+
+    drawScoreResult(ctx, x, y, width) {
+        ctx.font = "21px Arial";
+        ctx.textBaseline = "middle";
+        const padding = 18;
+        const [left, center, right] = [x + padding, x + width / 2, x + width - padding];
+        const textW = width - padding * 2
+        const i2s = (n) => n == 0 ? "0" : n.toLocaleString("ja-JP");
+
+        let lines = [];
+        lines.push((y) => {
+            ctx.textAlign = "center";
+            ctx.fillText("提供したピザ", center, y);
+        });
+        lines.push((y) => {
+            ctx.textAlign = "left";
+            ctx.fillText(pizzaName[this.pizza], left, y);
+            ctx.textAlign = "right";
+            ctx.fillText(i2s(pizzaScore[this.pizza]), right, y);
+        });
+        lines.push((y) => {
+            ctx.textAlign = "center";
+            ctx.fillText("拾った食材", center, y);
+        });
+        Object.entries(this.ingredientCounts).forEach(([ingredient, count]) => {
+            if (count == 1) {
+                lines.push((y) => {
+                    ctx.textAlign = "left";
+                    ctx.fillText(ingredientName[ingredient], left, y);
+                    ctx.textAlign = "right";
+                    ctx.fillText(i2s(ingredientScore[ingredient]), right, y);
+                })
+            } else {
+                lines.push((y) => {
+                    ctx.textAlign = "left";
+                    ctx.fillText(ingredientName[ingredient], left, y);
+                })
+                lines.push((y) => {
+                    ctx.textAlign = "left";
+                    ctx.fillText(`　@${ingredientScore[ingredient]} x${count}`, left, y);
+                    ctx.textAlign = "right";
+                    ctx.fillText(i2s(ingredientScore[ingredient] * count), right, y);
+                })
+            }
+        });
+        lines.push((y) => {
+            ctx.textAlign = "center";
+            ctx.fillText("その他", center, y);
+        });
+        lines.push((y) => {
+            ctx.textAlign = "left";
+            ctx.fillText(`タイム ${this.goalTime.toFixed(2)}s`, left, y);
+            ctx.textAlign = "right";
+            ctx.fillText(i2s(this.scoreDetail.timeBonus), right, y);
+        });
+        lines.push((y) => {
+            ctx.textAlign = "center";
+            ctx.fillText("−−−−−−−−−−−−−−−−−−−−−−", center, y, textW);
+        });
+        lines.push((y) => {
+            ctx.textAlign = "left";
+            ctx.fillText("合計スコア", left, y);
+            ctx.textAlign = "right";
+            ctx.font = "bold " + ctx.font
+            ctx.fillText(i2s(this.totalScore), right, y);
+            ctx.font = ctx.font.substring("bold ".length);
+        });
+
+        ctx.fillStyle = "white";
+        ctx.fillRect(443, 0, 303, 44 + 29 * lines.length);
+
+        ctx.fillStyle = "black";
+        let ty = y + 40;
+        for (let i = 0; i < lines.length; i++) {
+            lines[i](ty);
+            ty += 29
+        }
     }
 
     drawResultIngredients(ctx, xOffset, yOffset, width) {
@@ -111,92 +246,6 @@ export class ResultScene extends Scene {
                 80
             )
         }
-    }
-
-    drawIngredient(ctx, ingredient, ingredientCount, xOffset, yOffset, width) {
-        ctx.imageSmoothingEnabled = false;
-        const ingredientImage = imageForIngredient(ingredient);
-        ctx.drawImage(ingredientImage, xOffset, yOffset, width, width);
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(
-            `x${ingredientCount}`,
-            xOffset + width / 2,
-            yOffset + width + 10
-        );
-    }
-
-    drawPizza(ctx, xOffset, yOffset, width) {
-        const pizzaImage = imageForPizza(this.pizza);
-        if (pizzaImage.complete) {
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(
-                pizzaImage,
-                xOffset,
-                yOffset,
-                width,
-                width
-            );
-        }
-
-        const pizzaDisplayName = pizzaName[this.pizza];
-
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(pizzaDisplayName, xOffset + width / 2, yOffset + width + 10, width, 100);
-
-    }
-
-    //クリアタイムを画面左下に表示する
-    drawTime(ctx, xOffset, yOffset) {
-        const time = this.goalTime;
-        const timeText = `クリアタイム: ${time.toFixed(2)}s`;
-
-        ctx.fillStyle = "black";
-        ctx.font = "30px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "bottom";
-        ctx.fillText(timeText, xOffset, yOffset);
-    }
-
-    //ピザの画像の右側にピザのスコアを、材料の画像の右側に材料の合計のスコアを、クリアタイムの右側にタイムボーナスを表示する
-
-    drawScore(ctx){
-        const scoreDetailX = 490;
-        const scoreDetailMaxX = 740;
-        const scoreDetailY = 300;
-        const totalScoreX = (scoreDetailX + scoreDetailMaxX) / 2;
-        const timeBonusText = this.scoreDetail.timeBonus >= 0 ? "タイムボーナス" : "タイムペナルティ";
-
-        ctx.fillStyle = "black";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "bottom";
-        ctx.font = "24px Arial";
-        ctx.fillText("合計スコア", totalScoreX, 140);
-
-        ctx.font = "64px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(`${this.totalScore}`, totalScoreX, 210);
-
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("ー スコア内訳 ー", totalScoreX, scoreDetailY - 35);
-        ctx.textAlign = "left";
-        ctx.fillText("ピザのスコア", scoreDetailX, scoreDetailY);
-        ctx.fillText("材料のスコア", scoreDetailX, scoreDetailY + 30);
-        ctx.fillText(timeBonusText, scoreDetailX, scoreDetailY + 60);
-        ctx.textAlign = "right";
-        ctx.fillText(`${this.scoreDetail.pizzaScore}`, scoreDetailMaxX, scoreDetailY);
-        ctx.fillText(`${this.scoreDetail.ingredientsScore}`, scoreDetailMaxX, scoreDetailY + 30);
-        ctx.fillText(`${this.scoreDetail.timeBonus}`, scoreDetailMaxX, scoreDetailY + 60);
-
-        // ctx.fillStyle = "black";
-        // ctx.fillRect(465, 380, 275, 5);
-
     }
 
     //スコア = 作ったピザの点数 + 食材毎の点数 + (目標タイム - 経過時間) * timeBonusFactor

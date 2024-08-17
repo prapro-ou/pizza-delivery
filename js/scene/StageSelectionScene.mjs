@@ -90,11 +90,11 @@ export class StageSelectionScene extends Scene {
             ctx.textBaseline = "middle";
             ctx.fillText(`STAGE ${i+1}`, x + 140, y + 30);
 
-            ctx.fillStyle = "black";
+            ctx.fillStyle = unlocked ? "black" : "gray";
             ctx.font = "22px Arial";
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
-            const lines = stageDescriptions[i+1].split("\n");
+            const lines = unlocked ? stageDescriptions[i+1].split("\n") : Array(2).fill("？".repeat(5));
             for (let j = 0; j < lines.length; j++) {
                 ctx.fillText(lines[j], x + 142, y + 70 + 35 * j);
             }

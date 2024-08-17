@@ -350,17 +350,15 @@ export class DriveScene extends Scene {
     }
 
     drawCollectedIngredients(max_x, max_y, ctx) {
-        const areaWidth = 40;
-        ctx.fillStyle = "gainsboro";
-        ctx.fillRect(max_x - areaWidth, 0, max_y, 8 * (this.collectedIngredients.length != 0) + 30 * this.collectedIngredients.length);
-        for (let i = 0; i < this.collectedIngredients.length; i++) {
-            const type = this.collectedIngredients[i];
-            const image = imageForIngredient(type);
-            const x = max_x - 20;
-            const y = 20 + 30 * i;
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, x - 16, y - 16, 32, 32);
+        ctx.imageSmoothingEnabled = false;
+        const [bg, scaleFactor] = [resource.images.itemBackGround, 1.8];
+        const [w, h] = [bg.width * scaleFactor, bg.height * scaleFactor];
+        for (let i = 0; i < 8; i++) {
+            ctx.drawImage(bg, max_x - w, i * h, w, h);
+            const ingredient = this.collectedIngredients[i];
+            if (ingredient) {
+                const image = imageForIngredient(ingredient);
+                ctx.drawImage(image, max_x - w + 4, i * h + 4, w - 8, h - 8);
             }
         }
     }

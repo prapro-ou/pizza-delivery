@@ -99,8 +99,12 @@ export class ConfigScene extends Scene {
     checkSliderDragStart(x, y) {
         if (this.isWithinSlider(x, y, this.bgmSliderArea)) {
             this.draggingSlider = sliders.bgm;
+            this.sharedData.soundOn = true;
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         } else if (this.isWithinSlider(x, y, this.seSliderArea)) {
             this.draggingSlider = sliders.se;
+            this.sharedData.soundOn = true;
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
     }
 

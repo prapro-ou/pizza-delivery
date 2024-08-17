@@ -127,6 +127,7 @@ export class DriveScene extends Scene {
 
         this.drawStageNumberAndTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
+        this.drawHeart(ctx, max_y);
         if (this.gameOverFlg) {
             this.drawGameOver(ctx, max_x, max_y);
         }
@@ -136,7 +137,6 @@ export class DriveScene extends Scene {
         if (!this.gameOverFlg) {
             this.joystick.draw(ctx, this.stage.nightMode);
         }
-        this.drawHeart(ctx);
     }
 
     transitToNextScene() {
@@ -382,20 +382,12 @@ export class DriveScene extends Scene {
         label.draw(ctx, 17, 64);
     }
 
-    drawHeart(ctx) {
-        let image = resource.images.redHeart;
-        for (let i = 0; i < this.player.life; i++) {
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, 40 * i + 30, 600, 30, 30);
-            }
-        }
-        image = resource.images.blackHeart;
-        for (let i = 3; i > this.player.life; i--) {
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, 40 * (i-1) + 30, 600, 30, 30);
-            }
+    drawHeart(ctx, max_y) {
+        ctx.imageSmoothingEnabled = false;
+        const scaleFactor = 3;
+        for (let i = 0; i < 3; i++) {
+            let image = (i < this.player.life) ? resource.images.maxHeart : resource.images.emptyHeart;
+            ctx.drawImage(image, 12 + 48 * i, max_y - 42, image.width * scaleFactor, image.height * scaleFactor);
         }
         if (this.player.life == 0) {
             if (!this.gameOverFlg) {

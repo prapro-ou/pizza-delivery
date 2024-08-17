@@ -6,6 +6,7 @@ import { UserConfig } from '../dataObject/UserConfig.mjs';
 import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
 import { PizzaRecipeButton } from '../component/PizzaRecipeButton.mjs';
 import { EndingButton } from '../component/EndingButton.mjs';
+import { sndbStates, SoundButton } from '../component/SoundButton.mjs';
 
 let appearsFirstTime = true;
 
@@ -47,6 +48,9 @@ export class TitleScene extends Scene {
 
         this.endingButton = new EndingButton();
         this.endingButton.onClick = this.onClickEnding.bind(this);
+
+        this.soundButton = new SoundButton(this.sharedData.soundOn ? sndbStates.on : sndbStates.off);
+        this.soundButton.onClick = this.onClickSound.bind(this);
     }
 
     updateStates(deltaTime, mouse) {
@@ -55,6 +59,7 @@ export class TitleScene extends Scene {
         this.configButton.updateStates(mouse);
         this.recipeButton.updateStates(mouse);
         this.endingButton.updateStates(mouse);
+        this.soundButton.updateStates(mouse);
     }
 
     render(ctx) {
@@ -69,11 +74,7 @@ export class TitleScene extends Scene {
         this.configButton.draw(ctx, 450, 265 + 220);
         this.recipeButton.draw(ctx, 22, 380);
         this.endingButton.draw(ctx, 130, 320);
-
-        const soundImage = (this.sharedData.soundOn) ? resource.images.soundOn : resource.images.soundOff;
-        let r = { x: max_x - 86, y: 16, w: 63, h: 56 };
-        this.switchSoundArea = r;
-        ctx.drawImage(soundImage, r.x, r.y, r.w, r.h);
+        this.soundButton.draw(ctx, max_x - 86, 16);
     }
 
     onClickStartFromBeginning() {
@@ -142,8 +143,9 @@ export class TitleScene extends Scene {
         }
     }
 
-    didTapSoundIcon() {
+    onClickSound() {
         this.sharedData.soundOn = !this.sharedData.soundOn;
+        this.soundButton.setSoundButtonState(this.sharedData.soundOn ? sndbStates.on : sndbStates.off)
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
     }
 }

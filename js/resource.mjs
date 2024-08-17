@@ -71,8 +71,7 @@ const imagePaths = {
     itemBackGroundBig:  "resource/image/background/item_background_big.png",
 
     // UI
-    soundOn:        "resource/image/ui/sound_on.png",
-    soundOff:       "resource/image/ui/sound_off.png",
+    soundButton:    "resource/image/ui/sound_button.png",
     squareButton:   "resource/image/ui/square_button.png",
     roundButton:    "resource/image/ui/round_button.png",
     stageButton:    "resource/image/ui/stage_button.png",

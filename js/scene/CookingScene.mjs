@@ -85,10 +85,15 @@ export class CookingScene extends Scene {
         image = resource.images.brownArrow
         ctx.drawImage(image, 373, 184, image.width * 3, image.height * 3);
 
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
         ctx.font = "52px Arial";
         ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
         ctx.fillText("ピザを焼こう！", 35, 70);
+        ctx.font = "22px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("拾った食材の中から", 214, 340);
+        ctx.fillText("ピザに使う食材をクリック", 214, 368);
 
         this.drawCollectedIngredients(ctx);
         this.recipeButton.draw(ctx, maxX - 85, 14);

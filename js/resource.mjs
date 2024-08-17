@@ -78,7 +78,10 @@ const imagePaths = {
     stageButton:    "resource/image/ui/stage_button.png",
     recipeButton:   "resource/image/ui/recipe_button.png",
     bookButton:     "resource/image/ui/book_button.png",
-    topButton:      "resource/image/ui/top_button.png"
+    topButton:      "resource/image/ui/top_button.png",
+
+    // フォント
+    theStrongGamerWhiteFont: "resource/image/font/the_strong_gamer_white_font.png",
 }
 
 // BGMのパス一覧

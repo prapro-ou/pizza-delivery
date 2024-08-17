@@ -8,6 +8,7 @@ import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
 import { resource } from '../resource.mjs';
 import { Joystick } from '../component/Joystick.mjs';
+import { TheStrongGamerLabel } from '../component/TheStrongGamerLabel.mjs';
 
 // ステージ選択画面
 // - 入力
@@ -124,12 +125,7 @@ export class DriveScene extends Scene {
         }
         this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
-        ctx.fillStyle = this.textColor;
-        ctx.font = "20px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText(`STAGE${this.stage.stageNumber}`, 50, 50);
-
-        this.drawTime(ctx);
+        this.drawStageNumberAndTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
         if (this.gameOverFlg) {
             this.drawGameOver(ctx, max_x, max_y);
@@ -148,7 +144,6 @@ export class DriveScene extends Scene {
         this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sharedData.gameOverCount = this.gameOverCount;
         this.sharedData.collisionCount = this.collisionCount;
-        console.log(this.sharedData);
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
@@ -370,22 +365,26 @@ export class DriveScene extends Scene {
         }
     }
 
-    drawTime(ctx) {
-        ctx.fillStyle = this.textColor;
-        ctx.font = "25px Arial";
-        ctx.textAlign = "left";
-        const minutes = Math.floor(this.elapsedTime / 60);
+    drawStageNumberAndTime(ctx) {
+        ctx.fillStyle = "rgba(30, 30, 102, 0.7)";
+        ctx.fillRect(0, 0, 144, 91);
+
+        const label = new TheStrongGamerLabel();
+        label.spacing = 2;
+        label.text = `STAGE${this.stage.stageNumber}`;
+        label.draw(ctx, 25, 12);
+        label.text = "TIME";
+        label.draw(ctx, 41, 42);
+        const minutes = Math.floor(this.elapsedTime / 60) % 10;
         const seconds = Math.floor(this.elapsedTime % 60);
         const commaSeconds = Math.floor((this.elapsedTime % 1) * 100);
         const secondsString = `${seconds}`.padStart(2, '0');
         const commaSecondsString = `${commaSeconds}`.padStart(2, '0');
-        ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
+        label.text = `${minutes}:${secondsString}:${commaSecondsString}`;
+        label.draw(ctx, 17, 64);
     }
 
     drawHeart(ctx) {
-        ctx.fillStyle = this.textColor;
-        ctx.font = "25px Arial";
-        ctx.textAlign = "left";
         let image = resource.images.redHeart;
         for (let i = 0; i < this.player.life; i++) {
             if (image.complete) {

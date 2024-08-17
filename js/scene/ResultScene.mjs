@@ -42,7 +42,7 @@ export class ResultScene extends Scene {
         }, {});
 
         // クリアタイムによるスコア変動の倍率
-        this.timeBonusFactor = 1;
+        this.timeBonusFactor = 150;
 
         this.scoreDetail = this.calculateScoreDetail();
         this.totalScore = this.scoreDetail.pizzaScore + this.scoreDetail.ingredientsScore + this.scoreDetail.timeBonus;

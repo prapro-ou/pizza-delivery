@@ -27,7 +27,6 @@ export class TitleScene extends Scene {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
 
         this.setUpUI();
-
     }
 
     setUpUI() {
@@ -122,7 +121,7 @@ export class TitleScene extends Scene {
 
     onClickConfig() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.config);
+        this.sceneRouter.presentModal(scenes.config);
     }
 
     onClickRecipe() {

@@ -8,6 +8,8 @@ import { speedSettings } from '../stage/speedModes.mjs';
 import { Car } from '../gameObject/Car.mjs';
 import { resource } from '../resource.mjs';
 import { Joystick } from '../component/Joystick.mjs';
+import { TheStrongGamerLabel } from '../component/TheStrongGamerLabel.mjs';
+import { buttonStates, ColorButton } from '../component/Button.mjs';
 
 // ステージ選択画面
 // - 入力
@@ -66,10 +68,28 @@ export class DriveScene extends Scene {
         this.stage.cars = [];
         this.sceneRouter.setBGM(this.stage.bgm);
         this.sceneRouter.playSE(resource.se.startEffect);
+
+        this.setUpUI();
+    }
+
+    setUpUI() {
+        const styles = {
+            [buttonStates.normal]: "rgba(20, 20, 204, 0.5)",
+            [buttonStates.hovered]: "rgba(20, 20, 204, 0.9)",
+            [buttonStates.clicked]: "rgba(28, 28, 140, 1.0)",
+        }
+        this.retryButton = new ColorButton(styles);
+        this.retryButton.onClick = this.onClickRetry.bind(this);
+        this.retryButtonIsHidden = true;
+        this.retireButton = new ColorButton(styles);
+        this.retireButton.onClick = this.onClickRetire.bind(this);
+        this.retireButtonIsHidden = true;
     }
 
     updateStates(deltaTime, mouse, pressedKeys) {
         this.joystick.updateStates(mouse);
+        if (!this.retryButtonIsHidden) this.retryButton.updateStates(mouse);
+        if (!this.retireButtonIsHidden) this.retireButton.updateStates(mouse);
         const leftPressed = pressedKeys.has("ArrowLeft") || this.joystick.leftPressed;
         const rightPressed = pressedKeys.has("ArrowRight") || this.joystick.rightPressed;
         const upPressed = pressedKeys.has("ArrowUp") || this.joystick.upPressed;
@@ -90,7 +110,12 @@ export class DriveScene extends Scene {
             }
             this.moveCars(deltaTime);
         }
-        if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
+        // ゲームオーバー・クリア判定
+        if (!this.gameOverFlg && this.player.life <= 0) {
+            this.sceneRouter.playSE(resource.se.gameOverEffect);
+            this.gameOverFlg = true;
+            this.sharedData.gameOverCount += 1;
+        } else if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
             this.sceneRouter.playSE(resource.se.goalEffect);
             this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
             this.goalFlg = true;
@@ -124,13 +149,9 @@ export class DriveScene extends Scene {
         }
         this.player.draw(max_x, max_y, ctx, this.pixelSize, this.cameraDistance);
 
-        ctx.fillStyle = this.textColor;
-        ctx.font = "20px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText(`STAGE${this.stage.stageNumber}`, 50, 50);
-
-        this.drawTime(ctx);
+        this.drawStageNumberAndTime(ctx);
         this.drawCollectedIngredients(max_x, max_y, ctx);
+        this.drawHeart(ctx, max_y);
         if (this.gameOverFlg) {
             this.drawGameOver(ctx, max_x, max_y);
         }
@@ -140,7 +161,6 @@ export class DriveScene extends Scene {
         if (!this.gameOverFlg) {
             this.joystick.draw(ctx, this.stage.nightMode);
         }
-        this.drawHeart(ctx);
     }
 
     transitToNextScene() {
@@ -148,7 +168,6 @@ export class DriveScene extends Scene {
         this.sharedData.collectedIngredients = this.collectedIngredients;
         this.sharedData.gameOverCount = this.gameOverCount;
         this.sharedData.collisionCount = this.collisionCount;
-        console.log(this.sharedData);
         this.sceneRouter.changeScene(scenes.cooking);
     }
 
@@ -355,57 +374,44 @@ export class DriveScene extends Scene {
     }
 
     drawCollectedIngredients(max_x, max_y, ctx) {
-        const areaWidth = 40;
-        ctx.fillStyle = "gainsboro";
-        ctx.fillRect(max_x - areaWidth, 0, max_y, 8 * (this.collectedIngredients.length != 0) + 30 * this.collectedIngredients.length);
-        for (let i = 0; i < this.collectedIngredients.length; i++) {
-            const type = this.collectedIngredients[i];
-            const image = imageForIngredient(type);
-            const x = max_x - 20;
-            const y = 20 + 30 * i;
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, x - 16, y - 16, 32, 32);
+        ctx.imageSmoothingEnabled = false;
+        const [bg, scaleFactor] = [resource.images.itemBackGround, 1.8];
+        const [w, h] = [bg.width * scaleFactor, bg.height * scaleFactor];
+        for (let i = 0; i < 8; i++) {
+            ctx.drawImage(bg, max_x - w, i * h, w, h);
+            const ingredient = this.collectedIngredients[i];
+            if (ingredient) {
+                const image = imageForIngredient(ingredient);
+                ctx.drawImage(image, max_x - w + 4, i * h + 4, w - 8, h - 8);
             }
         }
     }
 
-    drawTime(ctx) {
-        ctx.fillStyle = this.textColor;
-        ctx.font = "25px Arial";
-        ctx.textAlign = "left";
-        const minutes = Math.floor(this.elapsedTime / 60);
+    drawStageNumberAndTime(ctx) {
+        ctx.fillStyle = "rgba(30, 30, 102, 0.7)";
+        ctx.fillRect(0, 0, 144, 91);
+
+        const label = new TheStrongGamerLabel();
+        label.spacing = 2;
+        label.text = `STAGE${this.stage.stageNumber}`;
+        label.draw(ctx, 25, 12);
+        label.text = "TIME";
+        label.draw(ctx, 41, 42);
+        const minutes = Math.floor(this.elapsedTime / 60) % 10;
         const seconds = Math.floor(this.elapsedTime % 60);
         const commaSeconds = Math.floor((this.elapsedTime % 1) * 100);
         const secondsString = `${seconds}`.padStart(2, '0');
         const commaSecondsString = `${commaSeconds}`.padStart(2, '0');
-        ctx.fillText(`${minutes}:${secondsString}:${commaSecondsString}`, 50, 100);
+        label.text = `${minutes}:${secondsString}:${commaSecondsString}`;
+        label.draw(ctx, 17, 64);
     }
 
-    drawHeart(ctx) {
-        ctx.fillStyle = this.textColor;
-        ctx.font = "25px Arial";
-        ctx.textAlign = "left";
-        let image = resource.images.redHeart;
-        for (let i = 0; i < this.player.life; i++) {
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, 40 * i + 30, 600, 30, 30);
-            }
-        }
-        image = resource.images.blackHeart;
-        for (let i = 3; i > this.player.life; i--) {
-            if (image.complete) {
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(image, 40 * (i-1) + 30, 600, 30, 30);
-            }
-        }
-        if (this.player.life == 0) {
-            if (!this.gameOverFlg) {
-                this.sharedData.gameOverCount += 1;
-                this.gameOverFlg = true;
-                this.sceneRouter.playSE(resource.se.gameOverEffect);
-            }
+    drawHeart(ctx, max_y) {
+        ctx.imageSmoothingEnabled = false;
+        const scaleFactor = 3;
+        for (let i = 0; i < 3; i++) {
+            let image = (i < this.player.life) ? resource.images.maxHeart : resource.images.emptyHeart;
+            ctx.drawImage(image, 12 + 48 * i, max_y - 42, image.width * scaleFactor, image.height * scaleFactor);
         }
     }
 
@@ -416,30 +422,39 @@ export class DriveScene extends Scene {
             ctx.fillStyle = "rgba(" + [0, 0, 0, 0.4] + ")";
             ctx.fillRect(0, 0, max_x, max_y);
 
-            ctx.fillStyle = "red";
+            const text = "GAME OVER!"
             ctx.font = "50px Arial";
+            ctx.lineJoin = "round";
             ctx.textAlign = "center";
-            ctx.fillText("GAME OVER!", max_x / 2, max_y / 2 - 90);
+            ctx.textBaseline = "middle"
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "rgba(229, 229, 255, 0.2)";
+            ctx.strokeText(text, max_x / 2, max_y / 2 - 90);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.6)";
+            ctx.strokeText(text, max_x / 2, max_y / 2 - 90);
+            ctx.fillStyle = "red";
+            ctx.fillText(text, max_x / 2, max_y / 2 - 90);
 
             let r = { x: max_x / 2 - 100, y: max_y / 2, w: 200, h: 50 };
-            this.retryButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
+            this.retryButton.scaleFactor = r.w / this.retryButton.width;
+            this.retryButtonIsHidden = false;
+            this.retryButton.draw(ctx, r.x, r.y, r.w, r.h);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2);
+            ctx.fillText("リトライ", r.x + r.w / 2, r.y + r.h / 2 + 1);
 
             r = { x: max_x / 2 - 100, y: max_y / 2 + 90, w: 200, h: 50 };
-            this.continueButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
+            this.retireButton.scaleFactor = r.w / this.retryButton.width;
+            this.retireButtonIsHidden = false;
+            this.retireButton.draw(ctx, r.x, r.y, r.w, r.h);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2);
+            ctx.fillText("ステージ選択に戻る", r.x + r.w / 2, r.y + r.h / 2 + 1);
 
         } else if (this.gameOverAnimationTime > 0.9) {
             ctx.fillStyle = "rgba(" + [0, 0, 0, (this.gameOverAnimationTime - 0.9) * 0.4 / (1.0 - 0.9)] + ")";;
@@ -470,17 +485,14 @@ export class DriveScene extends Scene {
         }
     }
 
-    didTap(x, y) {
-        let r = this.retryButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.drive);
-        }
-        r = this.continueButtonArea;
-        if (r && x >= r.x && x <= r.x+r.w && y >= r.y && y <= r.y + r.h) {
-            this.sceneRouter.playSE(resource.se.clickEffect);
-            this.sceneRouter.changeScene(scenes.stageSelection);
-        }
+    onClickRetry() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.drive);
+    }
+
+    onClickRetire() {
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 
     drawStartAnimation(max_x, max_y, ctx) {

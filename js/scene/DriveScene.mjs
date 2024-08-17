@@ -91,7 +91,12 @@ export class DriveScene extends Scene {
             }
             this.moveCars(deltaTime);
         }
-        if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
+        // ゲームオーバー・クリア判定
+        if (!this.gameOverFlg && this.player.life <= 0) {
+            this.sceneRouter.playSE(resource.se.gameOverEffect);
+            this.gameOverFlg = true;
+            this.sharedData.gameOverCount += 1;
+        } else if (!this.goalFlg && this.player.d > this.stage.goalDistance) {
             this.sceneRouter.playSE(resource.se.goalEffect);
             this.sceneRouter.stopSE(resource.se.bikeEngineEffect);
             this.goalFlg = true;
@@ -388,13 +393,6 @@ export class DriveScene extends Scene {
         for (let i = 0; i < 3; i++) {
             let image = (i < this.player.life) ? resource.images.maxHeart : resource.images.emptyHeart;
             ctx.drawImage(image, 12 + 48 * i, max_y - 42, image.width * scaleFactor, image.height * scaleFactor);
-        }
-        if (this.player.life == 0) {
-            if (!this.gameOverFlg) {
-                this.sharedData.gameOverCount += 1;
-                this.gameOverFlg = true;
-                this.sceneRouter.playSE(resource.se.gameOverEffect);
-            }
         }
     }
 

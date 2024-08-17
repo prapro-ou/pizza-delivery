@@ -253,7 +253,7 @@ export class DriveScene extends Scene {
             if (this.stage.stageNumber == 4) {
                 ctx.fillStyle = "khaki";
             } else if (this.stage.stageNumber == 5) {
-                ctx.fillStyle = "white";
+                ctx.fillStyle = "lightskyblue";
             } else {
             ctx.fillStyle = "gray";
             }
@@ -263,7 +263,7 @@ export class DriveScene extends Scene {
                 if (this.stage.stageNumber == 4) {
                     ctx.fillStyle = "lightyellow";
                 } else if (this.stage.stageNumber == 5) {
-                    ctx.fillStyle = "gray";
+                    ctx.fillStyle = "white";
                 } else {
                 ctx.fillStyle = "white";
                 }
@@ -277,7 +277,7 @@ export class DriveScene extends Scene {
             if (this.stage.stageNumber == 4) {
                 ctx.fillStyle = "lightyellow";
             } else if (this.stage.stageNumber == 5) {
-                ctx.fillStyle = "gray";
+                ctx.fillStyle = "white";
             } else {
                 ctx.fillStyle = "black";
             }

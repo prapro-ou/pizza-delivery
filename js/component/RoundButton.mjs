@@ -22,9 +22,9 @@ export class RoundButton extends ImgaeButton {
 
     draw(ctx, x, y) {
         super.draw(ctx, x, y);
-        const tx = x + this.width / 2;
-        const ty = y + this.height / 2 + 14;
-        ctx.font = "bold 36px Arial";
+        const tx = x + this.width * this.scaleFactor / 2;
+        const ty = y + (this.height / 2 + 14) * this.scaleFactor;
+        ctx.font = `bold ${Math.round(36 * this.scaleFactor)}px Arial`;
         ctx.lineWidth = 5;
         ctx.lineJoin = "round";
         ctx.textAlign = "center";

@@ -6,7 +6,8 @@ import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { resource } from '../resource.mjs';
 import { PizzaInfo } from '../dataObject/PizzaInfo.mjs';
 import { Slot } from '../dataObject/Slot.mjs';
-
+import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
+import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
 
 // ピザコレクション画面
 export class PizzaCollectionScene extends Scene {
@@ -15,9 +16,6 @@ export class PizzaCollectionScene extends Scene {
         const bgm = this.previousScene == scenes.cooking ?
                     resource.bgm.MusMusBGM146 : resource.bgm.MusMusBGM103;
         this.sceneRouter.setBGM(bgm);
-        this.backButtonArea = null;
-        this.nextPageButtonArea = null;
-        this.previousPageButtonArea = null;
         this.page = 1; //ページ数
         this.pizzaFrame = [];
 
@@ -36,91 +34,92 @@ export class PizzaCollectionScene extends Scene {
         } else {
             this.pizzaInfo = this.sceneRouter.load(dataKeys.pizzaInfo);
         }
+
+        this.setUpUI();
     }
 
-    updateStates(deltaTime) {}
+    setUpUI(){
+        this.closePageButton = new SquareButton(sqbColors.white);
+        this.closePageButton.text = "閉じる";
+        this.closePageButton.scaleFactor = 0.8;
+        this.closePageButton.onClick = this.onClickClosePage.bind(this);
+
+        this.nextPageButton = new RoundButton(rndbColors.green);
+        this.nextPageButton.text = "次へ";
+        this.nextPageButton.scaleFactor = 0.8;
+        this.nextPageButton.onClick = this.onClickNextPage.bind(this);
+
+        this.previousPageButton = new RoundButton(rndbColors.green);
+        this.previousPageButton.text = "前へ";
+        this.previousPageButton.scaleFactor = 0.8;
+        this.previousPageButton.mirror = true;
+        this.previousPageButton.onClick = this.onClickPreviousPage.bind(this);
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.closePageButton.updateStates(mouse);
+        this.nextPageButton.updateStates(mouse);
+        this.previousPageButton.updateStates(mouse);
+
+        if (this.page > 1) {
+            this.previousPageButton.enable();
+        } else {
+            this.previousPageButton.disable();
+        }
+        if (pizzaOrder.length - this.pizzaFrame.length * this.page > 0) {
+            this.nextPageButton.enable();
+        } else {
+            this.nextPageButton.disable();
+        }
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
+        let image;
+
+        ctx.imageSmoothingEnabled = false;
+        image = resource.images.woodBackground;
+        ctx.drawImage(image, 0, 0, max_x, max_y);
+        image = resource.images.notebookBackground;
+        ctx.drawImage(image, 27, 24, image.width, image.height);
+        this.closePageButton.draw(ctx, 285, 537);
+        this.nextPageButton.draw(ctx, 572, 537);
+        this.previousPageButton.draw(ctx, 26, 537);
 
         // ピザと材料の画像を配置する枠の位置
-        // TODO: 計算で出した値を使うように修正すべき
-        this.pizzaFrame = [{x:25, y:100}, {x:25, y:200}, {x:25, y:300}, {x:25, y:400},
-                            {x:425, y:100}, {x:425, y:200}, {x:425, y:300}, {x:425, y:400}];
+        this.pizzaFrame = [{x:51, y:91}, {x:51, y:193}, {x:51, y:295}, {x:51, y:397},
+                            {x:443, y:91}, {x:443, y:193}, {x:443, y:295}, {x:443, y:397}];
 
-        ctx.fillStyle = "pink";
-        ctx.fillRect(0, 0, max_x, max_y);
         ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
+        ctx.font = "28px Arial";
         ctx.textAlign = "left";
-        ctx.fillText(`ピザコレクション画面${this.page}`, 50, 50);
-
-        // タイトルに戻るボタン
-        let r = { x: max_x / 2 - 100, y: max_y - 100, w: 200, h: 50 };
-        this.backButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        let buttonText;
-        switch(this.previousScene){
-            case scenes.title:
-                buttonText = "タイトルに戻る";
-                break;
-            case scenes.cooking:
-                buttonText = "調理に戻る";
-                break;
-            case scenes.stageSelection:
-                buttonText = "ステージ選択に戻る";
-                break;
-            default:
-                console.error("想定していないシーンからの遷移");
-
-        }
-        ctx.fillText(buttonText, r.x + r.w / 2, r.y + r.h / 2);
-
+        ctx.fillText(`ピザレシピ(${this.page * 2 - 1}/${Math.ceil(pizzaOrder.length / 4)})`, 48, 70);
+        ctx.fillText(`ピザレシピ(${this.page  * 2}/${Math.ceil(pizzaOrder.length / 4)})`, 440, 70);
         
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.fillStyle = "#ccbba3";
+        ctx.font = "bold 24px serif";
         ctx.textAlign = "right";
-        ctx.textBaseline = "middle";
         const slotInformationText = (this.sharedData.previousScene == scenes.title) ? 
-        "これまでに集めたピザ(スロット問わず)" : `スロット${this.sharedData.playingSlotIndex}で作ったピザ`;
-        ctx.fillText(slotInformationText, max_x - 20, 13);
+        "" : `DATA${this.sharedData.playingSlotIndex}`;
+        ctx.fillText(slotInformationText, 763, 55);
 
         this.renderPage(ctx, this.page);
+    }
 
-        if (pizzaOrder.length - this.pizzaFrame.length * this.page > 0) {
-            // 次のページに遷移するボタン
-            r = { x: max_x - 50, y: max_y - 100, w: 50, h: 50 }
-            this.nextPageButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("→", r.x + r.w / 2, r.y + r.h / 2);
-        } else {
-            this.nextPageButtonArea = null;
-        }
-        if (this.page > 1) {
-            // 前のページに遷移するボタン
-            r = { x: 0, y: max_y - 100, w: 50, h: 50 }
-            this.previousPageButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("←", r.x + r.w / 2, r.y + r.h / 2);
-        } else {
-            this.previousPageButtonArea = null;
-        }
+    onClickClosePage(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.sceneRouter.changeScene(this.previousScene);
+    }
+
+    onClickNextPage(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.page += 1;
+    }
+
+    onClickPreviousPage(){
+        this.sceneRouter.playSE(resource.se.clickEffect);
+        this.page -= 1;
     }
 
     renderPage(ctx, page) {
@@ -132,35 +131,17 @@ export class PizzaCollectionScene extends Scene {
         }
     }
 
-    // 画面内のどこかがタップされた
-    didTap(x, y) {
-        let r = this.backButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapBack();
-        }
-        r = this.nextPageButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapNextPage();
-        }
-        r = this.previousPageButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapPrePage();
-        }
-    }
-
     // ピザの画像とピザ名と材料の画像を描画
     drawPizzaAndIngredients(ctx, pizza, x, y) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(x, y, 350, 90);
 
         const isUnlocked = this.pizzaInfo.isUnlocked(pizza);
 
         // ピザ名
-        const fontSize = Math.min(24, 240 / pizzaName[pizza].length)
+        const fontSize = 26;
         ctx.fillStyle = 'black';
         ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = "left";
-        ctx.fillText(isUnlocked ? pizzaName[pizza] : "? ? ?", x + 100, y + 25);
+        ctx.fillText(isUnlocked ? pizzaName[pizza] : "？？？", x + 102, y + 20, 195);
 
         // ピザ画像
         const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;
@@ -172,25 +153,7 @@ export class PizzaCollectionScene extends Scene {
         for (let i = 0; i < ingredients.length; i++) {
             const ingredientImage = imageForIngredient(ingredients[i]);
             ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(ingredientImage, x + 100 + (i * 60), y + 38, 50, 50);
+            ctx.drawImage(ingredientImage, x + 102 + (i * 48), y + 39, 45, 45);
         }
-    }
-
-    // 「○○に戻る」ボタンがタップされた
-    didTapBack() {
-        this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(this.previousScene);
-    }
-
-    // 「→」がタップされた
-    didTapNextPage(){
-        this.sceneRouter.playSE(resource.se.clickEffect);
-        this.page += 1;
-    }
-
-    // 「←」がタップされた．
-    didTapPrePage(){
-        this.sceneRouter.playSE(resource.se.clickEffect);
-        this.page -= 1;
     }
 }

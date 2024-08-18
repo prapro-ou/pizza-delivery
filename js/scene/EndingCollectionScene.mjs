@@ -3,6 +3,8 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { resource } from '../resource.mjs';
+import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
+import { rndbColors, RoundButton } from '../component/RoundButton.mjs';
 
 // ピザコレクション画面
 export class EndingCollectionScene extends Scene {
@@ -14,60 +16,67 @@ export class EndingCollectionScene extends Scene {
         this.page = 1; //ページ数
         this.endingFrame = [];
         this.endingInfo = this.sceneRouter.load(dataKeys.endingInfo);
+        this.setUpUI();
     }
 
-    updateStates(deltaTime) {}
+    setUpUI(){
+        this.closePageButton = new SquareButton(sqbColors.white);
+        this.closePageButton.text = "閉じる";
+        this.closePageButton.scaleFactor = 0.8;
+        this.closePageButton.onClick = this.onClickClosePage.bind(this);
+
+        this.nextPageButton = new RoundButton(rndbColors.green);
+        this.nextPageButton.text = "次へ";
+        this.nextPageButton.scaleFactor = 0.8;
+        this.nextPageButton.onClick = this.onClickNextPage.bind(this);
+
+        this.previousPageButton = new RoundButton(rndbColors.green);
+        this.previousPageButton.text = "前へ";
+        this.previousPageButton.scaleFactor = 0.8;
+        this.previousPageButton.mirror = true;
+        this.previousPageButton.onClick = this.onClickPreviousPage.bind(this);
+    }
+
+    updateStates(deltaTime, mouse) {
+        this.closePageButton.updateStates(mouse);
+        this.nextPageButton.updateStates(mouse);
+        this.previousPageButton.updateStates(mouse);
+
+        if (this.page > 1) {
+            this.previousPageButton.enable();
+        } else {
+            this.previousPageButton.disable();
+        }
+        if (endingOrder.length - this.endingFrame.length * this.page > 0) {
+            this.nextPageButton.enable();
+        } else {
+            this.nextPageButton.disable();
+        }
+    }
 
     render(ctx) {
         const max_x = ctx.canvas.width;
         const max_y = ctx.canvas.height;
-
         //エンディングのテキストを配置する枠の位置
-        this.endingFrame = [{x:50, y:100}, {x:50, y:240},  {x:50, y:380},
-                            {x:430, y:100}, {x:430, y:240}, {x:430, y:380} ]
+        this.endingFrame = [{x:220, y:122}, {x:220, y:250}, {x:220, y:378},
+                            {x:582, y:122}, {x:582, y:250}, {x:582, y:378} ]
 
-        ctx.fillStyle = "pink";
-        ctx.fillRect(0, 0, max_x, max_y);
+        ctx.imageSmoothingEnabled = false;
+        const bg = resource.images.woodBackground;
+        ctx.drawImage(bg, 0, 0, max_x, max_y);
+        const bookBg = resource.images.bookBackground;
+        ctx.drawImage(bookBg, 20, 26, bookBg.width, bookBg.height);
+        this.closePageButton.draw(ctx, 285, 537);
+        this.nextPageButton.draw(ctx, 572, 537);
+        this.previousPageButton.draw(ctx, 26, 537);
+
+        const maxPage = Math.ceil(endingOrder.length / this.endingFrame.length * 2);
         ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
+        ctx.font = "28px Arial";
         ctx.textAlign = "left";
-        ctx.fillText(`エンディングコレクション画面${this.page}`, 50, 50);
-
-        // タイトルに戻るボタン
-        let r = { x: max_x / 2 - 100, y: max_y - 100, w: 200, h: 50 };
-        this.backButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
-
-        if (endingOrder.length - this.endingFrame.length * this.page > 0) {
-            r = { x: max_x - 50, y: max_y - 100, w: 50, h: 50 }
-            this.nextPageButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("→", r.x + r.w / 2, r.y + r.h / 2);
-        }
-
-        if (this.page > 1) {
-            r = { x: 0, y: max_y - 100, w: 50, h: 50 }
-            this.previousPageButtonArea = r;
-            ctx.fillStyle = "blue";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.fillStyle = "white";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("←", r.x + r.w / 2, r.y + r.h / 2);
-        }
-
+        ctx.textBaseLine = "middle";
+        ctx.fillText(`エンディング集 (${this.page * 2 - 1}/${maxPage})`, 60, 72);
+        ctx.fillText(`エンディング集 (${this.page * 2}/${maxPage})`, 422, 72);
         this.renderPage(ctx, this.page);
     }
 
@@ -81,24 +90,13 @@ export class EndingCollectionScene extends Scene {
     }
 
     drawEnding(ctx, ending, x, y) {
-        // エンディングの画像とヒントを表示する矩形を配置
-        ctx.fillStyle = "white";
-        ctx.fillRect(x, y, 320, 120);
-
         // エンディングのテキストを配置
         const isUnlocked = this.endingInfo.isUnlocked(ending);
-        if (isUnlocked) {
-            const fontSize = Math.min(250 / 11, 250 / endingName[ending].length);
-            ctx.fillStyle = "black";
-            ctx.font = `${fontSize}px Arial`;
-            ctx.textAlign = "center";
-            ctx.fillText(endingName[ending], x + 320 / 2, y + 30);
-        } else {
-            ctx.fillStyle = "black";
-            ctx.font = `${250 / 11}px Arial`;
-            ctx.textAlign = "center";
-            ctx.fillText("？？？", x + 320 / 2, y + 30);
-        }
+        ctx.fillStyle = "black";
+        ctx.font = "24px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseLine = "middle";
+        ctx.fillText(isUnlocked ? endingName[ending] : "？？？", x, y, 300);
 
         // ヒントのテキストを配置
         ctx.fillStyle = "black";
@@ -106,42 +104,22 @@ export class EndingCollectionScene extends Scene {
         ctx.textAlign = "left";
         const hintLines = endingHint[ending].split("\n");
         for (let i = 0; i < hintLines.length; i++) {
-            ctx.fillText(hintLines[i], x + 10 , y + 60 + 22 * i);
+            ctx.fillText(hintLines[i], x - 150 , y + 30 + 22 * i, 300);
         }
     }
 
-    // 画面内のどこかがタップされた
-    didTap(x, y) {
-        let r = this.backButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapBack();
-        }
-        r = this.nextPageButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapNextPage();
-        }
-        r = this.previousPageButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapPrePage();
-        }
-    }
-
-    // 「タイトルに戻る」ボタンがタップされた
-    didTapBack() {
+    onClickClosePage(){
         this.sceneRouter.playSE(resource.se.clickEffect);
         this.sceneRouter.changeScene(scenes.title);
     }
 
-    // 「→」がタップされた
-    didTapNextPage(){
+    onClickNextPage(){
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.page = 2;
-
+        this.page += 1;
     }
 
-    // 「←」がタップされた．
-    didTapPrePage(){
+    onClickPreviousPage(){
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.page = 1;
+        this.page -= 1;
     }
 }

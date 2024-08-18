@@ -14,7 +14,6 @@ import { buttonStates, ColorButton } from '../component/Button.mjs';
 //   - this.sharedData.playingSlotIndex: 現在プレイしているスロット番号
 export class SlotSelectionScene extends Scene {
     sceneWillAppear(){
-        this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.setUpUI();
     }
 

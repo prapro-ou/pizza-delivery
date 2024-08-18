@@ -25,8 +25,8 @@ export const stage3 =
         {d: 2557, x: 71},
         {d: 2768, x: 52},
         {d: 3000, x: 50},
-        ],
-        obstacles: [
+    ],
+    obstacles: [
         {type: obstacleType.speedingBoard, d: 3, x: 50},
         {type: obstacleType.speedingBoard, d: 42, x: 43},
         {type: obstacleType.speedingBoard, d: 64, x: 68},
@@ -123,8 +123,8 @@ export const stage3 =
         {type: obstacleType.speedingBoard, d: 333, x: 64},
         {type: obstacleType.speedingBoard, d: 240, x: 37},
         {type: obstacleType.speedingBoard, d: 140, x: 32},
-        ],
-        ingredients: [
+    ],
+    ingredients: [
         {d: 1002, x: 42},
         {d: 1103, x: 70},
         {d: 1350, x: 23},
@@ -156,8 +156,8 @@ export const stage3 =
     targetTime: 25,
     inertia: false,
     nightMode: false,
-    background: resource.images.bg3,
     speedMode: speedModes.fast,
     nCars: 3,
+    background: resource.images.bg3,
     bgm: resource.bgm.MusMusBGM122,
 };

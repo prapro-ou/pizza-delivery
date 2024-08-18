@@ -59,8 +59,9 @@ const imagePaths = {
     bg1:    "resource/image/background/1_noon.png",
     bg3:    "resource/image/background/3_highway.png",
     bg4:    "resource/image/background/4_desert.png",
-    redHeart:  "resource/image/max_heart.png",
-    blackHeart:  "resource/image/empty_heart.png",
+    bg5:    "resource/image/background/5_ice.png",
+    maxHeart:           "resource/image/max_heart.png",
+    emptyHeart:         "resource/image/empty_heart.png",
     titleBackground:    "resource/image/background/title_background.png",
     woodBackground:     "resource/image/background/wood_backgrond.png",
     brownArrow:         "resource/image/background/brown_arrow.png",
@@ -78,7 +79,10 @@ const imagePaths = {
     stageButton:    "resource/image/ui/stage_button.png",
     recipeButton:   "resource/image/ui/recipe_button.png",
     bookButton:     "resource/image/ui/book_button.png",
-    topButton:      "resource/image/ui/top_button.png"
+    topButton:      "resource/image/ui/top_button.png",
+
+    // フォント
+    theStrongGamerWhiteFont: "resource/image/font/the_strong_gamer_white_font.png",
 }
 
 // BGMのパス一覧

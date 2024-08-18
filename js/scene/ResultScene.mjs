@@ -163,7 +163,7 @@ export class ResultScene extends Scene {
         });
         lines.push((y) => {
             ctx.textAlign = "left";
-            ctx.fillText(pizzaName[this.pizza], left, y);
+            ctx.fillText(pizzaName[this.pizza].slice(0, 9), left, y);
             ctx.textAlign = "right";
             ctx.fillText(i2s(pizzaScore[this.pizza]), right, y);
         });
@@ -175,7 +175,7 @@ export class ResultScene extends Scene {
             if (count == 1) {
                 lines.push((y) => {
                     ctx.textAlign = "left";
-                    ctx.fillText(ingredientName[ingredient], left, y);
+                    ctx.fillText(ingredientName[ingredient].slice(0, 9), left, y);
                     ctx.textAlign = "right";
                     ctx.fillText(i2s(ingredientScore[ingredient]), right, y);
                 })

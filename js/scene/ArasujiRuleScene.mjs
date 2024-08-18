@@ -82,9 +82,15 @@ export class ArasujiRuleScene extends Scene {
         ctx.textBaseLine = "middle";
         ctx.fillText(titles[page - 1], x + 18, y + 42);
 
+        ctx.fillStyle = "black";
+        ctx.font = "15.5px Arial";
+        ctx.textAlign = "left";
+        ctx.textBaseLine = "middle";
+        ctx.imageSmoothingEnabled = true;
+        let lines;
         switch (page) {
             case 1:
-                const lines = [
+                lines = [
                     "ピザ配達でアルバイトを始めた主人公。",
                     "",
                     "いつものように配達の準備をしていると、",
@@ -102,24 +108,60 @@ export class ArasujiRuleScene extends Scene {
                     "",
                     "「食材は拾った」",
                 ];
-                ctx.fillStyle = "black";
-                ctx.font = "15.5px Arial";
-                ctx.textAlign = "left";
-                ctx.textBaseLine = "middle";
                 for (let i = 0; i < lines.length; i++) {
                     ctx.fillText(lines[i], x + 23, y + 78 + 24 * i, width - 40);
                 }
                 break;
 
             case 2:
+                this.drawImage(ctx, resource.images.screenshot01, x + 25, y + 60, width - 50);
+                lines = [
+                    "まずは、バイクの運転方法！",
+                    "PCの人は方向キー(↑↓←→)、スマホやタブ",
+                    "レットの人は画面内のどこかをタップした",
+                    "まま引っ張ると操作できるよ。",
+                    "← 左　→ 右　↑ 加速　↓ ブレーキ",
+                    "（少しだけ左とか加速とかはできないよ）",
+                ];
+                for (let i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], x + 23, y + 318 + 24 * i, width - 40);
+                }
                 break;
 
             case 3:
+                this.drawImage(ctx, resource.images.screenshot01, x + 25, y + 60, width - 50);
+                lines = [
+                    "次に、画面について！",
+                    "道に落ちている食材に触れると、右上の",
+                    "アイテム欄に追加されるよ。",
+                    "車や泥などの障害物にぶつかると左下の",
+                    "ライフが減少するよ。３回ぶつかると",
+                    "ゲームオーバーなので気をつけて！",
+                ];
+                for (let i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], x + 23, y + 318 + 24 * i, width - 40);
+                }
                 break;
 
             case 4:
+                this.drawImage(ctx, resource.images.screenshot02, x + 25, y + 60, width - 50);
+                lines = [
+                    "配達場所まで到着したら、ピザを焼いて",
+                    "顧客に提供するよ！",
+                    "集めた食材の中から４つを選んでピザを",
+                    "作るよ。食材の組み合わせについては",
+                    "右上のピザレシピを参考にしてみてね！",
+                    "ちなみに、拾える食材は８つまでだよ。",
+                ];
+                for (let i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], x + 23, y + 318 + 24 * i, width - 40);
+                }
                 break;
         }
+    }
+
+    drawImage(ctx, image, x, y, width) {
+        ctx.drawImage(image, x, y, width, width * image.height / image.width);
     }
 
     onClickClosePage(){

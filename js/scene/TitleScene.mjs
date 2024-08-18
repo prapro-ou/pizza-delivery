@@ -27,7 +27,6 @@ export class TitleScene extends Scene {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
 
         this.setUpUI();
-
     }
 
     setUpUI() {
@@ -60,6 +59,10 @@ export class TitleScene extends Scene {
         this.recipeButton.updateStates(mouse);
         this.endingButton.updateStates(mouse);
         this.soundButton.updateStates(mouse);
+    }
+
+    updateStatesWhileModalPresenting(deltaTime) {
+        this.soundButton.setSoundButtonState(this.sharedData.soundOn ? sndbStates.on : sndbStates.off);
     }
 
     render(ctx) {
@@ -122,7 +125,7 @@ export class TitleScene extends Scene {
 
     onClickConfig() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.config);
+        this.sceneRouter.presentModal(scenes.config);
     }
 
     onClickRecipe() {

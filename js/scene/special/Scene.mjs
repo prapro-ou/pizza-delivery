@@ -36,6 +36,9 @@ export class Scene {
         console.error("シーンに updateStates(deltaTime, mouse, pressedKeys) が実装されていません。");
     }
 
+    // モーダル表示中にバックグラウンドで行う状態更新処理
+    updateStatesWhileModalPresenting(deltaTime, mouse, pressedKeys) {}
+
     /**
      * シーンをキャンバスに描画する。
      * @param {CanvasRenderingContext2D} ctx - canvas.getContext('2d')で得られたオブジェクト

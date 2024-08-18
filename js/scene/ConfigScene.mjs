@@ -1,7 +1,7 @@
 import { Scene } from './special/Scene.mjs';
-import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
+import { buttonStates, ColorButton } from '../component/Button.mjs';
 
 const sliders = {
     bgm: "sliders.bgm",
@@ -12,16 +12,24 @@ const sliders = {
 export class ConfigScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
-        this.backButtonArea = null;
-        this.volumeButtonArea = null;
-        this.seButtonArea = null;
         this.bgmSliderArea = null; // { x: 100, y: 200, w: 300, h: 20 };
         this.seSliderArea = null; // { x: 100, y: 300, w: 300, h: 20 };
         this.draggingSlider = null; // 現在ドラッグ中のスライダー
         this.userConfig = this.sceneRouter.load(dataKeys.userConfig);
+        this.setUpUI();
+    }
+
+    setUpUI() {
+        this.closeButton = new ColorButton({
+            [buttonStates.normal]: "rgba(179, 9, 33, 0.75)",
+            [buttonStates.hovered]: "rgba(179, 9, 33, 1.0)",
+            [buttonStates.clicked]: "rgba(127, 6, 22, 1.0)",
+        });
+        this.closeButton.onClick = this.onClickClose.bind(this);
     }
 
     updateStates(deltaTime, mouse) {
+        this.closeButton.updateStates(mouse)
         if (mouse.isDown && this.bgmSliderArea && this.seSliderArea) {
             if (this.draggingSlider) {
                 this.updateSlider(mouse.x, this.draggingSlider);
@@ -34,52 +42,44 @@ export class ConfigScene extends Scene {
     }
 
     render(ctx) {
-        const max_x = ctx.canvas.width;
-        const max_y = ctx.canvas.height;
+        const maxX = ctx.canvas.width;
+        const maxY = ctx.canvas.height;
+        const [width, height] = [522, 293];
+        const [x, y] = [(maxX - width) / 2, (maxY - height) / 2 + 10];
 
-        ctx.fillStyle = "lightblue";
-        ctx.fillRect(0, 0, max_x, max_y);
-        ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
+        ctx.fillStyle = "rgba(30, 30, 102, 0.7)";
+        ctx.fillRect(x, y, width, height);
+
+        this.closeButton.draw(ctx, x + width - 71, y, 71, 71);
+        ctx.fillStyle = "white";
+        ctx.font = "100px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("設定画面", 50, 50);
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText("×", x + width - 65, y + 71);
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.fillRect(x + 14, y + 12, width - 91, 59);
+        ctx.fillStyle = "rgba(206, 255, 255, 0.7)";
+        ctx.fillRect(x + 14, y + 78, width - 28, 98);
+        ctx.fillStyle = "rgba(206, 255, 255, 0.7)";
+        ctx.fillRect(x + 14, y + 183, width - 28, 98);
+        this.bgmSliderArea = { x: maxX / 2 - 150, y: y + 130, w: 300, h: 20 };
+        this.seSliderArea = { x: maxX / 2 - 150, y: y + 235, w: 300, h: 20 };
+
+        ctx.fillStyle = "black";
+        ctx.font = "34px Arial";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("音量設定", x + 24, y + 46);
 
         // 音量スライダー
-        this.bgmSliderArea = {
-            x: max_x / 2 - 150,
-            y: max_y / 2 - 70,
-            w: 300,
-            h: 20
-        };
         this.drawSlider(ctx, this.bgmSliderArea, "BGM Volume", this.userConfig.bgmVolume);
-        this.seSliderArea = {
-            x: max_x / 2 - 150,
-            y: max_y / 2 + 50,
-            w: 300,
-            h: 20
-        };
         this.drawSlider(ctx, this.seSliderArea, "SE Volume", this.userConfig.seVolume);
-
-        // タイトルに戻るボタン
-        let r = {
-            x: max_x / 2 - 100,
-            y: max_y - 100,
-            w: 200,
-            h: 50
-        };
-        this.backButtonArea = r;
-        ctx.fillStyle = "blue";
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("タイトルに戻る", r.x + r.w / 2, r.y + r.h / 2);
     }
 
     drawSlider(ctx, area, label, value) {
         ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
+        ctx.font = "italic 20px Arial";
         ctx.textAlign = "left";
         ctx.fillText(`${label}  ${Math.round(value * 100)}%`, area.x, area.y - 20);
 
@@ -91,23 +91,20 @@ export class ConfigScene extends Scene {
         ctx.fillRect(knobX - 10, area.y - 5, 20, area.h + 10);
     }
 
-    didTap(x, y) {
-        let r = this.backButtonArea;
-        if (r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-            this.didTapBack();
-        }
-    }
-
-    didTapBack() {
+    onClickClose(){
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.title);
+        this.sceneRouter.dismissModal();
     }
 
     checkSliderDragStart(x, y) {
         if (this.isWithinSlider(x, y, this.bgmSliderArea)) {
             this.draggingSlider = sliders.bgm;
+            this.sharedData.soundOn = true;
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         } else if (this.isWithinSlider(x, y, this.seSliderArea)) {
             this.draggingSlider = sliders.se;
+            this.sharedData.soundOn = true;
+            this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         }
     }
 

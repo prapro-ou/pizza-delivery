@@ -60,6 +60,17 @@ export class PizzaCollectionScene extends Scene {
         this.closePageButton.updateStates(mouse);
         this.nextPageButton.updateStates(mouse);
         this.previousPageButton.updateStates(mouse);
+
+        if (this.page > 1) {
+            this.previousPageButton.enable();
+        } else {
+            this.previousPageButton.disable();
+        }
+        if (pizzaOrder.length - this.pizzaFrame.length * this.page > 0) {
+            this.nextPageButton.enable();
+        } else {
+            this.nextPageButton.disable();
+        }
     }
 
     render(ctx) {
@@ -72,15 +83,6 @@ export class PizzaCollectionScene extends Scene {
         ctx.drawImage(image, 0, 0, max_x, max_y);
         image = resource.images.notebookBackground;
         ctx.drawImage(image, 27, 24, image.width, image.height);
-
-        if(this.page == 1) {
-            this.nextPageButton.enable();
-            this.previousPageButton.disable();
-        } else {
-            this.nextPageButton.disable();
-            this.previousPageButton.enable();
-        }
-        
         this.closePageButton.draw(ctx, 285, 537);
         this.nextPageButton.draw(ctx, 572, 537);
         this.previousPageButton.draw(ctx, 26, 537);
@@ -92,9 +94,9 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillStyle = "black";
         ctx.font = "28px Arial";
         ctx.textAlign = "left";
-        ctx.fillText(`ピザレシピ(${this.page * 2 - 1}/4)`, 48, 70);
-        ctx.fillText(`ピザレシピ(${this.page  * 2}/4)`, 440, 70);
-      
+        ctx.fillText(`ピザレシピ(${this.page * 2 - 1}/${Math.ceil(pizzaOrder.length / 4)})`, 48, 70);
+        ctx.fillText(`ピザレシピ(${this.page  * 2}/${Math.ceil(pizzaOrder.length / 4)})`, 440, 70);
+        
         ctx.fillStyle = "#ccbba3";
         ctx.font = "bold 24px serif";
         ctx.textAlign = "right";

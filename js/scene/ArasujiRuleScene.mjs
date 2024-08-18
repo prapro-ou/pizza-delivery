@@ -2,7 +2,8 @@ import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
 import { resource } from '../resource.mjs';
 
-export class ArasujiScene extends Scene {
+// あらすじとルール説明を表示する画面
+export class ArasujiRuleScene extends Scene {
     sceneWillAppear() {
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
         this.deliveryButtonArea = null;
@@ -70,7 +71,7 @@ export class ArasujiScene extends Scene {
 
     didTapDelivery() {
         this.sceneRouter.playSE(resource.se.clickEffect);
-        this.sceneRouter.changeScene(scenes.rule);
+        this.sceneRouter.changeScene(scenes.stageSelection);
     }
 
 }

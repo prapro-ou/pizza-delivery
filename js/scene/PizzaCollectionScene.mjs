@@ -13,7 +13,6 @@ import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
 export class PizzaCollectionScene extends Scene {
     sceneWillAppear() {
         this.previousScene = this.sharedData.previousScene;
-        this.sharedData.playingSlotIndex = 1;
         const bgm = this.previousScene == scenes.cooking ?
                     resource.bgm.MusMusBGM146 : resource.bgm.MusMusBGM103;
         this.sceneRouter.setBGM(bgm);
@@ -42,7 +41,6 @@ export class PizzaCollectionScene extends Scene {
     setUpUI(){
         this.closePageButton = new SquareButton(sqbColors.white);
         this.closePageButton.text = "閉じる";
-        this.closePageButton.mirror = true;
         this.closePageButton.scaleFactor = 0.8;
         this.closePageButton.onClick = this.onClickClosePage.bind(this);
 
@@ -141,7 +139,7 @@ export class PizzaCollectionScene extends Scene {
         ctx.fillStyle = 'black';
         ctx.font = `${fontSize}px Arial`;
         ctx.textAlign = "left";
-        ctx.fillText(isUnlocked ? pizzaName[pizza] : "？？？", x + 102, y + 20);
+        ctx.fillText(isUnlocked ? pizzaName[pizza] : "？？？", x + 102, y + 20, 195);
 
         // ピザ画像
         const pizzaImage = isUnlocked ? imageForPizza(pizza): resource.images.unknownPizza;

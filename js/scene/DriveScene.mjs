@@ -336,8 +336,8 @@ export class DriveScene extends Scene {
         for (let d = firstD; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize) + lampDistance; d += lampDistance) {
             const { left, right } = this.roadX(d);
             shadowPoint.push(
-                { x: left, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
-                { x: right, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
+                { x: left + 1, d: d, cos: 1, sin: 0, coefficient: 1, r: 16 },
+                { x: right - 1, d: d, cos: 1, sin: 0, coefficient: 1, r: 16 },
             )
         }
         this.stage.cars.forEach((car) => {

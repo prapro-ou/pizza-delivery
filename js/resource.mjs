@@ -57,6 +57,7 @@ const imagePaths = {
 
     //背景
     bg1:    "resource/image/background/1_noon.png",
+    bg2:    "resource/image/background/2_night.png",
     bg3:    "resource/image/background/3_highway.png",
     bg4:    "resource/image/background/4_desert.png",
     bg5:    "resource/image/background/5_ice.png",

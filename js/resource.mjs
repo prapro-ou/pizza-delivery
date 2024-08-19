@@ -70,6 +70,7 @@ const imagePaths = {
     itemBackGround:     "resource/image/background/item_background.png",
     itemBackGroundBig:  "resource/image/background/item_background_big.png",
     notebookBackground: "resource/image/background/notebook_background.png",
+    bookBackground:     "resource/image/background/book_background.png",
 
     // UI
     soundButton:    "resource/image/ui/sound_button.png",

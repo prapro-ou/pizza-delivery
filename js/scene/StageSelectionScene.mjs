@@ -41,7 +41,7 @@ export class StageSelectionScene extends Scene {
         this.topButton.onClick = this.onClickTop.bind(this);
 
         this.endingButton = new SquareButton(this.ending ? sqbColors.white : sqbColors.green);
-        this.endingButton.text = "エンディング";
+        this.endingButton.text = "配達を終える";
         this.endingButton.onClick = this.onClickEnding.bind(this);
 
         this.stageButtons = [];

@@ -83,6 +83,10 @@ const imagePaths = {
 
     // フォント
     theStrongGamerWhiteFont: "resource/image/font/the_strong_gamer_white_font.png",
+
+    // スクリーンショット
+    screenshot01:   "resource/image/screenshot/screenshot01.png",
+    screenshot02:   "resource/image/screenshot/screenshot02.png",
 }
 
 // BGMのパス一覧

@@ -1,10 +1,9 @@
 import { TitleScene } from "../TitleScene.mjs";
-import { ArasujiScene } from "../ArasujiScene.mjs";
+import { ArasujiRuleScene } from "../ArasujiRuleScene.mjs";
 import { SlotSelectionScene } from "../SlotSelectionScene.mjs";
 import { ConfigScene } from "../ConfigScene.mjs";
 import { PizzaCollectionScene } from "../PizzaCollectionScene.mjs";
 import { EndingCollectionScene} from "../EndingCollectionScene.mjs";
-import { RuleScene } from "../RuleScene.mjs";
 import { StageSelectionScene } from "../StageSelectionScene.mjs";
 import { DriveScene } from "../DriveScene.mjs";
 import { ResultScene } from "../ResultScene.mjs";
@@ -14,12 +13,11 @@ import { EndingScene } from "../EndingScene.mjs";
 // すべてのシーンの列挙した連想配列
 export const scenes = {
     title: "scene-title",
-    arasuji: "scene-arasuji",
+    arasujiRule: "scene-arasujiRule",
     slotSelection: "scene-slotSelection",
     config: "scene-config",
     pizzaCollection: "scene-pizzaCollection",
     endingCollection: "scene-endingCollection",
-    rule: "scene-rule",
     stageSelection: "scene-stageSelection",
     drive: "scene-drive",
     result: "scene-result",
@@ -33,8 +31,8 @@ export function makeScene(scene, sceneRouter, sharedData) {
         case scenes.title:
             return new TitleScene(sceneRouter, sharedData);
 
-        case scenes.arasuji:
-            return new ArasujiScene(sceneRouter, sharedData);
+        case scenes.arasujiRule:
+            return new ArasujiRuleScene(sceneRouter, sharedData);
 
         case scenes.slotSelection:
             return new SlotSelectionScene(sceneRouter, sharedData);
@@ -44,9 +42,6 @@ export function makeScene(scene, sceneRouter, sharedData) {
 
         case scenes.endingCollection:
             return new EndingCollectionScene(sceneRouter, sharedData);
-
-        case scenes.rule:
-            return new RuleScene(sceneRouter, sharedData);
 
         case scenes.stageSelection:
             return new StageSelectionScene(sceneRouter, sharedData);

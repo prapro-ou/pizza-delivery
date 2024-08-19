@@ -117,7 +117,7 @@ export class TitleScene extends Scene {
         this.sharedData.onSelectSlot = null;
         this.sharedData.playingSlotIndex = slotIndex;
         if (this.playFromBeginning) {
-            this.sceneRouter.changeScene(scenes.arasuji);
+            this.sceneRouter.changeScene(scenes.arasujiRule);
         } else {
             this.sceneRouter.changeScene(scenes.stageSelection);
         }

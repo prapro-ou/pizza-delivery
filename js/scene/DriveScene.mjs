@@ -346,7 +346,7 @@ export class DriveScene extends Scene {
                 const alphas = shadowPoint.map((p) => {
                     const dx = (x - p.x);
                     const dd = (d - p.d);
-                    return ((dx * p.cos + dd * p.sin)**2 + (-dx * p.sin + dd * p.cos)**2 * p.coefficient) / p.r**2
+                    return Math.sqrt(((dx * p.cos + dd * p.sin)**2 + (-dx * p.sin + dd * p.cos)**2 * p.coefficient)) / p.r
                 })
                 const alpha = 0.9 - alphas.map((a) => Math.max(0.9 - a, 0)).reduce((sum, tmp) => sum + tmp, 0)
                 ctx.fillStyle = "rgba(" + [0, 0, 0, alpha] + ")";

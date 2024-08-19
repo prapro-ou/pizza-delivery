@@ -238,7 +238,7 @@ export class DriveScene extends Scene {
         }
 
         this.stage.cars = this.stage.cars.filter((car) =>
-            car.d >= this.cameraDistance - car.image.height * car.scaleFactor / this.pixelSize - 4);
+            car.d >= this.cameraDistance - car.image.height * car.scaleFactor / this.pixelSize - 14);
     }
 
     moveCars(deltaTime) {
@@ -324,11 +324,11 @@ export class DriveScene extends Scene {
         const shadowPoint = [
             {
                 x: this.player.x,
-                d: this.player.d,
+                d: this.player.d + 6,
                 cos: Math.cos(-this.player.theta),
                 sin: Math.sin(-this.player.theta),
                 coefficient: 1 / 2,
-                r: 15.2
+                r: 22
             }
         ]
         const lampDistance = 40;
@@ -336,17 +336,22 @@ export class DriveScene extends Scene {
         for (let d = firstD; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize) + lampDistance; d += lampDistance) {
             const { left, right } = this.roadX(d);
             shadowPoint.push(
-                { x: left, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
-                { x: right, d: d, cos: 1, sin: 0, coefficient: 1, r: 13 },
+                { x: left + 1, d: d, cos: 1, sin: 0, coefficient: 1, r: 16 },
+                { x: right - 1, d: d, cos: 1, sin: 0, coefficient: 1, r: 16 },
             )
         }
+        this.stage.cars.forEach((car) => {
+            shadowPoint.push(
+                { x: car.x, d: car.d + 6, cos: 1, sin: 0, coefficient: 1 / 3, r: 14 }
+            )
+        });
         for (let d = this.cameraDistance; d <= this.cameraDistance + Math.ceil(max_y / this.pixelSize); d++) {
             for (let x = 0; x < max_x / this.pixelSize + 1; x++) {
                 // 個別の光源で計算された alpha の値
                 const alphas = shadowPoint.map((p) => {
                     const dx = (x - p.x);
                     const dd = (d - p.d);
-                    return ((dx * p.cos + dd * p.sin)**2 + (-dx * p.sin + dd * p.cos)**2 * p.coefficient) / p.r**2
+                    return Math.sqrt(((dx * p.cos + dd * p.sin)**2 + (-dx * p.sin + dd * p.cos)**2 * p.coefficient)) / p.r
                 })
                 const alpha = 0.9 - alphas.map((a) => Math.max(0.9 - a, 0)).reduce((sum, tmp) => sum + tmp, 0)
                 ctx.fillStyle = "rgba(" + [0, 0, 0, alpha] + ")";

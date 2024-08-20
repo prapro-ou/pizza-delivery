@@ -149,9 +149,7 @@ export class PizzaCollectionScene extends Scene {
         ctx.drawImage(pizzaImage, x, y, 90, 90);
 
         // 材料画像
-        const ingredients = recipe[pizza];
-
-        
+        const ingredients = recipe[pizza];       
         for (let i = 0; i < ingredients.length; i++) {
             const ingredientImage = imageForIngredient(ingredients[i]);
             ctx.imageSmoothingEnabled = false;

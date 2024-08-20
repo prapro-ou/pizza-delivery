@@ -161,7 +161,7 @@ export function judgeEnding(slot) {
         return endings.入院エンド;
     } else if(slot.stageResults && isEveryExceedTargetTime){
         return endings.ピザ生地冷めちゃったエンド;
-    } else if(pizzasType == Object.values(pizzas).length - 1 && totalScore >= 10000){
+    } else if(pizzasType == Object.values(pizzas).length - 1 && totalScore >= 50000){
         return endings.パーフェクトエンド;
     } else if(totalDoughRatio >= 0.6){
         return endings.素材の味エンド;
@@ -171,11 +171,11 @@ export function judgeEnding(slot) {
         return endings.本場リスペクトエンド;
     } else if(pizzasType >= Math.floor(Object.values(pizzas).length * 0.75)){
         return endings.ピザ博士エンド;
-    } else if(totalScore >= 10000){
+    } else if(totalScore >= 30000){
         return endings.イタリア修行エンド;
     } else if(slot.stageResults.length >= 8){
         return endings.満腹エンド;
-    } else if(totalScore >= 5000){
+    } else if(totalScore >= 15000){
         return endings.社員エンド;
     } else {
         return endings.ピザ見習いエンド;

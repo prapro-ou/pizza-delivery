@@ -1,7 +1,7 @@
 // ステージを1回クリアするごとに生成される結果の情報
 export class StageResult {
-    constructor(stage, score, pizza, goalTime, gameOverCount, collisionCount, collectedIngredient) {
-        this.stage = stage;
+    constructor(stageNumber, score, pizza, goalTime, gameOverCount, collisionCount, collectedIngredient) {
+        this.stageNumber = stageNumber;
         this.score = score;
         this.pizza = pizza;
         this.goalTime = goalTime;
@@ -11,8 +11,9 @@ export class StageResult {
     }
 
     static createFromJSONData(data) {
+        if (data.stage) data.stageNumber = data.stage.stageNumber;  // 古いバージョンとの互換性保持
         return new StageResult(
-            data.stage,
+            data.stageNumber,
             data.score,
             data.pizza,
             data.goalTime,

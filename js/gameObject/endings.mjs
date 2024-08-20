@@ -129,14 +129,14 @@ export function judgeEnding(slot) {
 
     const isEveryExceedTargetTime =
     slot.stageResults.every(result => {
-        const stage = result.stage;
+        const stage = stages[result.stageNumber];
         return stage && result.goalTime > stage.targetTime;
     })
 
     const totalScore = Object.keys(stages).map((stageNumber) =>
         // stages[stageNumber] のスコアの最大値
         slot.stageResults
-            .filter((result) => result.stage.stageNumber == stageNumber)
+            .filter((result) => result.stageNumber == stageNumber)
             .map((result) => result.score)
             .reduce((maxScore, score) => Math.max(maxScore, score))
     ).reduce((total, score) => total + score, 0)

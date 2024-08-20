@@ -106,7 +106,6 @@ export const pizzaOrder = [
 // ピザの優先順位: getPizzaでの判定順
 export const pizzaPriorityOrder = [
     pizzas.dough,
-    pizzas.unfinishedPizza,
     pizzas.shiningMushroomPizza,
     pizzas.strangePizza,
     pizzas.marinara,
@@ -120,6 +119,7 @@ export const pizzaPriorityOrder = [
     pizzas.mayoCorn,
     pizzas.meatPizza,
     pizzas.baconPizza,
+    pizzas.unfinishedPizza,
     pizzas.uniquePizza,
 ]
 

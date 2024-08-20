@@ -80,6 +80,7 @@ const imagePaths = {
     recipeButton:   "resource/image/ui/recipe_button.png",
     bookButton:     "resource/image/ui/book_button.png",
     topButton:      "resource/image/ui/top_button.png",
+    creditButton:   "resource/image/ui/credit_button.png",
 
     // フォント
     theStrongGamerWhiteFont: "resource/image/font/the_strong_gamer_white_font.png",

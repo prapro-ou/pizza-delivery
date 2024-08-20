@@ -7,7 +7,9 @@ import { sqbColors, SquareButton } from '../component/SquareButton.mjs';
 import { PizzaRecipeButton } from '../component/PizzaRecipeButton.mjs';
 import { EndingButton } from '../component/EndingButton.mjs';
 import { sndbStates, SoundButton } from '../component/SoundButton.mjs';
+import { CreditButton } from '../component/CreditButton.mjs';
 
+const creditURL = "https://github.com/prapro-ou/pizza-delivery/blob/main/README.md#%E3%82%AF%E3%83%AC%E3%82%B8%E3%83%83%E3%83%88";
 let appearsFirstTime = true;
 
 // - 出力
@@ -50,6 +52,9 @@ export class TitleScene extends Scene {
 
         this.soundButton = new SoundButton(this.sharedData.soundOn ? sndbStates.on : sndbStates.off);
         this.soundButton.onClick = this.onClickSound.bind(this);
+
+        this.creditButton = new CreditButton();
+        this.creditButton.onClick = this.onClickCredit.bind(this);
     }
 
     updateStates(deltaTime, mouse) {
@@ -59,6 +64,7 @@ export class TitleScene extends Scene {
         this.recipeButton.updateStates(mouse);
         this.endingButton.updateStates(mouse);
         this.soundButton.updateStates(mouse);
+        this.creditButton.updateStates(mouse);
     }
 
     updateStatesWhileModalPresenting(deltaTime) {
@@ -78,6 +84,7 @@ export class TitleScene extends Scene {
         this.recipeButton.draw(ctx, 22, 380);
         this.endingButton.draw(ctx, 130, 320);
         this.soundButton.draw(ctx, max_x - 86, 16);
+        this.creditButton.draw(ctx, 20, 16);
     }
 
     onClickStartFromBeginning() {
@@ -143,5 +150,9 @@ export class TitleScene extends Scene {
         this.sharedData.soundOn = !this.sharedData.soundOn;
         this.soundButton.setSoundButtonState(this.sharedData.soundOn ? sndbStates.on : sndbStates.off)
         this.sceneRouter.setBGM(resource.bgm.MusMusBGM103);
+    }
+
+    onClickCredit() {
+        window.location.href = creditURL;
     }
 }

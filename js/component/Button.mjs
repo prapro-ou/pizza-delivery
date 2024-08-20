@@ -20,7 +20,7 @@ export class Button {
 
     updateStates(mouse) {
         if (this.state == buttonStates.disabled) return;
-        if (!this.x || !this.y) return;
+        if (this.x == null || this.y == null) return;
 
         const isMouseInside = this.isInside(mouse.x, mouse.y);
         const clickStartedInside = this.isInside(mouse.startX, mouse.startY);

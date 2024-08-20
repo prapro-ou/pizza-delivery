@@ -85,7 +85,7 @@ export class StageSelectionScene extends Scene {
             if (!unlocked) this.stageButtons[i].state = buttonStates.disabled;
 
             ctx.fillStyle = unlocked ? colors[i] : "gray";
-            ctx.font = "bold 36px Baskerville";
+            ctx.font = "bold 36px serif";
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
             ctx.fillText(`STAGE ${i+1}`, x + 140, y + 30);

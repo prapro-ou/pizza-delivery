@@ -36,8 +36,8 @@ const imagePaths = {
     tomato:     "resource/image/ingredient/tomato.png",
 
     // ピザ
-    baconPizza:         "resource/image/pizza/bacon_kari.png",
-    diabola:            "resource/image/pizza/diabola_kari.png",
+    baconPizza:         "resource/image/pizza/bacon.png",
+    diabola:            "resource/image/pizza/diabola.png",
     dough:              "resource/image/pizza/dough.png",
     margherita:         "resource/image/pizza/margherita.png",
     marinara:           "resource/image/pizza/marinara.png",
@@ -47,11 +47,11 @@ const imagePaths = {
     seafood:            "resource/image/pizza/seafood.png",
     shiningMushroomPizza:
                         "resource/image/pizza/shining_mushroom.png",
-    spicySeafood:       "resource/image/pizza/spicy_seafood_kari.png",
+    spicySeafood:       "resource/image/pizza/spicy_seafood.png",
     strangePizza:       "resource/image/pizza/strange.png",
     teriyakiPizza:      "resource/image/pizza/teriyaki.png",
-    unfinishedPizza:    "resource/image/pizza/unfinished_pizza_kari.png",
-    uniquePizza:        "resource/image/pizza/unique_kari.png",
+    unfinishedPizza:    "resource/image/pizza/unfinished.png",
+    uniquePizza:        "resource/image/pizza/unique.png",
     unknownPizza:       "resource/image/pizza/unknown.png",
     vegetablePizza:     "resource/image/pizza/vegetable.png",
 

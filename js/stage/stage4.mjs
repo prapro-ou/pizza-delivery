@@ -112,7 +112,7 @@ export const stage4 =
     ],
     roadWidth: 25,
     goalDistance: 2300,
-    targetTime: 75,
+    targetTime: 74,
     inertia: false,
     nightMode: false,
     speedMode: speedModes.slow,

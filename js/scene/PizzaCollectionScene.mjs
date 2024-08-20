@@ -1,6 +1,6 @@
 import { Scene } from './special/Scene.mjs';
 import { scenes } from "./special/sceneSettings.mjs";
-import { pizzaName, recipe, pizzaOrder, imageForPizza } from '../gameObject/pizzas.mjs';
+import { pizzas, pizzaName, recipe, pizzaOrder, imageForPizza } from '../gameObject/pizzas.mjs';
 import { imageForIngredient } from '../gameObject/ingredients.mjs';
 import { dataKeys } from '../dataObject/dataKeysSettings.mjs';
 import { resource } from '../resource.mjs';
@@ -149,11 +149,18 @@ export class PizzaCollectionScene extends Scene {
         ctx.drawImage(pizzaImage, x, y, 90, 90);
 
         // 材料画像
-        const ingredients = recipe[pizza];
+        const ingredients = recipe[pizza];       
         for (let i = 0; i < ingredients.length; i++) {
             const ingredientImage = imageForIngredient(ingredients[i]);
             ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(ingredientImage, x + 102 + (i * 48), y + 39, 45, 45);
+            if(pizza === pizzas.strangePizza){
+                ctx.drawImage(ingredientImage, x + 102 + (i * 80), y + 39, 45, 45);
+                if(i < ingredients.length - 1){
+                    ctx.fillText("or",  x + 154 + (i * 80), y + 71)
+                }
+            } else {
+                ctx.drawImage(ingredientImage, x + 102 + (i * 48), y + 39, 45, 45);
+            }
         }
     }
 }

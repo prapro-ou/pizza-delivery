@@ -56,11 +56,4 @@ export class Scene {
      * シーンが閉じる時に行いたい処理がある場合、このメソッドをオーバーライドする。
      */
     sceneWillDisappear() {}
-
-    /**
-     * キャンバス内がタップされた時の処理を書く場合、このメソッドをオーバーライドする。
-     * @param {number} x - タップされた場所のCanvas内のx座標
-     * @param {number} y - タップされた場所のCanvas内のy座標
-     */
-    didTap(x, y) {}
 }

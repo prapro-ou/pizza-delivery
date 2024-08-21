@@ -126,7 +126,7 @@ export class ResultScene extends Scene {
             return;
         }
         const stageResult = new StageResult(
-            this.sharedData.stage,
+            this.sharedData.stage.stageNumber,
             this.totalScore,
             this.sharedData.cookedPizza,
             this.sharedData.goalTime,

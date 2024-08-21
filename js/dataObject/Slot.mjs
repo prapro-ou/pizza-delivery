@@ -23,7 +23,7 @@ export class Slot {
             return 0;
         } else {
             return this.stageResults.reduce((max, result) => {
-                return Math.max(max,result.stage.stageNumber);
+                return Math.max(max,result.stageNumber);
             }, 1);
         }
     }

@@ -40,16 +40,10 @@ class MouseHandler {
         this.startTrackingMouse();
     }
 
-    listenClick(callback) {
-        this.canvas.addEventListener("click", function(e) {
-            const pos = this.getCanvasMousePosition(e);
-            callback(pos.x, pos.y);
-        }.bind(this));
-    }
-
     startTrackingMouse() {
         // マウス操作
         this.canvas.addEventListener("mousedown", function(e) {
+            e.preventDefault();
             this.mouse.isDown = true;
             this.mouse.startX = this.mouse.x;
             this.mouse.startY = this.mouse.y;
@@ -68,6 +62,7 @@ class MouseHandler {
 
         // タッチ操作
         this.canvas.addEventListener("touchstart", function(e) {
+            e.preventDefault();
             this.mouse.isDown = true;
             const pos = this.getCanvasTouchPosition(e);
             this.mouse.x = pos.x;
@@ -140,14 +135,6 @@ export class SceneRouter {
         this.mouseHandler = new MouseHandler(canvas);
         this.keyHandler = new KeyHandler()
         this.localDBHandler = new LocalDBHandler();
-
-        this.mouseHandler.listenClick(function(x, y) {
-            if (this.presentingModal) {
-                this.presentingModal.didTap?.(x, y);
-            } else if (this.currentScene) {
-                this.currentScene.didTap?.(x, y);
-            }
-        }.bind(this));
 
         resource.startLoadingAllImages();
     }

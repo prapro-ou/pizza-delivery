@@ -82,7 +82,9 @@ export class TitleScene extends Scene {
         this.continueButton.draw(ctx, 450, 265 + 110);
         this.configButton.draw(ctx, 450, 265 + 220);
         this.recipeButton.draw(ctx, 22, 380);
-        this.endingButton.draw(ctx, 130, 320);
+        if(this.endingUnlocked){
+            this.endingButton.draw(ctx, 130, 320);
+        }
         this.soundButton.draw(ctx, max_x - 86, 16);
         this.creditButton.draw(ctx, 20, 16);
     }

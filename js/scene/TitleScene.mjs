@@ -62,7 +62,9 @@ export class TitleScene extends Scene {
         this.continueButton.updateStates(mouse);
         this.configButton.updateStates(mouse);
         this.recipeButton.updateStates(mouse);
-        this.endingButton.updateStates(mouse);
+        if(this.endingUnlocked) {
+            this.endingButton.updateStates(mouse);
+        }
         this.soundButton.updateStates(mouse);
         this.creditButton.updateStates(mouse);
     }
